@@ -1,0 +1,54 @@
+import { Response , Request } from "express";
+import { userModel } from '../model/user_schema';
+import bcrypt from 'bcrypt';
+
+
+const SignInController =  async ( request : Request ,  response : Response) => {
+
+    
+    const {email , password} = request.body;
+
+    try {
+        const user = await userModel.findOne({ email_address: email });
+    
+        if (!user) {
+          return response.status(401).send({ error: 'Invalid email or password' });
+        }
+    
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+        if (!isPasswordValid) {
+          return response.status(401).send({ error: 'Invalid email or password' });
+        }
+    
+
+        //object for storing user data
+        const userData = {
+
+            isAuthenticated : true,
+            forgotPassword : false,
+            userID : user._id,
+            userEmail : user.email_address,
+            userName : user.name,
+            userSurname : user.surname,
+            userPhoneNumber : user.phone_number, 
+
+        }
+
+        // Get current date
+        const currentDate = new Date();
+        const last_logged_date = currentDate.toISOString();
+        //update last loggin date
+        await user.updateOne({last_logged_in:last_logged_date});
+
+
+        request.session.userData = userData;
+        response.status(200).send({ message: 'Login successful' });
+      } catch (error) {
+        console.error('Error during login:', error);
+        response.status(500).send({ error: 'Internal server error' });
+      }
+
+}
+
+export default SignInController;
