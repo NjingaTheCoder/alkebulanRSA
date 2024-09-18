@@ -18,8 +18,6 @@ const PORT = process.env.PORT;
 
 
 
-
-
 //create express app
 const app = express();
 
@@ -36,10 +34,7 @@ const store  = new mongoStore({
 //middleware 
 app.use(cookieParser());
 
-app.use(cors({
-    origin: 'https://alkebulanyabatho.onrender.com', // Allow only trusted origins
-    credentials: true, // Allow credentials to be sent over CORS
-  }));
+app.use(cors());
 
 app.use(urlencoded({extended:true}));
 
@@ -52,7 +47,7 @@ app.use(session({
     store : store,
     cookie: {
         httpOnly: true, // Set to false to allow JavaScript access
-        secure: true, // True if in production and using HTTPS
+        secure: false, // True if in production and using HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 
         sameSite:  process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     }

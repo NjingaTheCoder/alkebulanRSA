@@ -58,10 +58,7 @@ const store = new mongoStore({
 });
 //middleware 
 app.use((0, cookie_parser_1.default)());
-app.use((0, cors_1.default)({
-    origin: 'https://alkebulanyabatho.onrender.com', // Allow only trusted origins
-    credentials: true, // Allow credentials to be sent over CORS
-}));
+app.use((0, cors_1.default)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
 app.use((0, express_session_1.default)({
@@ -71,7 +68,7 @@ app.use((0, express_session_1.default)({
     store: store,
     cookie: {
         httpOnly: true, // Set to false to allow JavaScript access
-        secure: true, // True if in production and using HTTPS
+        secure: false, // True if in production and using HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 
         sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     }
