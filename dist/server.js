@@ -67,7 +67,7 @@ app.use((0, express_session_1.default)({
     store: store,
     cookie: {
         httpOnly: true, // Set to false to allow JavaScript access
-        secure: true, // True if in production and using HTTPS
+        secure: false, // True if in production and using HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 
         sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     }
