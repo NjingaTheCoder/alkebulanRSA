@@ -1,13 +1,15 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 import {connectionString , connectToDatabase} from './config/db_connect';
 import express, { request, urlencoded , Request , Response , NextFunction, response } from 'express';
 import session from 'express-session';
 import mongoSession from  'connect-mongodb-session';
-import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-//config dotenv
-dotenv.config();
+
 
 //import of routes
 import router from './route/routes';
