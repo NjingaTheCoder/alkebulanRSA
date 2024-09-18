@@ -46,7 +46,7 @@ const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 //import of routes
 const routes_1 = __importDefault(require("./route/routes"));
-const PORT = 3007;
+const PORT = process.env.PORT;
 //create express app
 const app = (0, express_1.default)();
 //create mongo store

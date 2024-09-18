@@ -14,7 +14,7 @@ import router from './route/routes';
 
 
 
-const PORT = 3007;
+const PORT = process.env.PORT;
 
 
 
