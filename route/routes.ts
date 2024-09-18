@@ -158,7 +158,6 @@ routes.post(`${subscribe}`, csurfProtection, subscribeEmail);
 // Route for unsubscribing from the newsletter
 routes.post(`${subscribe}/un`, unsubscribeEmail);
 
-
 // Route for handling yoco payment
 routes.post(`${yocoPayment}`, csurfProtection , YocoPayment);
 
