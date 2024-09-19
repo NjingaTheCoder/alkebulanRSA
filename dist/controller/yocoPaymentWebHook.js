@@ -11,15 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const check_out_schema_1 = require("../model/check_out_schema");
 const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a;
     try {
         const event = req.body; // Get the event data from Yoco
-        const userId = (_b = (_a = req.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.userID;
-        if (!userId) {
-            return res.status(400).json({ error: "User ID is missing from session data" });
+        console.log("Yoco Webhook event received:", event); // Log the event for debugging
+        const checkoutId = (_a = event === null || event === void 0 ? void 0 : event.data) === null || _a === void 0 ? void 0 : _a.id; // Extract checkout ID from the event
+        if (!checkoutId) {
+            return res.status(400).json({ error: "Missing checkout ID in webhook event" });
         }
-        // Find the checkout object associated with the user
-        const checkOutObject = yield check_out_schema_1.checkOut.findOne({ userId });
+        // Find the checkout object using the checkoutId from the webhook event
+        const checkOutObject = yield check_out_schema_1.checkOut.findOne({ checkoutId });
         if (checkOutObject) {
             yield checkOutObject.deleteOne(); // Ensure proper deletion
             console.log("Checkout object deleted successfully");
@@ -28,13 +29,14 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         switch (event.type) {
             case "payment.succeeded":
                 console.log("Payment succeeded:", event);
-                // TODO: Update your database, confirm the order, etc.
+                // TODO: Update your database, confirm the order, etc.  jjhuho
                 break;
             case "payment.failed":
                 console.log("Payment failed:", event);
                 // TODO: Handle the failure case, e.g., notify the user
                 break;
             default:
+                console.log(`Unhandled event type: ${event.type}`);
                 break;
         }
         // Respond with a 200 OK status to acknowledge receipt of the event
