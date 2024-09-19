@@ -54,7 +54,8 @@ const productShema = new mongoose_1.default.Schema({
     },
     model: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     filterOption: {
         type: String,

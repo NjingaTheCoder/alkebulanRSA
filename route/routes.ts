@@ -104,8 +104,6 @@ routes.post(`${product}` , AddProductToDatabaseController);
 //================================//Route for aading best seller product to database=======================================
 routes.post(`${bestSellerProduct}` , addBestSellerProductToDatabaseController);
 
-
-
 //================================//function for get all the products=======================================
 routes.get(`${product}` , GetProductsFromDatabaseController);
 
