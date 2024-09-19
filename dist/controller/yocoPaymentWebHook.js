@@ -9,18 +9,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const check_out_schema_1 = require("../model/check_out_schema");
 const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const event = req.body; // Get the event data from Yoco
-    // Handle the different event types Yoco may send
-    if (event.type === 'payment.succeeded') {
-        console.log('Payment succeeded:', event);
-        // TODO: Update your database, confirm the order, etc.
+    var _a, _b;
+    try {
+        const event = req.body; // Get the event data from Yoco
+        const userId = (_b = (_a = req.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.userID;
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is missing from session data" });
+        }
+        // Find the checkout object associated with the user
+        const checkOutObject = yield check_out_schema_1.checkOut.findOne({ userId });
+        if (checkOutObject) {
+            yield checkOutObject.deleteOne(); // Ensure proper deletion
+            console.log("Checkout object deleted successfully");
+        }
+        // Handle the different event types Yoco may send
+        switch (event.type) {
+            case "payment.succeeded":
+                console.log("Payment succeeded:", event);
+                // TODO: Update your database, confirm the order, etc.
+                break;
+            case "payment.failed":
+                console.log("Payment failed:", event);
+                // TODO: Handle the failure case, e.g., notify the user
+                break;
+            default:
+                break;
+        }
+        // Respond with a 200 OK status to acknowledge receipt of the event
+        res.sendStatus(200);
     }
-    else if (event.type === 'payment.failed') {
-        console.log('Payment failed:', event);
-        // TODO: Handle the failure case, e.g., notify the user
+    catch (error) {
+        console.error("Error handling Yoco webhook:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
-    // Respond with a 200 OK status to acknowledge receipt of the event
-    res.sendStatus(200);
 });
 exports.default = YocoPaymentWebHook;
