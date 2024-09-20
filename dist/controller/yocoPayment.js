@@ -27,6 +27,7 @@ const YocoPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`, // Ensure the key is correct
             }
         });
+        console.log({ paymentData: response.data });
         // Check if the payment session is created and provide the redirect URL
         if (response.data.status === 'created') {
             // Send the redirect URL back to the frontend
