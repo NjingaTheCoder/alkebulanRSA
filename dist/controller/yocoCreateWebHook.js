@@ -26,7 +26,7 @@ const YocoCreateWebHook = (req, res) => __awaiter(void 0, void 0, void 0, functi
             event_types: event_types, // Event types from frontend
         }, {
             headers: {
-                Authorization: `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`,
+                'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`,
                 'Content-Type': 'application/json',
             },
         });
