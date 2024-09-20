@@ -29,7 +29,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         switch (event.type) {
             case "payment.succeeded":
                 console.log("Payment succeeded:", event);
-                // TODO: Update your database, confirm the order, etc.  jjhuho
+                // TODO: Update your database, confirm the order, etc.  jjhu
                 break;
             case "payment.failed":
                 console.log("Payment failed:", event);

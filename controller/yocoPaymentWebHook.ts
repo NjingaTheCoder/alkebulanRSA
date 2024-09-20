@@ -25,7 +25,7 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
     switch (event.type) {
       case "payment.succeeded":
         console.log("Payment succeeded:", event);
-        // TODO: Update your database, confirm the order, etc.  jjhuho
+        // TODO: Update your database, confirm the order, etc.  jjhu
         break;
 
       case "payment.failed":
