@@ -40,7 +40,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 break;
         }
         // Respond with a 200 OK status to acknowledge receipt of the event
-        res.sendStatus(200);
+        res.sendStatus(200).send({ event });
     }
     catch (error) {
         console.error("Error handling Yoco webhook:", error);
