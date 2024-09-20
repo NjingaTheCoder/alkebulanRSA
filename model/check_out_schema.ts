@@ -108,6 +108,54 @@ const checkoutSchema = new Schema({
   }
 });
 
+
+
+// Metadata Schema
+const metadataSchema = new mongoose.Schema({
+  checkoutId: { type: String, required: true },
+  productType: { type: String, required: true }
+}, { _id: false });
+
+// Payment Method Details Schema
+const paymentMethodDetailsSchema = new mongoose.Schema({
+  card: {
+    // Define card details as per your need (example below):
+    brand: { type: String, required: true },
+    last4: { type: String, required: true },
+    expMonth: { type: Number, required: true },
+    expYear: { type: Number, required: true }
+  },
+  type: { type: String, required: true }
+}, { _id: false });
+
+// Payload Schema
+const payloadSchema = new mongoose.Schema({
+  amount: { type: Number, required: true },
+  createdDate: { type: Date, required: true },
+  currency: { type: String, required: true },
+  id: { type: String, required: true },
+  metadata: metadataSchema,
+  mode: { type: String, required: true },
+  paymentMethodDetails: paymentMethodDetailsSchema,
+  status: { type: String, required: true },
+  type: { type: String, required: true }
+}, { _id: false });
+
+// Main Schema
+const orderSchema = new mongoose.Schema({
+  createdDate: { type: Date, required: true },
+  checkOutObject : {
+    type: checkoutSchema,
+    required: true
+  },
+  id: { type: String, required: true },
+  payload: payloadSchema,
+  type: { type: String, required: true }
+});
+
+
+
 export const checkOut = mongoose.model('Checkout', checkoutSchema);
+export const orderModel = mongoose.model('Orders', orderSchema);
 
 

@@ -34,6 +34,7 @@ const YocoPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 success: true,
                 message: 'Payment session created. Redirect the user to complete the payment.',
                 redirectUrl: response.data.redirectUrl, // Frontend will use this to redirect the user
+                paymentData: response.data
             });
         }
         else {

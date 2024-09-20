@@ -31,6 +31,7 @@ import GetCheckOutFromDatabaseController from '../controller/getCheckOutFromData
 import YocoPayment from '../controller/yocoPayment';
 import YocoPaymentWebHook from '../controller/yocoPaymentWebHook';
 import YocoCreateWebHook from '../controller/yocoCreateWebHook';
+import UpdateCheckOutController from '../controller/updateCheckOutController';
 
 
 const csurfProtection = csurf({cookie : {httpOnly:true}})
@@ -150,6 +151,9 @@ routes.put(`${checkOut}/status`, updateOrderStatus);
 
 routes.get(`${checkOut}/orders`, getOrdersByUser);
 
+// Route for updating payment detail
+routes.post(`${checkOut}/update-payment-details`, csurfProtection, UpdateCheckOutController );
+
 // Route for subscribing to the newsletter
 routes.post(`${subscribe}`, csurfProtection, subscribeEmail);
 
@@ -164,5 +168,8 @@ routes.post(`${yocoPaymentWebHook}`,  YocoPaymentWebHook);
 
 // Route for handling yoco payment creating a webhook
 routes.post(`${yocoPaymentWebHook}/create`, csurfProtection ,YocoCreateWebHook);
+
+
+
 
 export default routes;

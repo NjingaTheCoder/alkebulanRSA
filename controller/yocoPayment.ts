@@ -27,6 +27,7 @@ const YocoPayment = async (req :Request , res : Response) => {
                 success: true,
                 message: 'Payment session created. Redirect the user to complete the payment.',
                 redirectUrl: response.data.redirectUrl,  // Frontend will use this to redirect the user
+                paymentData : response.data
             });
         } else {
             // Handle cases where the payment session wasn't created successfully

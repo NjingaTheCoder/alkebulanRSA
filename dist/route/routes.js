@@ -36,6 +36,7 @@ const getCheckOutFromDatabaseController_1 = __importDefault(require("../controll
 const yocoPayment_1 = __importDefault(require("../controller/yocoPayment"));
 const yocoPaymentWebHook_1 = __importDefault(require("../controller/yocoPaymentWebHook"));
 const yocoCreateWebHook_1 = __importDefault(require("../controller/yocoCreateWebHook"));
+const updateCheckOutController_1 = __importDefault(require("../controller/updateCheckOutController"));
 const csurfProtection = (0, csurf_1.default)({ cookie: { httpOnly: true } });
 const signUp = process.env.SIGN_UP;
 const signIn = process.env.SIGN_IN;
@@ -114,6 +115,8 @@ routes.post(`${checkOut}`, csurfProtection, checkOutController_1.createCheckout)
 routes.post(`${checkOut}/get-check-out`, csurfProtection, getCheckOutFromDatabaseController_1.default);
 routes.put(`${checkOut}/status`, checkOutController_1.updateOrderStatus);
 routes.get(`${checkOut}/orders`, checkOutController_1.getOrdersByUser);
+// Route for updating payment detail
+routes.post(`${checkOut}/update-payment-details`, csurfProtection, updateCheckOutController_1.default);
 // Route for subscribing to the newsletter
 routes.post(`${subscribe}`, csurfProtection, addSubsriberTodatabaseController_1.subscribeEmail);
 // Route for unsubscribing from the newsletter
