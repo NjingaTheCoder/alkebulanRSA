@@ -21,13 +21,13 @@ const check_out_schema_1 = require("../model/check_out_schema");
 ;
 ;
 const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c;
     try {
         const event = req.body; // Get the event data from Yoco
         console.log("Yoco Webhook event received:", event); // Log the event for debugging
-        const checkoutId = (_a = event === null || event === void 0 ? void 0 : event.data) === null || _a === void 0 ? void 0 : _a.payload.id; // Extract checkout ID from the event
+        const checkoutId = event === null || event === void 0 ? void 0 : event.payload.id; // Extract checkout ID from the event
         if (!checkoutId) {
-            console.log(`missing id : ${(_b = event === null || event === void 0 ? void 0 : event.data) === null || _b === void 0 ? void 0 : _b.payload.id}`);
+            console.log(`missing id : ${event === null || event === void 0 ? void 0 : event.payload.id}`);
             return res.status(400).json({ error: "Missing checkout ID in webhook event" });
         }
         // Find the checkout object using the checkoutId from the webhook event
@@ -36,11 +36,11 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (checkOutObject) {
             // Create a new order using the Mongoose model
             const newOrder = new check_out_schema_1.orderModel({
-                createdDate: (_c = event === null || event === void 0 ? void 0 : event.data) === null || _c === void 0 ? void 0 : _c.createdDate,
+                createdDate: (_a = event === null || event === void 0 ? void 0 : event.data) === null || _a === void 0 ? void 0 : _a.createdDate,
                 checkOutObject,
                 id: checkoutId,
-                payload: (_d = event === null || event === void 0 ? void 0 : event.data) === null || _d === void 0 ? void 0 : _d.payload,
-                type: (_e = event === null || event === void 0 ? void 0 : event.data) === null || _e === void 0 ? void 0 : _e.type
+                payload: (_b = event === null || event === void 0 ? void 0 : event.data) === null || _b === void 0 ? void 0 : _b.payload,
+                type: (_c = event === null || event === void 0 ? void 0 : event.data) === null || _c === void 0 ? void 0 : _c.type
             });
             if (newOrder) {
                 yield checkOutObject.deleteOne(); // Ensure proper deletion

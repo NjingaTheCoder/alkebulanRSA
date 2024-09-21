@@ -94,10 +94,10 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
 
     console.log("Yoco Webhook event received:", event); // Log the event for debugging
 
-    const checkoutId = event?.data?.payload.id; // Extract checkout ID from the event
+    const checkoutId = event?.payload.id; // Extract checkout ID from the event
 
     if (!checkoutId) {
-      console.log(`missing id : ${event?.data?.payload.id}`); 
+      console.log(`missing id : ${event?.payload.id}`); 
       return res.status(400).json({ error: "Missing checkout ID in webhook event" });
     }
 
