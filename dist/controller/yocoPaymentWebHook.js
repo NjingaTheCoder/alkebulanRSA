@@ -21,37 +21,36 @@ const check_out_schema_1 = require("../model/check_out_schema");
 ;
 ;
 const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e, _f;
     try {
         const event = req.body; // Get the event data from Yoco
         console.log("Yoco Webhook event received:", event); // Log the event for debugging
-        const checkoutId = event === null || event === void 0 ? void 0 : event.payload.id; // Extract checkout ID from the event
-        console.log(`missing id : ${event === null || event === void 0 ? void 0 : event.payload.id}`);
+        const checkoutId = ((_a = event === null || event === void 0 ? void 0 : event.payload) === null || _a === void 0 ? void 0 : _a.metadata.checkoutId) || ((_c = (_b = event === null || event === void 0 ? void 0 : event.data) === null || _b === void 0 ? void 0 : _b.payload) === null || _c === void 0 ? void 0 : _c.metadata.checkoutId); // Extract checkout ID from the event
+        console.log(`Extracted checkoutId: ${checkoutId}`);
         if (!checkoutId) {
             return res.status(400).json({ error: "Missing checkout ID in webhook event" });
         }
         // Find the checkout object using the checkoutId from the webhook event
         const checkOutObject = yield check_out_schema_1.checkOut.findOne({ 'paymentDetails.transactionId': checkoutId });
-        console.log(checkOutObject);
         if (checkOutObject) {
             // Create a new order using the Mongoose model
             const newOrder = new check_out_schema_1.orderModel({
-                createdDate: (_a = event === null || event === void 0 ? void 0 : event.data) === null || _a === void 0 ? void 0 : _a.createdDate,
+                createdDate: (event === null || event === void 0 ? void 0 : event.createdDate) || ((_d = event === null || event === void 0 ? void 0 : event.data) === null || _d === void 0 ? void 0 : _d.createdDate),
                 checkOutObject,
                 id: checkoutId,
-                payload: (_b = event === null || event === void 0 ? void 0 : event.data) === null || _b === void 0 ? void 0 : _b.payload,
-                type: (_c = event === null || event === void 0 ? void 0 : event.data) === null || _c === void 0 ? void 0 : _c.type
+                payload: (event === null || event === void 0 ? void 0 : event.payload) || ((_e = event === null || event === void 0 ? void 0 : event.data) === null || _e === void 0 ? void 0 : _e.payload),
+                type: (event === null || event === void 0 ? void 0 : event.type) || ((_f = event === null || event === void 0 ? void 0 : event.data) === null || _f === void 0 ? void 0 : _f.type)
             });
-            if (newOrder) {
-                yield checkOutObject.deleteOne(); // Ensure proper deletion
-                console.log("Checkout object deleted successfully");
-            }
+            yield newOrder.save(); // Save the new order
+            // Ensure proper deletion after saving the new order
+            yield checkOutObject.deleteOne();
+            console.log("Checkout object deleted successfully");
         }
-        // Handle the different event types Yoco may send
+        // Handle different event types Yoco may send
         switch (event.type) {
             case "payment.succeeded":
                 console.log("Payment succeeded:", event);
-                // TODO: Update your database, confirm the order, etc.  jjhu
+                // TODO: Update your database, confirm the order, etc.
                 break;
             case "payment.failed":
                 console.log("Payment failed:", event);
@@ -69,4 +68,5 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+;
 exports.default = YocoPaymentWebHook;

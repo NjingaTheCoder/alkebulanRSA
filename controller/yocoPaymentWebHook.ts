@@ -87,46 +87,43 @@ interface Order  {
   type: string;
 };
 
-
 const YocoPaymentWebHook = async (req: Request, res: Response) => {
   try {
     const event = req.body; // Get the event data from Yoco
-
     console.log("Yoco Webhook event received:", event); // Log the event for debugging
 
-    const checkoutId = event?.payload.id; // Extract checkout ID from the event
-    console.log(`missing id : ${event?.payload.id}`); 
+    const checkoutId = event?.payload?. metadata.checkoutId || event?.data?.payload?. metadata.checkoutId; // Extract checkout ID from the event
+    console.log(`Extracted checkoutId: ${checkoutId}`); 
+
     if (!checkoutId) {
       return res.status(400).json({ error: "Missing checkout ID in webhook event" });
     }
 
     // Find the checkout object using the checkoutId from the webhook event
-    const checkOutObject = await checkOut.findOne({ 'paymentDetails.transactionId': checkoutId});
+    const checkOutObject = await checkOut.findOne({ 'paymentDetails.transactionId': checkoutId });
 
-    console.log(checkOutObject);
     if (checkOutObject) {
-      
       // Create a new order using the Mongoose model
       const newOrder = new orderModel({
-        createdDate : event?.data?.createdDate,
+        createdDate: event?.createdDate || event?.data?.createdDate,
         checkOutObject,
-        id : checkoutId,
-        payload : event?.data?.payload,
-        type : event?.data?.type
+        id: checkoutId,
+        payload: event?.payload || event?.data?.payload,
+        type: event?.type || event?.data?.type
       });
 
-      if(newOrder){
-        await checkOutObject.deleteOne(); // Ensure proper deletion
-        console.log("Checkout object deleted successfully");
-      }
+      await newOrder.save(); // Save the new order
 
+      // Ensure proper deletion after saving the new order
+      await checkOutObject.deleteOne();
+      console.log("Checkout object deleted successfully");
     }
 
-    // Handle the different event types Yoco may send
+    // Handle different event types Yoco may send
     switch (event.type) {
       case "payment.succeeded":
         console.log("Payment succeeded:", event);
-        // TODO: Update your database, confirm the order, etc.  jjhu
+        // TODO: Update your database, confirm the order, etc.
         break;
 
       case "payment.failed":
@@ -145,6 +142,7 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
     console.error("Error handling Yoco webhook:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
 };
 
 export default YocoPaymentWebHook;
