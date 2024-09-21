@@ -15,17 +15,13 @@ const UpdateCheckOutController = async  (request : Request , response : Response
         if(checkOutObject){
     
                // Find the document by ID and update the paymentDetails.transactionId field
-        const updatedOrder = await checkOut.findByIdAndUpdate(
-            userId,
-            {
-              $set: { 'paymentDetails.transactionId': transactionId } // Use dot notation to target the nested field
-            },
-            { new: true } // Return the updated document
-          );
+        const updatedOrder = await checkOut.updateOne({ 'paymentDetails.transactionId': transactionId});
     
           if(updatedOrder){
     
             response.status(200).send({updatedOrder});
+          }else{
+            response.status(400).send({updatedOrder});
           }
         }
     

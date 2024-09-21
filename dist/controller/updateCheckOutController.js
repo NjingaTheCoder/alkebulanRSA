@@ -20,12 +20,12 @@ const UpdateCheckOutController = (request, response) => __awaiter(void 0, void 0
         const checkOutObject = yield check_out_schema_1.checkOut.findOne({ userId: userId });
         if (checkOutObject) {
             // Find the document by ID and update the paymentDetails.transactionId field
-            const updatedOrder = yield check_out_schema_1.checkOut.findByIdAndUpdate(userId, {
-                $set: { 'paymentDetails.transactionId': transactionId } // Use dot notation to target the nested field
-            }, { new: true } // Return the updated document
-            );
+            const updatedOrder = yield check_out_schema_1.checkOut.updateOne({ 'paymentDetails.transactionId': transactionId });
             if (updatedOrder) {
                 response.status(200).send({ updatedOrder });
+            }
+            else {
+                response.status(400).send({ updatedOrder });
             }
         }
     }
