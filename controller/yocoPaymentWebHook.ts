@@ -55,8 +55,8 @@ interface Metadata  {
 interface CardDetails  {
   brand: string;
   last4: string;
-  expMonth: number;
-  expYear: number;
+  expMonth: string;
+  expYear: string;
 };
 
 interface PaymentMethodDetails  {

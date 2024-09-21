@@ -103,8 +103,8 @@ const paymentMethodDetailsSchema = new mongoose.Schema({
         // Define card details as per your need (example below):
         brand: { type: String, required: true },
         last4: { type: String, required: true },
-        expMonth: { type: Number, required: true },
-        expYear: { type: Number, required: true }
+        expMonth: { type: String, required: true },
+        expYear: { type: String, required: true }
     },
     type: { type: String, required: true }
 }, { _id: false });
