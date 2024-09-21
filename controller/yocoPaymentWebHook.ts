@@ -104,6 +104,7 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
     // Find the checkout object using the checkoutId from the webhook event
     const checkOutObject = await checkOut.findOne({ 'paymentDetails.transactionId': checkoutId});
 
+    console.log(checkOutObject);
     if (checkOutObject) {
       
       // Create a new order using the Mongoose model
