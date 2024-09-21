@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { checkOut } from "../model/check_out_schema";
 import { orderModel } from "../model/order_schema";
 import { cartModel } from "../model/cart_schema";
+import mongoose from "mongoose";
+
 
 // Cart Item Type
 interface CartItem  {
@@ -90,28 +92,29 @@ interface Order  {
 };
 
 const YocoPaymentWebHook = async (req: Request, res: Response) => {
+
+  const session = await mongoose.startSession();
   try {
     const event = req.body; // Get the event data from Yoco
     console.log("Yoco Webhook event received:", event);
 
     const checkoutId = event?.payload?.metadata?.checkoutId || event?.data?.payload?.metadata?.checkoutId;
     console.log(`Extracted checkoutId: ${checkoutId}`);
-
-    if (!checkoutId) {
-      return res.status(400).json({ error: "Missing checkout ID in webhook event" });
-    }
-
-    // **Check if an order with this checkoutId already exists**
-    const existingOrder = await orderModel.findOne({ id: checkoutId });
-    if (existingOrder) {
-      console.log(`Order with checkoutId ${checkoutId} already exists. Skipping duplicate.`);
-      return res.sendStatus(200); // Acknowledge the webhook but do nothing
-    }
-
-    // Find the checkout object using the checkoutId from the webhook event
-    const checkOutObject = await checkOut.findOne({ 'paymentDetails.transactionId': checkoutId });
-
-    if (checkOutObject) {
+    session.startTransaction();
+    
+      const existingOrder = await orderModel.findOne({ id: checkoutId }).session(session);
+      if (existingOrder) {
+        console.log(`Order with checkoutId ${checkoutId} already exists. Skipping duplicate.`);
+        await session.abortTransaction();
+        return res.sendStatus(200);
+      }
+    
+      const checkOutObject = await checkOut.findOne({ 'paymentDetails.transactionId': checkoutId }).session(session);
+      if (!checkOutObject) {
+        await session.abortTransaction();
+        return res.status(404).json({ error: "Checkout object not found" });
+      }
+    
       const newOrder = new orderModel({
         createdDate: event?.createdDate || event?.data?.createdDate,
         checkOutObject,
@@ -119,33 +122,22 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
         payload: event?.payload || event?.data?.payload,
         type: event?.type || event?.data?.type
       });
-
-      await newOrder.save(); // Save the new order
-      await cartModel.deleteOne({ userId: checkOutObject.userId });
-      await checkOutObject.deleteOne();
-      console.log("Checkout object and cart deleted successfully");
+    
+      await newOrder.save({ session });
+      await cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
+      await checkOutObject.deleteOne().session(session);
+    
+      await session.commitTransaction();
+      console.log("Order created and transaction committed successfully.");
+      res.sendStatus(200);
+    } catch (error) {
+      await session.abortTransaction();
+      console.error("Transaction error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    } finally {
+      session.endSession();
     }
-
-    // Handle event types like payment success or failure
-    switch (event.type) {
-      case "payment.succeeded":
-        console.log("Payment succeeded:", event);
-        break;
-
-      case "payment.failed":
-        console.log("Payment failed:", event);
-        break;
-
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
-        break;
-    }
-
-    res.sendStatus(200); // Respond with 200 OK
-  } catch (error) {
-    console.error("Error handling Yoco webhook:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+    
 };
 
 
