@@ -32,6 +32,23 @@ const addressSchema = new mongoose.Schema({
 )
 
 
+const orderAddressSchema = new mongoose.Schema({
+    
+  email : {
+      type:String,
+      required:true,
+  },
+  addressDetails :{
+      type : Array,
+      required : true,
+
+  }
+
+}
+)
+
+
+
 const paymentDetailsSchema = new Schema({
   method: {
     type: String,
@@ -109,6 +126,55 @@ const checkoutSchema = new Schema({
 });
 
 
+const orderCheckoutSchema = new Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  orderItems: [cartItemSchema],
+  shippingAddress: {
+    type: orderAddressSchema,
+    required: true
+  },
+  billingAddress: {
+    type: orderAddressSchema, // Optionally use shippingAddress if billing and shipping are the same
+    required: true
+  },
+  paymentDetails: {
+    type: paymentDetailsSchema,
+    required: true
+  },
+  orderStatus: {
+    type: String,
+    enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Returned'],
+    default: 'Pending',
+    required: true
+  },
+  totalAmount: {
+    type: Number,
+    required: true
+  },
+  delivery: {
+    type: shippingCostSchema,
+    required: true
+  },
+  tax: {
+    type: Number,
+    required: true
+  },
+  orderDate: {
+    type: Date,
+    default: Date.now
+  },
+  deliveryDate: {
+    type: Date
+  }
+});
+
+
+
+
 
 // Metadata Schema
 const metadataSchema = new mongoose.Schema({
@@ -145,7 +211,7 @@ const payloadSchema = new mongoose.Schema({
 const orderSchema = new mongoose.Schema({
   createdDate: { type: Date, required: true },
   checkOutObject : {
-    type: checkoutSchema,
+    type: orderCheckoutSchema,
     required: true
   },
   id: { type: String, required: true },
