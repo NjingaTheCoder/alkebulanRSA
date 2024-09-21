@@ -8,16 +8,13 @@ import session from 'express-session';
 import mongoSession from  'connect-mongodb-session';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-
-
-
-//import of routes
+import rateLimit from 'express-rate-limit';
 import router from './route/routes';
 
 
 
 const PORT = process.env.PORT;
-
+const yocoPaymentWebHook  = process.env.YOCO_PAYMENT_WEBHOOK;
 
 
 //create express app
@@ -54,6 +51,14 @@ app.use(session({
         sameSite:  process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     }
 }));
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+  });
+  
+  // Apply the rate limit to your route
+  app.use(`${yocoPaymentWebHook}/create`, limiter);
 
 
 app.use((req, res, next) => {

@@ -43,9 +43,10 @@ const express_session_1 = __importDefault(require("express-session"));
 const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
-//import of routes
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const routes_1 = __importDefault(require("./route/routes"));
 const PORT = process.env.PORT;
+const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 //create express app
 const app = (0, express_1.default)();
 //create mongo store
@@ -72,6 +73,12 @@ app.use((0, express_session_1.default)({
         sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     }
 }));
+const limiter = (0, express_rate_limit_1.default)({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+});
+// Apply the rate limit to your route
+app.use(`${yocoPaymentWebHook}/create`, limiter);
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
     // other headers
