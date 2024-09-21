@@ -101,8 +101,8 @@ const metadataSchema = new mongoose.Schema({
 const paymentMethodDetailsSchema = new mongoose.Schema({
     card: {
         // Define card details as per your need (example below):
-        expiryMonth: { type: String, required: true },
-        expiryYear: { type: String, required: true },
+        expiryMonth: { type: Number, required: true },
+        expiryYear: { type: Number, required: true },
         maskedCard: { type: String, required: true },
         scheme: { type: String, required: true }
     },
