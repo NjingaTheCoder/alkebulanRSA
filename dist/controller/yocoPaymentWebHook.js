@@ -21,11 +21,11 @@ const check_out_schema_1 = require("../model/check_out_schema");
 ;
 ;
 const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     try {
         const event = req.body; // Get the event data from Yoco
         console.log("Yoco Webhook event received:", event); // Log the event for debugging
-        const checkoutId = ((_a = event === null || event === void 0 ? void 0 : event.payload) === null || _a === void 0 ? void 0 : _a.paymentMethodDetails) || ((_c = (_b = event === null || event === void 0 ? void 0 : event.data) === null || _b === void 0 ? void 0 : _b.payload) === null || _c === void 0 ? void 0 : _c.paymentMethodDetails); // Extract checkout ID from the event
+        const checkoutId = ((_b = (_a = event === null || event === void 0 ? void 0 : event.payload) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.checkoutId) || ((_e = (_d = (_c = event === null || event === void 0 ? void 0 : event.data) === null || _c === void 0 ? void 0 : _c.payload) === null || _d === void 0 ? void 0 : _d.metadata) === null || _e === void 0 ? void 0 : _e.checkoutId); // Extract checkout ID from the event
         console.log(`Extracted checkoutId: ${checkoutId}`);
         if (!checkoutId) {
             return res.status(400).json({ error: "Missing checkout ID in webhook event" });
@@ -35,11 +35,11 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (checkOutObject) {
             // Create a new order using the Mongoose model
             const newOrder = new check_out_schema_1.orderModel({
-                createdDate: (event === null || event === void 0 ? void 0 : event.createdDate) || ((_d = event === null || event === void 0 ? void 0 : event.data) === null || _d === void 0 ? void 0 : _d.createdDate),
+                createdDate: (event === null || event === void 0 ? void 0 : event.createdDate) || ((_f = event === null || event === void 0 ? void 0 : event.data) === null || _f === void 0 ? void 0 : _f.createdDate),
                 checkOutObject,
                 id: checkoutId,
-                payload: (event === null || event === void 0 ? void 0 : event.payload) || ((_e = event === null || event === void 0 ? void 0 : event.data) === null || _e === void 0 ? void 0 : _e.payload),
-                type: (event === null || event === void 0 ? void 0 : event.type) || ((_f = event === null || event === void 0 ? void 0 : event.data) === null || _f === void 0 ? void 0 : _f.type)
+                payload: (event === null || event === void 0 ? void 0 : event.payload) || ((_g = event === null || event === void 0 ? void 0 : event.data) === null || _g === void 0 ? void 0 : _g.payload),
+                type: (event === null || event === void 0 ? void 0 : event.type) || ((_h = event === null || event === void 0 ? void 0 : event.data) === null || _h === void 0 ? void 0 : _h.type)
             });
             yield newOrder.save(); // Save the new order
             // Ensure proper deletion after saving the new order
