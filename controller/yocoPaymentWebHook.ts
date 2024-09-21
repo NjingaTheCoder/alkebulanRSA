@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { checkOut , orderModel} from "../model/check_out_schema";
+import { cartModel } from "../model/cart_schema";
 
 // Cart Item Type
 interface CartItem  {
@@ -115,6 +116,8 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
       await newOrder.save(); // Save the new order
 
       // Ensure proper deletion after saving the new order
+      const deleteCart = await cartModel.deleteOne({userId : checkOutObject.userId});
+
       await checkOutObject.deleteOne();
       console.log("Checkout object deleted successfully");
     }

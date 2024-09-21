@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const check_out_schema_1 = require("../model/check_out_schema");
+const cart_schema_1 = require("../model/cart_schema");
 ;
 ;
 ;
@@ -43,6 +44,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
             });
             yield newOrder.save(); // Save the new order
             // Ensure proper deletion after saving the new order
+            const deleteCart = yield cart_schema_1.cartModel.deleteOne({ userId: checkOutObject.userId });
             yield checkOutObject.deleteOne();
             console.log("Checkout object deleted successfully");
         }
