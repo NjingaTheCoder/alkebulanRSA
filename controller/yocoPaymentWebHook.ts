@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { checkOut , orderModel} from "../model/check_out_schema";
+import { checkOut } from "../model/check_out_schema";
+import { orderModel } from "../model/order_schema";
 import { cartModel } from "../model/cart_schema";
 
 // Cart Item Type
@@ -91,20 +92,26 @@ interface Order  {
 const YocoPaymentWebHook = async (req: Request, res: Response) => {
   try {
     const event = req.body; // Get the event data from Yoco
-    console.log("Yoco Webhook event received:", event); // Log the event for debugging
+    console.log("Yoco Webhook event received:", event);
 
-    const checkoutId = event?.payload?.metadata?.checkoutId || event?.data?.payload?.metadata?.checkoutId; // Extract checkout ID from the event
-    console.log(`Extracted checkoutId: ${checkoutId}`); 
+    const checkoutId = event?.payload?.metadata?.checkoutId || event?.data?.payload?.metadata?.checkoutId;
+    console.log(`Extracted checkoutId: ${checkoutId}`);
 
     if (!checkoutId) {
       return res.status(400).json({ error: "Missing checkout ID in webhook event" });
+    }
+
+    // **Check if an order with this checkoutId already exists**
+    const existingOrder = await orderModel.findOne({ id: checkoutId });
+    if (existingOrder) {
+      console.log(`Order with checkoutId ${checkoutId} already exists. Skipping duplicate.`);
+      return res.sendStatus(200); // Acknowledge the webhook but do nothing
     }
 
     // Find the checkout object using the checkoutId from the webhook event
     const checkOutObject = await checkOut.findOne({ 'paymentDetails.transactionId': checkoutId });
 
     if (checkOutObject) {
-      // Create a new order using the Mongoose model
       const newOrder = new orderModel({
         createdDate: event?.createdDate || event?.data?.createdDate,
         checkOutObject,
@@ -114,24 +121,19 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
       });
 
       await newOrder.save(); // Save the new order
-
-      // Ensure proper deletion after saving the new order
-      const deleteCart = await cartModel.deleteOne({userId : checkOutObject.userId});
-
+      await cartModel.deleteOne({ userId: checkOutObject.userId });
       await checkOutObject.deleteOne();
-      console.log("Checkout object deleted successfully");
+      console.log("Checkout object and cart deleted successfully");
     }
 
-    // Handle different event types Yoco may send
+    // Handle event types like payment success or failure
     switch (event.type) {
       case "payment.succeeded":
         console.log("Payment succeeded:", event);
-        // TODO: Update your database, confirm the order, etc.
         break;
 
       case "payment.failed":
         console.log("Payment failed:", event);
-        // TODO: Handle the failure case, e.g., notify the user
         break;
 
       default:
@@ -139,13 +141,12 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
         break;
     }
 
-    // Respond with a 200 OK status to acknowledge receipt of the event
-    res.sendStatus(200);
+    res.sendStatus(200); // Respond with 200 OK
   } catch (error) {
     console.error("Error handling Yoco webhook:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-};
+
 
 export default YocoPaymentWebHook;
