@@ -146,7 +146,7 @@ const orderSchema = new mongoose.Schema({
     type: orderCheckoutSchema,
     required: true
   },
-  id: { type: String, required: true },
+  id: { type: String, required: true , unique : true },
   payload: payloadSchema,
   type: { type: String, required: true }
 });

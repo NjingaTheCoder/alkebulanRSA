@@ -32,8 +32,6 @@ const addressSchema = new mongoose.Schema({
 )
 
 
-
-
 const paymentDetailsSchema = new Schema({
   method: {
     type: String,
