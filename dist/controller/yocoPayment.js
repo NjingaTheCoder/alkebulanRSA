@@ -24,7 +24,7 @@ const YocoPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`, // Ensure the key is correct
+                'Authorization': `Bearer ${process.env.YOCO_API_KEY}`, // Ensure the key is correct
             }
         });
         console.log({ paymentData: response.data });

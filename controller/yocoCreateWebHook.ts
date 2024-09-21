@@ -21,7 +21,7 @@ const YocoCreateWebHook = async (req : Request , res : Response) => {
         },
         {
           headers: {
-            'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`,
+            'Authorization': `Bearer ${process.env.YOCO_API_KEY}`,
             'Content-Type': 'application/json',
           },
         }
