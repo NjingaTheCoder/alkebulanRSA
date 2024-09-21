@@ -53,10 +53,10 @@ interface Metadata  {
 
 // Payment Method Details Type
 interface CardDetails  {
-  brand: string;
-  last4: string;
-  expMonth: string;
-  expYear: string;
+  expiryMonth: string;
+  expiryYear: string;
+  maskedCard: string;
+  scheme: string;
 };
 
 interface PaymentMethodDetails  {
