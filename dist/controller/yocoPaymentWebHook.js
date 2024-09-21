@@ -10,20 +10,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const check_out_schema_1 = require("../model/check_out_schema");
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b, _c, _d;
     try {
         const event = req.body; // Get the event data from Yoco
         console.log("Yoco Webhook event received:", event); // Log the event for debugging
-        const checkoutId = (_a = event === null || event === void 0 ? void 0 : event.data) === null || _a === void 0 ? void 0 : _a.id; // Extract checkout ID from the event
+        const checkoutId = (_a = event === null || event === void 0 ? void 0 : event.data) === null || _a === void 0 ? void 0 : _a.payload.id; // Extract checkout ID from the event
         if (!checkoutId) {
             return res.status(400).json({ error: "Missing checkout ID in webhook event" });
         }
         // Find the checkout object using the checkoutId from the webhook event
-        const checkOutObject = yield check_out_schema_1.checkOut.findOne({ checkoutId });
+        const checkOutObject = yield check_out_schema_1.checkOut.findOne({ 'paymentDetails.transactionId': checkoutId });
         if (checkOutObject) {
-            yield checkOutObject.deleteOne(); // Ensure proper deletion
-            console.log("Checkout object deleted successfully");
+            // Create a new order using the Mongoose model
+            const newOrder = new check_out_schema_1.orderModel({
+                createdDate: (_b = event === null || event === void 0 ? void 0 : event.data) === null || _b === void 0 ? void 0 : _b.createdDate,
+                checkOutObject,
+                id: checkoutId,
+                payload: (_c = event === null || event === void 0 ? void 0 : event.data) === null || _c === void 0 ? void 0 : _c.payload,
+                type: (_d = event === null || event === void 0 ? void 0 : event.data) === null || _d === void 0 ? void 0 : _d.type
+            });
+            if (newOrder) {
+                yield checkOutObject.deleteOne(); // Ensure proper deletion
+                console.log("Checkout object deleted successfully");
+            }
         }
         // Handle the different event types Yoco may send
         switch (event.type) {
@@ -40,7 +60,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 break;
         }
         // Respond with a 200 OK status to acknowledge receipt of the event
-        res.sendStatus(200).send({ event });
+        res.sendStatus(200);
     }
     catch (error) {
         console.error("Error handling Yoco webhook:", error);
