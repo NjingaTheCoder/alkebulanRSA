@@ -25,7 +25,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
     try {
         const event = req.body; // Get the event data from Yoco
         console.log("Yoco Webhook event received:", event); // Log the event for debugging
-        const checkoutId = ((_a = event === null || event === void 0 ? void 0 : event.payload) === null || _a === void 0 ? void 0 : _a.metadata.checkoutId) || ((_c = (_b = event === null || event === void 0 ? void 0 : event.data) === null || _b === void 0 ? void 0 : _b.payload) === null || _c === void 0 ? void 0 : _c.metadata.checkoutId); // Extract checkout ID from the event
+        const checkoutId = ((_a = event === null || event === void 0 ? void 0 : event.payload) === null || _a === void 0 ? void 0 : _a.paymentMethodDetails) || ((_c = (_b = event === null || event === void 0 ? void 0 : event.data) === null || _b === void 0 ? void 0 : _b.payload) === null || _c === void 0 ? void 0 : _c.paymentMethodDetails); // Extract checkout ID from the event
         console.log(`Extracted checkoutId: ${checkoutId}`);
         if (!checkoutId) {
             return res.status(400).json({ error: "Missing checkout ID in webhook event" });

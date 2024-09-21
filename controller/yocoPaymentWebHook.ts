@@ -92,7 +92,7 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
     const event = req.body; // Get the event data from Yoco
     console.log("Yoco Webhook event received:", event); // Log the event for debugging
 
-    const checkoutId = event?.payload?. metadata.checkoutId || event?.data?.payload?. metadata.checkoutId; // Extract checkout ID from the event
+    const checkoutId = event?.payload?.paymentMethodDetails || event?.data?.payload?.paymentMethodDetails; // Extract checkout ID from the event
     console.log(`Extracted checkoutId: ${checkoutId}`); 
 
     if (!checkoutId) {
