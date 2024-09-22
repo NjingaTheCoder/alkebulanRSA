@@ -79,7 +79,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         yield checkOutObject.deleteOne().session(session);
         yield session.commitTransaction();
         console.log("Order created and transaction committed successfully.");
-        res.redirect('http://localhost:5173/account');
+        res.redirect('https://www.linkedin.com/in/tetelo-maake-953500234/');
     }
     catch (error) {
         yield session.abortTransaction();
