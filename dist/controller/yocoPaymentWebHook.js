@@ -77,9 +77,9 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         decreaseProductCount(checkOutObject, res);
         yield cart_schema_1.cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
         yield checkOutObject.deleteOne().session(session);
-        res.redirect('http://localhost:5173/account');
         yield session.commitTransaction();
         console.log("Order created and transaction committed successfully.");
+        res.redirect('http://localhost:5173/account');
     }
     catch (error) {
         yield session.abortTransaction();
