@@ -78,7 +78,7 @@ const PasswordResetController = async (request : Request , response : Response) 
               <!-- Signature -->
               <p style="font-size: 16px; line-height: 1.5;">
                 Best regards,<br/>
-                The Alkebulan shop Team
+                The  Alkebulan Ya Batho Team
               </p>
             </div>
           `;
@@ -114,7 +114,7 @@ const PasswordResetController = async (request : Request , response : Response) 
         
                     from:'Scentor <tetelomaake@gmail.com>',
                     to:`${email}`,
-                    subject:'Password Reset Request for Your Scentor Account',
+                    subject:'Password Reset Request for Your Alebulan Account',
                     html:resetHtml
                 });
 

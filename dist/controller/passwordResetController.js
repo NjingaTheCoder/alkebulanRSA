@@ -79,7 +79,7 @@ const PasswordResetController = (request, response) => __awaiter(void 0, void 0,
               <!-- Signature -->
               <p style="font-size: 16px; line-height: 1.5;">
                 Best regards,<br/>
-                The Alkebulan shop Team
+                The  Alkebulan Ya Batho Team
               </p>
             </div>
           `;
@@ -104,7 +104,7 @@ const PasswordResetController = (request, response) => __awaiter(void 0, void 0,
             transporter.sendMail({
                 from: 'Scentor <tetelomaake@gmail.com>',
                 to: `${email}`,
-                subject: 'Password Reset Request for Your Scentor Account',
+                subject: 'Password Reset Request for Your Alebulan Account',
                 html: resetHtml
             });
             return response.status(200).send({ message: 'Reset password has been successfuly sent' });

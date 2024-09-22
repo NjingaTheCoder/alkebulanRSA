@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const check_out_schema_1 = require("../model/check_out_schema");
 const order_schema_1 = require("../model/order_schema");
 const cart_schema_1 = require("../model/cart_schema");
+const product_schema_1 = require("../model/product_schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const url_1 = require("url");
@@ -73,6 +74,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         });
         yield newOrder.save({ session });
         sendRecieptEmail(checkOutObject);
+        decreaseProductCount(checkOutObject, res);
         yield cart_schema_1.cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
         yield checkOutObject.deleteOne().session(session);
         yield session.commitTransaction();
@@ -131,29 +133,50 @@ const sendRecieptEmail = (checkOutObject) => {
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">$${item.price.toFixed(2)}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">R${item.price.toFixed(2)}</td>
           </tr>`).join('')}
       </tbody>
     </table>
-     <p><strong> SubTotal : $${totalCost === null || totalCost === void 0 ? void 0 : totalCost.toFixed(2)}</strong></p>
-      <p><strong>Delivery Cost: $${deliveryCost === null || deliveryCost === void 0 ? void 0 : deliveryCost.toFixed(2)}</strong></p>
-    <p><strong>Total Amount: $${(_b = ((totalCost || 0) + (deliveryCost || 0))) === null || _b === void 0 ? void 0 : _b.toFixed(2)}</strong></p>
+     <p><strong> SubTotal : R${totalCost === null || totalCost === void 0 ? void 0 : totalCost.toFixed(2)}</strong></p>
+      <p><strong>Delivery Cost: R${deliveryCost === null || deliveryCost === void 0 ? void 0 : deliveryCost.toFixed(2)}</strong></p>
+    <p><strong>Total Amount: R${(_b = ((totalCost || 0) + (deliveryCost || 0))) === null || _b === void 0 ? void 0 : _b.toFixed(2)}</strong></p>
     <p>
       Your order will be delivered to the following address:<br/>
       ${street}, ${city}, ${zipCode}
     </p>
     <p>If you have any questions, feel free to contact us.</p>
     <br/>
-    <p>Best regards,<br/>The Scentor Team</p>
+    <p>Best regards,<br/>The Alkebulan Ya Batho Team</p>
   </div>
 `;
     transporter.sendMail({
         from: 'Scentor <tetelomaake@gmail.com>',
         to: `${email}`,
-        subject: 'Password Reset Request for Your Scentor Account',
+        subject: 'Your Alkebulan Shop Order Receipt – Thank You for Shopping with Us',
         html: receiptHtml
     });
 };
-const decreaseProductCount = () => {
-};
+const decreaseProductCount = (checkOutObject, response) => __awaiter(void 0, void 0, void 0, function* () {
+    let productObject = null;
+    if (checkOutObject) {
+        checkOutObject.orderItems.map((item, index) => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                productObject = yield product_schema_1.productModel.findOne({ _id: item.productId });
+                yield (productObject === null || productObject === void 0 ? void 0 : productObject.updateOne({ availability: ((productObject.availability || 0) - 1) }));
+            }
+            catch (error) {
+                console.error("Transaction error:", error);
+                response.status(500).json({ error: "Internal Server Error" });
+            }
+        }));
+        if (productObject === null) {
+            console.log('product update failed');
+            response.status(400).send('product not found');
+        }
+        else {
+            console.log('product update successfully');
+            response.status(200).send('product updated successfully');
+        }
+    }
+});
 exports.default = YocoPaymentWebHook;

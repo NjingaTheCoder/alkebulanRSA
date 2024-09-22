@@ -164,6 +164,7 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
     
       await newOrder.save({ session });
       sendRecieptEmail(checkOutObject);
+      decreaseProductCount(checkOutObject , res);
       await cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
       await checkOutObject.deleteOne().session(session);
     
@@ -226,20 +227,20 @@ const sendRecieptEmail = (checkOutObject : Checkout) => {
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">$${item.price.toFixed(2)}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">R${item.price.toFixed(2)}</td>
           </tr>`).join('')}
       </tbody>
     </table>
-     <p><strong> SubTotal : $${totalCost?.toFixed(2)}</strong></p>
-      <p><strong>Delivery Cost: $${deliveryCost?.toFixed(2)}</strong></p>
-    <p><strong>Total Amount: $${((totalCost || 0) + (deliveryCost || 0))?.toFixed(2)}</strong></p>
+     <p><strong> SubTotal : R${totalCost?.toFixed(2)}</strong></p>
+      <p><strong>Delivery Cost: R${deliveryCost?.toFixed(2)}</strong></p>
+    <p><strong>Total Amount: R${((totalCost || 0) + (deliveryCost || 0))?.toFixed(2)}</strong></p>
     <p>
       Your order will be delivered to the following address:<br/>
       ${street}, ${city}, ${zipCode}
     </p>
     <p>If you have any questions, feel free to contact us.</p>
     <br/>
-    <p>Best regards,<br/>The Scentor Team</p>
+    <p>Best regards,<br/>The Alkebulan Ya Batho Team</p>
   </div>
 `;
 
@@ -247,14 +248,46 @@ transporter.sendMail({
         
   from:'Scentor <tetelomaake@gmail.com>',
   to:`${email}`,
-  subject:'Password Reset Request for Your Scentor Account',
+  subject:'Your Alkebulan Shop Order Receipt – Thank You for Shopping with Us',
   html:receiptHtml
 });
 
 
 }
 
-const decreaseProductCount = () => {
+const decreaseProductCount = async (checkOutObject : Checkout , response : Response) => {
+
+
+  let productObject = null;
+
+  if(checkOutObject){
+
+    checkOutObject.orderItems.map( async (item , index) => {
+
+      try {
+        
+        productObject = await productModel.findOne({_id : item.productId});
+        await productObject?.updateOne({availability: ((productObject.availability || 0) - 1)});
+      } catch (error) {
+        console.error("Transaction error:", error);
+        response.status(500).json({ error: "Internal Server Error" });
+      }
+
+    });
+
+    if(productObject === null){
+
+      console.log('product update failed');
+      response.status(400).send('product not found');
+      
+    }else{
+
+      console.log('product update successfully');
+      response.status(200).send('product updated successfully');
+    }
+  }
+  
+
 
 }
 
