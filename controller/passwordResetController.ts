@@ -40,35 +40,49 @@ const PasswordResetController = async (request : Request , response : Response) 
 
             //html for reset password
             resetRedirectLink.searchParams.set('token', `${keyToken}`);
-            const resetHtml = `<p>
-        
-            Dear ${user?.name},
-            <br/>
-            <br/>
-            We received a request to reset the password for your Scentor account. If you made this request, please click the link below to reset your password:
-            <br/>
-            <br/>
-            <a href="${resetRedirectLink.toString()}"
-            target="_blank"
-            rel=""
-            >
-                Reset Password
-            </a>
-            <br/>
-            <br/>
-            If you did not request a password reset, please ignore this email. Your account remains secure.
-            <br/>
-            <br/>
-            For any further assistance, feel free to reach out to our support team.
-            <br/>
-            <br/>
-            Best regards,  
-            <br/>
-            The Scentor Team
-        
-        
-            
-            </p>`;
+            const resetHtml = `
+            <div style="font-family: Arial, sans-serif; color: #333; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;">
+              <!-- Logo -->
+              <div style="text-align: center; margin-bottom: 20px;">
+                <img src="https://yourdomain.com/logo.png" alt="Scentor Logo" style="width: 150px;" />
+              </div>
+          
+              <!-- Greeting -->
+              <p style="font-size: 16px; line-height: 1.5;">
+                Dear ${user?.name},
+              </p>
+          
+              <!-- Main Content -->
+              <p style="font-size: 16px; line-height: 1.5;">
+                We received a request to reset the password for your Scentor account. If you made this request, please click the link below to reset your password:
+              </p>
+          
+              <!-- Reset Button -->
+              <div style="text-align: center; margin: 20px 0;">
+                <a href="${resetRedirectLink.toString()}"
+                  target="_blank"
+                  style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                  Reset Password
+                </a>
+              </div>
+          
+              <!-- Additional Information -->
+              <p style="font-size: 16px; line-height: 1.5;">
+                If you did not request a password reset, please ignore this email. Your account remains secure.
+              </p>
+          
+              <p style="font-size: 16px; line-height: 1.5;">
+                For any further assistance, feel free to reach out to our support team.
+              </p>
+          
+              <!-- Signature -->
+              <p style="font-size: 16px; line-height: 1.5;">
+                Best regards,<br/>
+                The Scentor Team
+              </p>
+            </div>
+          `;
+          
 
                 // Get the current time
                 const currentTime = new Date();

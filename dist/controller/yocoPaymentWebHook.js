@@ -16,6 +16,24 @@ const check_out_schema_1 = require("../model/check_out_schema");
 const order_schema_1 = require("../model/order_schema");
 const cart_schema_1 = require("../model/cart_schema");
 const mongoose_1 = __importDefault(require("mongoose"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const url_1 = require("url");
+const emailHost = process.env.EMAIL_HOST;
+const emailPort = process.env.EMAIL_PORT;
+const emailHostUser = process.env.EMAIL_HOST_USER;
+const emailHostPassword = process.env.EMAIL_HOST_PASSWORD;
+const secretKey = process.env.SECRET || 'koffieking';
+const resetRedirectLink = new url_1.URL(`http://localhost:5173/reset-password`);
+//set up email transporter
+const transporter = nodemailer_1.default.createTransport({
+    host: emailHost,
+    port: emailPort,
+    secure: false,
+    auth: {
+        user: emailHostUser,
+        pass: emailHostPassword,
+    },
+});
 ;
 ;
 ;
@@ -69,4 +87,44 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         session.endSession();
     }
 });
+const sendRecieptEmail = () => {
+    const receiptHtml = `
+  <div style="font-family: Arial, sans-serif; color: #333;">
+    <img src="" alt="Scentor Logo" style="width: 150px;"/>
+    <h2>Thank you for your purchase, ${user === null || user === void 0 ? void 0 : user.name}!</h2>
+    <p>
+      We are pleased to inform you that we have received your order.
+      Below are the details of your purchase:
+    </p>
+    <h3>Order Summary</h3>
+    <table style="border-collapse: collapse; width: 100%;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="padding: 8px; text-align: left;">Item</th>
+          <th style="padding: 8px; text-align: left;">Quantity</th>
+          <th style="padding: 8px; text-align: left;">Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${order.items.map(item => `
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">$${item.price.toFixed(2)}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    <p><strong>Total Amount: $${order.totalAmount.toFixed(2)}</strong></p>
+    <p>
+      Your order will be delivered to the following address:<br/>
+      ${user === null || user === void 0 ? void 0 : user.address.street}, ${user === null || user === void 0 ? void 0 : user.address.city}, ${user === null || user === void 0 ? void 0 : user.address.zipCode}
+    </p>
+    <p>If you have any questions, feel free to contact us.</p>
+    <br/>
+    <p>Best regards,<br/>The Scentor Team</p>
+  </div>
+`;
+};
+const decreaseProductCount = () => {
+};
 exports.default = YocoPaymentWebHook;
