@@ -167,11 +167,10 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
       decreaseProductCount(checkOutObject , res);
       await cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
       await checkOutObject.deleteOne().session(session);
+      res.redirect('http://localhost:5173/account');
     
       await session.commitTransaction();
       console.log("Order created and transaction committed successfully.");
-      // Redirect to the React page
-      return res.redirect('http://localhost:5173/account'); /
     } catch (error) {
       await session.abortTransaction();
       console.error("Transaction error:", error);
