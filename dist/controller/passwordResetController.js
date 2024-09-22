@@ -45,7 +45,7 @@ const PasswordResetController = (request, response) => __awaiter(void 0, void 0,
             <div style="font-family: Arial, sans-serif; color: #333; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;">
               <!-- Logo -->
               <div style="text-align: center; margin-bottom: 20px;">
-                <img src="https://yourdomain.com/logo.png" alt="Scentor Logo" style="width: 150px;" />
+                <img src="https://yourdomain.com/logo.png" alt="Alkebulan Logo" style="width: 150px;" />
               </div>
           
               <!-- Greeting -->
@@ -55,7 +55,7 @@ const PasswordResetController = (request, response) => __awaiter(void 0, void 0,
           
               <!-- Main Content -->
               <p style="font-size: 16px; line-height: 1.5;">
-                We received a request to reset the password for your Scentor account. If you made this request, please click the link below to reset your password:
+                We received a request to reset the password for your Alkebulan shop account. If you made this request, please click the link below to reset your password:
               </p>
           
               <!-- Reset Button -->
@@ -79,7 +79,7 @@ const PasswordResetController = (request, response) => __awaiter(void 0, void 0,
               <!-- Signature -->
               <p style="font-size: 16px; line-height: 1.5;">
                 Best regards,<br/>
-                The Scentor Team
+                The Alkebulan shop Team
               </p>
             </div>
           `;

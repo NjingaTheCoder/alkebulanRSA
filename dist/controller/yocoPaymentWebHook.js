@@ -72,6 +72,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
             type: (event === null || event === void 0 ? void 0 : event.type) || ((_h = event === null || event === void 0 ? void 0 : event.data) === null || _h === void 0 ? void 0 : _h.type)
         });
         yield newOrder.save({ session });
+        sendRecieptEmail(checkOutObject);
         yield cart_schema_1.cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
         yield checkOutObject.deleteOne().session(session);
         yield session.commitTransaction();
@@ -87,11 +88,31 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         session.endSession();
     }
 });
-const sendRecieptEmail = () => {
+const sendRecieptEmail = (checkOutObject) => {
+    var _a, _b;
+    let userName;
+    let orderItems;
+    let totalCost;
+    let deliveryCost;
+    let street;
+    let city;
+    let zipCode;
+    let email;
+    if (checkOutObject) {
+        userName = (_a = checkOutObject.shippingAddress.addressDetails[0]) === null || _a === void 0 ? void 0 : _a.name;
+        orderItems = checkOutObject.orderItems;
+        totalCost = checkOutObject.totalAmount;
+        deliveryCost = checkOutObject.delivery.cost;
+        street = checkOutObject.shippingAddress.addressDetails[0].address;
+        city = checkOutObject.shippingAddress.addressDetails[0].city;
+        zipCode = checkOutObject.shippingAddress.addressDetails[0].postalCode;
+        email = checkOutObject.shippingAddress.email;
+    }
     const receiptHtml = `
+  
   <div style="font-family: Arial, sans-serif; color: #333;">
     <img src="" alt="Scentor Logo" style="width: 150px;"/>
-    <h2>Thank you for your purchase, ${user === null || user === void 0 ? void 0 : user.name}!</h2>
+    <h2>Thank you for your purchase, ${userName}!</h2>
     <p>
       We are pleased to inform you that we have received your order.
       Below are the details of your purchase:
@@ -106,7 +127,7 @@ const sendRecieptEmail = () => {
         </tr>
       </thead>
       <tbody>
-        ${order.items.map(item => `
+        ${orderItems === null || orderItems === void 0 ? void 0 : orderItems.map(item => `
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
@@ -114,16 +135,24 @@ const sendRecieptEmail = () => {
           </tr>`).join('')}
       </tbody>
     </table>
-    <p><strong>Total Amount: $${order.totalAmount.toFixed(2)}</strong></p>
+     <p><strong> SubTotal : $${totalCost === null || totalCost === void 0 ? void 0 : totalCost.toFixed(2)}</strong></p>
+      <p><strong>Delivery Cost: $${deliveryCost === null || deliveryCost === void 0 ? void 0 : deliveryCost.toFixed(2)}</strong></p>
+    <p><strong>Total Amount: $${(_b = ((totalCost || 0) + (deliveryCost || 0))) === null || _b === void 0 ? void 0 : _b.toFixed(2)}</strong></p>
     <p>
       Your order will be delivered to the following address:<br/>
-      ${user === null || user === void 0 ? void 0 : user.address.street}, ${user === null || user === void 0 ? void 0 : user.address.city}, ${user === null || user === void 0 ? void 0 : user.address.zipCode}
+      ${street}, ${city}, ${zipCode}
     </p>
     <p>If you have any questions, feel free to contact us.</p>
     <br/>
     <p>Best regards,<br/>The Scentor Team</p>
   </div>
 `;
+    transporter.sendMail({
+        from: 'Scentor <tetelomaake@gmail.com>',
+        to: `${email}`,
+        subject: 'Password Reset Request for Your Scentor Account',
+        html: receiptHtml
+    });
 };
 const decreaseProductCount = () => {
 };

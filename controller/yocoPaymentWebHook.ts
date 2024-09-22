@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { checkOut } from "../model/check_out_schema";
 import { orderModel } from "../model/order_schema";
 import { cartModel } from "../model/cart_schema";
+import { IProduct } from "../interface&Objects/IOProdcut";
+import { productModel } from "../model/product_schema";
 import mongoose from "mongoose";
 import nodemailer , {TransportOptions} from 'nodemailer';
 import {URL} from 'url';
@@ -26,6 +28,20 @@ const transporter = nodemailer.createTransport({
 
 
 
+  interface UserAddress {
+    name: string;
+    surname: string;
+    address: string;
+    apartment?: string; // Optional field, as not everyone may have an apartment number
+    city: string;
+    country: string;
+    province: string;
+    postalCode: string;
+    phoneNumber: string;
+    setDefault: boolean; // True if this address should be set as the default
+  }
+  
+
 // Cart Item Type
 interface CartItem  {
   productId: string; // ObjectId as string
@@ -39,7 +55,7 @@ interface CartItem  {
 // Address Type
 interface Address  {
   email: string;
-  addressDetails: Array<string>; // Adjust the array type according to the structure you need
+  addressDetails: Array<UserAddress>; // Adjust the array type according to the structure you need
 };
 
 // Payment Details Type
@@ -102,7 +118,6 @@ interface Payload  {
   type: string;
 };
 
-
 // Main Order Type
 interface Order  {
   createdDate: Date;
@@ -111,6 +126,9 @@ interface Order  {
   payload: Payload;
   type: string;
 };
+
+
+
 
 const YocoPaymentWebHook = async (req: Request, res: Response) => {
 
@@ -145,6 +163,7 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
       });
     
       await newOrder.save({ session });
+      sendRecieptEmail(checkOutObject);
       await cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
       await checkOutObject.deleteOne().session(session);
     
@@ -161,12 +180,34 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
     
 };
 
-const sendRecieptEmail = () => {
+
+const sendRecieptEmail = (checkOutObject : Checkout) => {
+
+  let userName ;
+  let orderItems;
+  let totalCost;
+  let deliveryCost ;
+  let street;
+  let city;
+  let zipCode;
+  let email;
+
+  if(checkOutObject){
+    userName = checkOutObject.shippingAddress.addressDetails[0]?.name;
+    orderItems = checkOutObject.orderItems;
+    totalCost = checkOutObject.totalAmount;
+    deliveryCost = checkOutObject.delivery.cost;
+    street = checkOutObject.shippingAddress.addressDetails[0].address;
+    city = checkOutObject.shippingAddress.addressDetails[0].city;
+    zipCode = checkOutObject.shippingAddress.addressDetails[0].postalCode;
+    email = checkOutObject.shippingAddress.email;
+  }
 
   const receiptHtml = `
+  
   <div style="font-family: Arial, sans-serif; color: #333;">
     <img src="" alt="Scentor Logo" style="width: 150px;"/>
-    <h2>Thank you for your purchase, ${user?.name}!</h2>
+    <h2>Thank you for your purchase, ${userName}!</h2>
     <p>
       We are pleased to inform you that we have received your order.
       Below are the details of your purchase:
@@ -181,7 +222,7 @@ const sendRecieptEmail = () => {
         </tr>
       </thead>
       <tbody>
-        ${order.items.map(item => `
+        ${orderItems?.map(item => `
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
@@ -189,16 +230,27 @@ const sendRecieptEmail = () => {
           </tr>`).join('')}
       </tbody>
     </table>
-    <p><strong>Total Amount: $${order.totalAmount.toFixed(2)}</strong></p>
+     <p><strong> SubTotal : $${totalCost?.toFixed(2)}</strong></p>
+      <p><strong>Delivery Cost: $${deliveryCost?.toFixed(2)}</strong></p>
+    <p><strong>Total Amount: $${((totalCost || 0) + (deliveryCost || 0))?.toFixed(2)}</strong></p>
     <p>
       Your order will be delivered to the following address:<br/>
-      ${user?.address.street}, ${user?.address.city}, ${user?.address.zipCode}
+      ${street}, ${city}, ${zipCode}
     </p>
     <p>If you have any questions, feel free to contact us.</p>
     <br/>
     <p>Best regards,<br/>The Scentor Team</p>
   </div>
 `;
+
+transporter.sendMail({
+        
+  from:'Scentor <tetelomaake@gmail.com>',
+  to:`${email}`,
+  subject:'Password Reset Request for Your Scentor Account',
+  html:receiptHtml
+});
+
 
 }
 
