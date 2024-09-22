@@ -148,6 +148,7 @@ const orderSchema = new mongoose.Schema({
   },
   id: { type: String, required: true , unique : true },
   payload: payloadSchema,
+  trackingCode: { type: String, required: true  , default : 'https://maps.app.goo.gl/AAwQ7R4DNAEKaeNB7'},
   type: { type: String, required: true }
 });
 
