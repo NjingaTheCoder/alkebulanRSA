@@ -7,6 +7,9 @@ import { productModel } from "../model/product_schema";
 import mongoose from "mongoose";
 import nodemailer , {TransportOptions} from 'nodemailer';
 import {URL} from 'url';
+import { Server as SocketIOServer } from 'socket.io'; 
+import { Server as HttpServer } from "http"; 
+
 
 const emailHost : string | undefined = process.env.EMAIL_HOST ;
 const emailPort = process.env.EMAIL_PORT ;
@@ -127,6 +130,27 @@ interface Order  {
   type: string;
 };
 
+let io: SocketIOServer; // Define io outside to share between functions
+
+// Function to initialize Socket.IO
+export const initializeSocket = (server : HttpServer ) => {
+    io = new SocketIOServer(server, {
+        cors: {
+            origin: 'http://localhost:5173', // Frontend origin
+            methods: ["GET", "POST"]
+        }
+    });
+
+    io.on('connection', (socket) => {
+        console.log('A user connected:', socket.id);
+
+        socket.on('disconnect', () => {
+            console.log('User disconnected:', socket.id);
+        });
+    });
+};
+
+
 
 
 
@@ -167,6 +191,8 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
       decreaseProductCount(checkOutObject , res);
       await cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
       await checkOutObject.deleteOne().session(session);
+       // Emit the event to the frontend using Socket.IO
+       io.emit('paymentSuccess', { userId: checkOutObject.userId });
     
       await session.commitTransaction();
       console.log("Order created and transaction committed successfully.");

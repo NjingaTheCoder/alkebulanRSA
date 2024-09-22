@@ -25,6 +25,7 @@
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.2",
     "nodemailer": "^6.9.14",
+    "socket.io": "^4.8.0",
     "typescript": "^5.5.3"
   },
   "devDependencies": {
@@ -41,6 +42,7 @@
     "@types/mongodb": "^4.0.7",
     "@types/mongoose": "^5.11.97",
     "@types/nodemailer": "^6.4.15",
+    "@types/socket.io": "^3.0.2",
     "nodemon": "^3.1.4"
   }
 }

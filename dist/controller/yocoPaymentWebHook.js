@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.initializeSocket = void 0;
 const check_out_schema_1 = require("../model/check_out_schema");
 const order_schema_1 = require("../model/order_schema");
 const cart_schema_1 = require("../model/cart_schema");
@@ -19,6 +20,7 @@ const product_schema_1 = require("../model/product_schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const url_1 = require("url");
+const socket_io_1 = require("socket.io");
 const emailHost = process.env.EMAIL_HOST;
 const emailPort = process.env.EMAIL_PORT;
 const emailHostUser = process.env.EMAIL_HOST_USER;
@@ -45,6 +47,23 @@ const transporter = nodemailer_1.default.createTransport({
 ;
 ;
 ;
+let io; // Define io outside to share between functions
+// Function to initialize Socket.IO
+const initializeSocket = (server) => {
+    io = new socket_io_1.Server(server, {
+        cors: {
+            origin: 'http://localhost:5173', // Frontend origin
+            methods: ["GET", "POST"]
+        }
+    });
+    io.on('connection', (socket) => {
+        console.log('A user connected:', socket.id);
+        socket.on('disconnect', () => {
+            console.log('User disconnected:', socket.id);
+        });
+    });
+};
+exports.initializeSocket = initializeSocket;
 const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f, _g, _h;
     const session = yield mongoose_1.default.startSession();
@@ -77,6 +96,8 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         decreaseProductCount(checkOutObject, res);
         yield cart_schema_1.cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
         yield checkOutObject.deleteOne().session(session);
+        // Emit the event to the frontend using Socket.IO
+        io.emit('paymentSuccess', { userId: checkOutObject.userId });
         yield session.commitTransaction();
         console.log("Order created and transaction committed successfully.");
         res.sendStatus(200);
