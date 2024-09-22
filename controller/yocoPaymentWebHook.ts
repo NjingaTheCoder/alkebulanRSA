@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import nodemailer , {TransportOptions} from 'nodemailer';
 import {URL} from 'url';
 import { Server as SocketIOServer } from 'socket.io'; 
-import { Server as HttpServer } from "http"; 
+import { Server as HttpsServer } from "http"; 
 
 
 const emailHost : string | undefined = process.env.EMAIL_HOST ;
@@ -133,7 +133,7 @@ interface Order  {
 let io: SocketIOServer; // Define io outside to share between functions
 
 // Function to initialize Socket.IO
-export const initializeSocket = (server : HttpServer ) => {
+export const initializeSocket = (server : HttpsServer ) => {
     io = new SocketIOServer(server, {
         cors: {
             origin: 'http://localhost:5173', // Frontend origin
