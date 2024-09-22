@@ -33,7 +33,7 @@ const store  = new mongoStore({
 //middleware 
 app.use(cookieParser());
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors());
 
 app.use(urlencoded({extended:true}));
 
