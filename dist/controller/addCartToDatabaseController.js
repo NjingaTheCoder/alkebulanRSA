@@ -31,6 +31,7 @@ const AddCartToDatabaseController = (request, response) => __awaiter(void 0, voi
             const newCartArray = [...cartArray, ...userExist.items];
             const updateCart = yield userExist.updateOne({ items: newCartArray });
             yield userExist.updateOne({ totalPrice: upatedTotalPrice });
+            yield userExist.updateOne({ updatedAt: new Date() });
         }
         else {
             // Create a new cart document

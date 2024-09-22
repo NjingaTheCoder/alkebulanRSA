@@ -45,6 +45,7 @@ const AddCartToDatabaseController = async (request : Request, response : Respons
       const newCartArray =  [...cartArray , ...userExist.items];
       const updateCart = await userExist.updateOne({items : newCartArray});
       await userExist.updateOne({totalPrice : upatedTotalPrice});
+      await userExist.updateOne({updatedAt : new Date()});
           
 
     }else{
