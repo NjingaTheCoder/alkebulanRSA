@@ -26,8 +26,9 @@ const YocoCreateWebHook = (req, res) => __awaiter(void 0, void 0, void 0, functi
             event_types: event_types, // Event types from frontend
         }, {
             headers: {
-                'Authorization': `Bearer ${process.env.YOCO_API_KEY}`,
+                // 'Authorization': `Bearer ${process.env.YOCO_API_KEY}`,
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`
             },
         });
         res.status(200).json(response.data); // Send the successful response back to frontend
