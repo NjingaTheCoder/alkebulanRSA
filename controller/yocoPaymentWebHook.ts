@@ -170,8 +170,8 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
     
       await session.commitTransaction();
       console.log("Order created and transaction committed successfully.");
-      res.redirect('http://localhost:5173/account');
-      res.sendStatus(200);
+      // Redirect to the React page
+      return res.redirect('http://localhost:5173/account'); /
     } catch (error) {
       await session.abortTransaction();
       console.error("Transaction error:", error);
