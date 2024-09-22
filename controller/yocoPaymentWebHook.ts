@@ -267,7 +267,7 @@ const decreaseProductCount = async (checkOutObject : Checkout , response : Respo
       try {
         
         productObject = await productModel.findOne({_id : item.productId});
-        await productObject?.updateOne({availability: ((productObject.availability || 0) - 1)});
+        await productObject?.updateOne({availability: ((productObject.availability || 0) - item.quantity)});
       } catch (error) {
         console.error("Transaction error:", error);
         response.status(500).json({ error: "Internal Server Error" });

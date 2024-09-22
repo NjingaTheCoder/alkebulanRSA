@@ -162,7 +162,7 @@ const decreaseProductCount = (checkOutObject, response) => __awaiter(void 0, voi
         checkOutObject.orderItems.map((item, index) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 productObject = yield product_schema_1.productModel.findOne({ _id: item.productId });
-                yield (productObject === null || productObject === void 0 ? void 0 : productObject.updateOne({ availability: ((productObject.availability || 0) - 1) }));
+                yield (productObject === null || productObject === void 0 ? void 0 : productObject.updateOne({ availability: ((productObject.availability || 0) - item.quantity) }));
             }
             catch (error) {
                 console.error("Transaction error:", error);
