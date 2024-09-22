@@ -170,7 +170,7 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
     
       await session.commitTransaction();
       console.log("Order created and transaction committed successfully.");
-      res.redirect('https://www.linkedin.com/in/tetelo-maake-953500234/');
+      res.sendStatus(200);
     } catch (error) {
       await session.abortTransaction();
       console.error("Transaction error:", error);
