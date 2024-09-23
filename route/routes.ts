@@ -176,6 +176,4 @@ routes.post(`${order}`, csurfProtection ,GetOrderController);
 
 
 
-
-
 export default routes;
