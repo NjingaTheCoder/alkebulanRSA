@@ -61,7 +61,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         yield decreaseProductCount(checkOutObject, res, session);
         yield cart_schema_1.cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
         yield checkOutObject.deleteOne().session(session);
-        yield sendRecieptEmail(checkOutObject);
+        yield sendRecieptEmail(checkOutObject, checkoutId);
         yield session.commitTransaction();
         res.status(200).json({ message: 'Transaction successful' });
     }
@@ -89,7 +89,7 @@ const decreaseProductCount = (checkOutObject, res, session) => __awaiter(void 0,
         }
     }
 });
-const sendRecieptEmail = (checkOutObject) => {
+const sendRecieptEmail = (checkOutObject, checkoutId) => {
     var _a;
     if (!checkOutObject || !checkOutObject.shippingAddress || !checkOutObject.orderItems) {
         console.error('Checkout object is invalid.');
@@ -111,7 +111,7 @@ const sendRecieptEmail = (checkOutObject) => {
     <img src="" alt="Scentor Logo" style="width: 150px;"/>
     <h2>Thank you for your purchase, ${userName}!</h2>
     <p>
-      We are pleased to inform you that we have received your order.
+      We are pleased to inform you that we have received your order,  Your Order ID is: ${checkoutId}.
       Below are the details of your purchase:
     </p>
     <h3>Order Summary</h3>
