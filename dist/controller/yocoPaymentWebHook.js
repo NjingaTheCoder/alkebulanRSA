@@ -18,7 +18,6 @@ const cart_schema_1 = require("../model/cart_schema");
 const product_schema_1 = require("../model/product_schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const socketController_js_1 = require("./socketController.js");
 const url_1 = require("url");
 const emailHost = process.env.EMAIL_HOST;
 const emailPort = process.env.EMAIL_PORT;
@@ -81,7 +80,6 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         yield session.commitTransaction();
         console.log("Order created and transaction committed successfully.");
         // Emit payment success to the front end via socket
-        (0, socketController_js_1.emitPaymentSuccess)(checkOutObject.userId, { message: 'Payment successful', checkOutObject });
         res.sendStatus(200);
     }
     catch (error) {

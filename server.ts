@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+
 import {connectionString , connectToDatabase} from './config/db_connect';
 import express, { request, urlencoded , Request , Response , NextFunction, response } from 'express';
 import session from 'express-session';
@@ -9,9 +10,6 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import router from './route/routes';
-import http from 'http';
-import { Server as SocketIOServer } from 'socket.io';
-import { initializeSocket } from './controller/socketController';
 
 
 
@@ -21,15 +19,6 @@ const yocoPaymentWebHook  = process.env.YOCO_PAYMENT_WEBHOOK;
 
 //create express app
 const app = express();
-const server = http.createServer(app);
-const io = new SocketIOServer(server, {
-  cors: {
-    origin: "http://localhost:5173", // Update to your React frontend's origin
-    methods: ["GET", "POST"],
-    credentials: true 
-  },
-  transports: ['websocket'], 
-});
 
 
 //create mongo store
@@ -44,12 +33,7 @@ const store  = new mongoStore({
 //middleware 
 app.use(cookieParser());
 
-// Use CORS middleware to handle CORS issues
-app.use(cors({
-    origin: 'http://localhost:5173', // Your frontend origin
-    methods: ['GET', 'POST'], // Allow specific methods
-    credentials: true // Allow cookies and authentication headers'
-  }));
+app.use(cors());
 
 app.use(urlencoded({extended:true}));
 
@@ -84,15 +68,10 @@ app.use((req, res, next) => {
 });
 
 
-//add routes to the express app
-app.use(`/` , router);
-initializeSocket(io);
-
-
 //================================//check if database is connected the run the server on an port.=======================================
 const checkDatabaseConnection = async () => {
     if(await connectToDatabase()){
-        server.listen(PORT , async () => {
+        app.listen(PORT , async () => {
             console.log(`server rocking on port ${PORT}`)
         })
     }else{
@@ -102,7 +81,8 @@ const checkDatabaseConnection = async () => {
 
 checkDatabaseConnection();
 
-
+//add routes to the express app
+app.use(`/` , router);
 
 
   //================================//middleware for catching a csrf attack=======================================

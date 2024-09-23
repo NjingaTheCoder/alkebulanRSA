@@ -45,22 +45,10 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const routes_1 = __importDefault(require("./route/routes"));
-const http_1 = __importDefault(require("http"));
-const socket_io_1 = require("socket.io");
-const socketController_1 = require("./controller/socketController");
 const PORT = process.env.PORT;
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 //create express app
 const app = (0, express_1.default)();
-const server = http_1.default.createServer(app);
-const io = new socket_io_1.Server(server, {
-    cors: {
-        origin: "http://localhost:5173", // Update to your React frontend's origin
-        methods: ["GET", "POST"],
-        credentials: true
-    },
-    transports: ['websocket'],
-});
 //create mongo store
 const mongoStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
 const store = new mongoStore({
@@ -70,12 +58,7 @@ const store = new mongoStore({
 });
 //middleware 
 app.use((0, cookie_parser_1.default)());
-// Use CORS middleware to handle CORS issues
-app.use((0, cors_1.default)({
-    origin: 'http://localhost:5173', // Your frontend origin
-    methods: ['GET', 'POST'], // Allow specific methods
-    credentials: true // Allow cookies and authentication headers'
-}));
+app.use((0, cors_1.default)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
 app.use((0, express_session_1.default)({
@@ -101,13 +84,10 @@ app.use((req, res, next) => {
     // other headers
     next();
 });
-//add routes to the express app
-app.use(`/`, routes_1.default);
-(0, socketController_1.initializeSocket)(io);
 //================================//check if database is connected the run the server on an port.=======================================
 const checkDatabaseConnection = () => __awaiter(void 0, void 0, void 0, function* () {
     if (yield (0, db_connect_1.connectToDatabase)()) {
-        server.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
+        app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
             console.log(`server rocking on port ${PORT}`);
         }));
     }
@@ -116,6 +96,8 @@ const checkDatabaseConnection = () => __awaiter(void 0, void 0, void 0, function
     }
 });
 checkDatabaseConnection();
+//add routes to the express app
+app.use(`/`, routes_1.default);
 //================================//middleware for catching a csrf attack=======================================
 app.use((err, request, response, next) => {
     if (err.code !== "EBADCSRFTOKEN") {
