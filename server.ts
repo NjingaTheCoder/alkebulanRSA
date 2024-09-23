@@ -43,7 +43,12 @@ const store  = new mongoStore({
 //middleware 
 app.use(cookieParser());
 
-app.use(cors());
+// Use CORS middleware to handle CORS issues
+app.use(cors({
+    origin: 'http://localhost:5173', // Your frontend origin
+    methods: ['GET', 'POST'], // Allow specific methods
+    credentials: true // Allow cookies and authentication headers
+  }));
 
 app.use(urlencoded({extended:true}));
 

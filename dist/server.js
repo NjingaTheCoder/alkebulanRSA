@@ -69,7 +69,12 @@ const store = new mongoStore({
 });
 //middleware 
 app.use((0, cookie_parser_1.default)());
-app.use((0, cors_1.default)());
+// Use CORS middleware to handle CORS issues
+app.use((0, cors_1.default)({
+    origin: 'http://localhost:5173', // Your frontend origin
+    methods: ['GET', 'POST'], // Allow specific methods
+    credentials: true // Allow cookies and authentication headers
+}));
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
 app.use((0, express_session_1.default)({
