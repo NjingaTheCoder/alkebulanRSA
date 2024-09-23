@@ -18,47 +18,32 @@ const cart_schema_1 = require("../model/cart_schema");
 const product_schema_1 = require("../model/product_schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const url_1 = require("url");
 const emailHost = process.env.EMAIL_HOST;
 const emailPort = process.env.EMAIL_PORT;
 const emailHostUser = process.env.EMAIL_HOST_USER;
 const emailHostPassword = process.env.EMAIL_HOST_PASSWORD;
-const secretKey = process.env.SECRET || 'koffieking';
-const resetRedirectLink = new url_1.URL(`http://localhost:5173/reset-password`);
-//set up email transporter
+// Setup email transporter
 const transporter = nodemailer_1.default.createTransport({
     host: emailHost,
-    port: emailPort,
+    port: +emailPort,
     secure: false,
     auth: {
         user: emailHostUser,
         pass: emailHostPassword,
     },
 });
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+// Main webhook handler
 const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f, _g, _h;
     const session = yield mongoose_1.default.startSession();
+    session.startTransaction();
     try {
-        const event = req.body; // Get the event data from Yoco
-        console.log("Yoco Webhook event received:", event);
+        const event = req.body;
         const checkoutId = ((_b = (_a = event === null || event === void 0 ? void 0 : event.payload) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.checkoutId) || ((_e = (_d = (_c = event === null || event === void 0 ? void 0 : event.data) === null || _c === void 0 ? void 0 : _c.payload) === null || _d === void 0 ? void 0 : _d.metadata) === null || _e === void 0 ? void 0 : _e.checkoutId);
-        console.log(`Extracted checkoutId: ${checkoutId}`);
-        session.startTransaction();
         const existingOrder = yield order_schema_1.orderModel.findOne({ id: checkoutId }).session(session);
         if (existingOrder) {
-            console.log(`Order with checkoutId ${checkoutId} already exists. Skipping duplicate.`);
             yield session.abortTransaction();
-            return res.sendStatus(200);
+            return res.status(200).json({ message: 'Order already exists' });
         }
         const checkOutObject = yield check_out_schema_1.checkOut.findOne({ 'paymentDetails.transactionId': checkoutId }).session(session);
         if (!checkOutObject) {
@@ -73,116 +58,70 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
             type: (event === null || event === void 0 ? void 0 : event.type) || ((_h = event === null || event === void 0 ? void 0 : event.data) === null || _h === void 0 ? void 0 : _h.type)
         });
         yield newOrder.save({ session });
-        sendRecieptEmail(checkOutObject);
-        decreaseProductCount(checkOutObject, res);
+        yield decreaseProductCount(checkOutObject, res, session);
         yield cart_schema_1.cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
         yield checkOutObject.deleteOne().session(session);
+        yield sendRecieptEmail(checkOutObject);
         yield session.commitTransaction();
-        console.log("Order created and transaction committed successfully.");
-        res.status(200).send({ message: 'transaction successful' });
+        res.status(200).json({ message: 'Transaction successful' });
     }
     catch (error) {
         console.error("Transaction error:", error);
-        try {
-            if (session.inTransaction()) {
-                yield session.abortTransaction(); // Abort if something goes wrong
-            }
-        }
-        catch (abortError) {
-            console.error("Error aborting transaction:", abortError);
-        }
+        yield session.abortTransaction();
         res.status(500).json({ error: "Internal Server Error" });
     }
     finally {
         session.endSession();
     }
 });
-const sendRecieptEmail = (checkOutObject) => {
-    var _a, _b;
-    let userName;
-    let orderItems;
-    let totalCost;
-    let deliveryCost;
-    let street;
-    let city;
-    let zipCode;
-    let email;
-    if (checkOutObject) {
-        userName = (_a = checkOutObject.shippingAddress.addressDetails[0]) === null || _a === void 0 ? void 0 : _a.name;
-        orderItems = checkOutObject.orderItems;
-        totalCost = checkOutObject.totalAmount;
-        deliveryCost = checkOutObject.delivery.cost;
-        street = checkOutObject.shippingAddress.addressDetails[0].address;
-        city = checkOutObject.shippingAddress.addressDetails[0].city;
-        zipCode = checkOutObject.shippingAddress.addressDetails[0].postalCode;
-        email = checkOutObject.shippingAddress.email;
-    }
+// Send receipt email
+const sendRecieptEmail = (checkOutObject) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d;
+    const { email, addressDetails } = checkOutObject.shippingAddress;
+    const userName = (_a = addressDetails[0]) === null || _a === void 0 ? void 0 : _a.name;
+    const street = (_b = addressDetails[0]) === null || _b === void 0 ? void 0 : _b.address;
+    const city = (_c = addressDetails[0]) === null || _c === void 0 ? void 0 : _c.city;
+    const zipCode = (_d = addressDetails[0]) === null || _d === void 0 ? void 0 : _d.postalCode;
+    const orderItems = checkOutObject.orderItems;
+    const totalCost = checkOutObject.totalAmount;
+    const deliveryCost = checkOutObject.delivery.cost;
     const receiptHtml = `
-  
-  <div style="font-family: Arial, sans-serif; color: #333;">
-    <img src="" alt="Scentor Logo" style="width: 150px;"/>
-    <h2>Thank you for your purchase, ${userName}!</h2>
-    <p>
-      We are pleased to inform you that we have received your order.
-      Below are the details of your purchase:
-    </p>
-    <h3>Order Summary</h3>
-    <table style="border-collapse: collapse; width: 100%;">
-      <thead>
-        <tr style="background-color: #f2f2f2;">
-          <th style="padding: 8px; text-align: left;">Item</th>
-          <th style="padding: 8px; text-align: left;">Quantity</th>
-          <th style="padding: 8px; text-align: left;">Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${orderItems === null || orderItems === void 0 ? void 0 : orderItems.map(item => `
-          <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">R${item.price.toFixed(2)}</td>
-          </tr>`).join('')}
-      </tbody>
-    </table>
-     <p><strong> SubTotal : R${totalCost === null || totalCost === void 0 ? void 0 : totalCost.toFixed(2)}</strong></p>
-      <p><strong>Delivery Cost: R${deliveryCost === null || deliveryCost === void 0 ? void 0 : deliveryCost.toFixed(2)}</strong></p>
-    <p><strong>Total Amount: R${(_b = ((totalCost || 0) + (deliveryCost || 0))) === null || _b === void 0 ? void 0 : _b.toFixed(2)}</strong></p>
-    <p>
-      Your order will be delivered to the following address:<br/>
-      ${street}, ${city}, ${zipCode}
-    </p>
-    <p>If you have any questions, feel free to contact us.</p>
-    <br/>
-    <p>Best regards,<br/>The Alkebulan Ya Batho Team</p>
-  </div>
-`;
-    transporter.sendMail({
-        from: 'Scentor <tetelomaake@gmail.com>',
-        to: `${email}`,
-        subject: 'Your Alkebulan Shop Order Receipt – Thank You for Shopping with Us',
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2>Thank you for your purchase, ${userName}!</h2>
+      <h3>Order Summary</h3>
+      <table style="border-collapse: collapse; width: 100%;">
+        <thead><tr><th>Item</th><th>Quantity</th><th>Price</th></tr></thead>
+        <tbody>
+          ${orderItems.map(item => `
+            <tr><td>${item.name}</td><td>${item.quantity}</td><td>R${item.price.toFixed(2)}</td></tr>`).join('')}
+        </tbody>
+      </table>
+      <p>SubTotal: R${totalCost.toFixed(2)}</p>
+      <p>Delivery Cost: R${deliveryCost.toFixed(2)}</p>
+      <p>Total: R${(totalCost + deliveryCost).toFixed(2)}</p>
+      <p>Delivery Address: ${street}, ${city}, ${zipCode}</p>
+      <p>If you have any questions, feel free to contact us.</p>
+    </div>
+  `;
+    yield transporter.sendMail({
+        from: 'Alkebulan Ya Batho <tetelomaake@gmail.com>',
+        to: email,
+        subject: 'Order Receipt – Alkebulan Shop',
         html: receiptHtml
     });
-};
-const decreaseProductCount = (checkOutObject, response) => __awaiter(void 0, void 0, void 0, function* () {
-    let productObject = null;
-    if (checkOutObject) {
-        checkOutObject.orderItems.map((item, index) => __awaiter(void 0, void 0, void 0, function* () {
-            try {
-                productObject = yield product_schema_1.productModel.findOne({ _id: item.productId });
-                yield (productObject === null || productObject === void 0 ? void 0 : productObject.updateOne({ availability: ((productObject.availability || 0) - item.quantity) }));
-            }
-            catch (error) {
-                console.error("Transaction error:", error);
-                response.status(500).json({ error: "Internal Server Error" });
-            }
-        }));
-        if (productObject === null) {
-            console.log('product update failed');
-            response.status(400).send('product not found');
+});
+// Decrease product count
+const decreaseProductCount = (checkOutObject, res, session) => __awaiter(void 0, void 0, void 0, function* () {
+    for (const item of checkOutObject.orderItems) {
+        const product = yield product_schema_1.productModel.findById(item.productId).session(session);
+        if (product) {
+            product.availability = (product.availability || 0) - item.quantity;
+            yield product.save({ session });
         }
         else {
-            console.log('product update successfully');
-            response.status(200).send('product updated successfully');
+            console.error("Product not found");
+            yield session.abortTransaction();
+            return res.status(400).json({ error: "Product not found" });
         }
     }
 });

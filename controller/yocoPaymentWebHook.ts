@@ -2,78 +2,67 @@ import { Request, Response } from "express";
 import { checkOut } from "../model/check_out_schema";
 import { orderModel } from "../model/order_schema";
 import { cartModel } from "../model/cart_schema";
-import { IProduct } from "../interface&Objects/IOProdcut";
 import { productModel } from "../model/product_schema";
 import mongoose from "mongoose";
-import nodemailer , {TransportOptions} from 'nodemailer';
-import {URL} from 'url';
+import nodemailer, { TransportOptions } from 'nodemailer';
+import { URL } from 'url';
 
-const emailHost : string | undefined = process.env.EMAIL_HOST ;
-const emailPort = process.env.EMAIL_PORT ;
-const emailHostUser = process.env.EMAIL_HOST_USER ;
-const emailHostPassword = process.env.EMAIL_HOST_PASSWORD ;
-const secretKey = process.env.SECRET || 'koffieking';
-const resetRedirectLink = new URL(`http://localhost:5173/reset-password`);
+const emailHost: string | undefined = process.env.EMAIL_HOST;
+const emailPort = process.env.EMAIL_PORT;
+const emailHostUser = process.env.EMAIL_HOST_USER;
+const emailHostPassword = process.env.EMAIL_HOST_PASSWORD;
 
-//set up email transporter
+// Setup email transporter
 const transporter = nodemailer.createTransport({
-    host: emailHost,
-    port: emailPort,
-    secure: false, 
-    auth: {
-      user: emailHostUser,
-      pass: emailHostPassword,
-    },
-  } as TransportOptions);
+  host: emailHost,
+  port: +emailPort!,
+  secure: false, 
+  auth: {
+    user: emailHostUser,
+    pass: emailHostPassword,
+  },
+} as TransportOptions);
 
+interface UserAddress {
+  name: string;
+  surname: string;
+  address: string;
+  apartment?: string;
+  city: string;
+  country: string;
+  province: string;
+  postalCode: string;
+  phoneNumber: string;
+  setDefault: boolean;
+}
 
-
-  interface UserAddress {
-    name: string;
-    surname: string;
-    address: string;
-    apartment?: string; // Optional field, as not everyone may have an apartment number
-    city: string;
-    country: string;
-    province: string;
-    postalCode: string;
-    phoneNumber: string;
-    setDefault: boolean; // True if this address should be set as the default
-  }
-  
-
-// Cart Item Type
-interface CartItem  {
-  productId: string; // ObjectId as string
+interface CartItem {
+  productId: string;
   name: string;
   price: number;
   quantity: number;
   size: string;
   image?: string;
-};
+}
 
-// Address Type
-interface Address  {
+interface Address {
   email: string;
-  addressDetails: Array<UserAddress>; // Adjust the array type according to the structure you need
-};
+  addressDetails: UserAddress[];
+}
 
-// Payment Details Type
-interface PaymentDetails  {
+interface PaymentDetails {
   method: 'Credit Card' | 'PayPal' | 'Stripe' | 'Cash on Delivery';
   transactionId?: string;
   status: 'Pending' | 'Completed' | 'Failed' | 'Refunded';
-};
+}
 
-// Shipping Cost Type
-interface ShippingCost  {
+interface ShippingCost {
   cost: number;
   deliveryMethod: string;
-};
+}
 
-// Checkout Type
-interface Checkout  {
-  userId: string; // ObjectId as string
+interface Checkout {
+  userId: string;
   orderItems: CartItem[];
   shippingAddress: Address;
   billingAddress: Address;
@@ -84,29 +73,26 @@ interface Checkout  {
   tax: number;
   orderDate: Date;
   deliveryDate?: Date;
-};
+}
 
-// Metadata Type
-interface Metadata  {
+interface Metadata {
   checkoutId: string;
   productType: string;
-};
+}
 
-// Payment Method Details Type
-interface CardDetails  {
+interface CardDetails {
   expiryMonth: number;
   expiryYear: number;
   maskedCard: string;
   scheme: string;
-};
+}
 
-interface PaymentMethodDetails  {
+interface PaymentMethodDetails {
   card: CardDetails;
   type: string;
-};
+}
 
-// Payload Type
-interface Payload  {
+interface Payload {
   amount: number;
   createdDate: Date;
   currency: string;
@@ -116,187 +102,113 @@ interface Payload  {
   paymentMethodDetails: PaymentMethodDetails;
   status: string;
   type: string;
-};
+}
 
-// Main Order Type
-interface Order  {
+interface Order {
   createdDate: Date;
   checkOutObject: Checkout;
   id: string;
   payload: Payload;
   type: string;
-};
-
-
-
-
-const YocoPaymentWebHook = async (req: Request, res: Response) => {
-
-  const session = await mongoose.startSession();
-  try {
-    const event = req.body; // Get the event data from Yoco
-    console.log("Yoco Webhook event received:", event);
-
-    const checkoutId = event?.payload?.metadata?.checkoutId || event?.data?.payload?.metadata?.checkoutId;
-    console.log(`Extracted checkoutId: ${checkoutId}`);
-    session.startTransaction();
-    
-      const existingOrder = await orderModel.findOne({ id: checkoutId }).session(session);
-      if (existingOrder) {
-        console.log(`Order with checkoutId ${checkoutId} already exists. Skipping duplicate.`);
-        await session.abortTransaction();
-        return res.sendStatus(200);
-      }
-    
-      const checkOutObject = await checkOut.findOne({ 'paymentDetails.transactionId': checkoutId }).session(session);
-      if (!checkOutObject) {
-        await session.abortTransaction();
-        return res.status(404).json({ error: "Checkout object not found" });
-      }
-    
-      const newOrder = new orderModel({
-        createdDate: event?.createdDate || event?.data?.createdDate,
-        checkOutObject,
-        id: checkoutId,
-        payload: event?.payload || event?.data?.payload,
-        type: event?.type || event?.data?.type
-      });
-    
-      await newOrder.save({ session });
-      sendRecieptEmail(checkOutObject);
-      decreaseProductCount(checkOutObject , res);
-      await cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
-      await checkOutObject.deleteOne().session(session);
-    
-      await session.commitTransaction();
-      console.log("Order created and transaction committed successfully.");
-         
-      res.status(200).send({message : 'transaction successful'});
-    }catch (error) {
-      console.error("Transaction error:", error);
-      try {
-        if (session.inTransaction()) {
-          await session.abortTransaction();  // Abort if something goes wrong
-        }
-      } catch (abortError) {
-        console.error("Error aborting transaction:", abortError);
-      }
-      res.status(500).json({ error: "Internal Server Error" });
-    } finally {
-      session.endSession();
-    }
-    
-};
-
-
-const sendRecieptEmail = (checkOutObject : Checkout) => {
-
-  let userName ;
-  let orderItems;
-  let totalCost;
-  let deliveryCost ;
-  let street;
-  let city;
-  let zipCode;
-  let email;
-
-  if(checkOutObject){
-    userName = checkOutObject.shippingAddress.addressDetails[0]?.name;
-    orderItems = checkOutObject.orderItems;
-    totalCost = checkOutObject.totalAmount;
-    deliveryCost = checkOutObject.delivery.cost;
-    street = checkOutObject.shippingAddress.addressDetails[0].address;
-    city = checkOutObject.shippingAddress.addressDetails[0].city;
-    zipCode = checkOutObject.shippingAddress.addressDetails[0].postalCode;
-    email = checkOutObject.shippingAddress.email;
-  }
-
-  const receiptHtml = `
-  
-  <div style="font-family: Arial, sans-serif; color: #333;">
-    <img src="" alt="Scentor Logo" style="width: 150px;"/>
-    <h2>Thank you for your purchase, ${userName}!</h2>
-    <p>
-      We are pleased to inform you that we have received your order.
-      Below are the details of your purchase:
-    </p>
-    <h3>Order Summary</h3>
-    <table style="border-collapse: collapse; width: 100%;">
-      <thead>
-        <tr style="background-color: #f2f2f2;">
-          <th style="padding: 8px; text-align: left;">Item</th>
-          <th style="padding: 8px; text-align: left;">Quantity</th>
-          <th style="padding: 8px; text-align: left;">Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${orderItems?.map(item => `
-          <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">R${item.price.toFixed(2)}</td>
-          </tr>`).join('')}
-      </tbody>
-    </table>
-     <p><strong> SubTotal : R${totalCost?.toFixed(2)}</strong></p>
-      <p><strong>Delivery Cost: R${deliveryCost?.toFixed(2)}</strong></p>
-    <p><strong>Total Amount: R${((totalCost || 0) + (deliveryCost || 0))?.toFixed(2)}</strong></p>
-    <p>
-      Your order will be delivered to the following address:<br/>
-      ${street}, ${city}, ${zipCode}
-    </p>
-    <p>If you have any questions, feel free to contact us.</p>
-    <br/>
-    <p>Best regards,<br/>The Alkebulan Ya Batho Team</p>
-  </div>
-`;
-
-transporter.sendMail({
-        
-  from:'Scentor <tetelomaake@gmail.com>',
-  to:`${email}`,
-  subject:'Your Alkebulan Shop Order Receipt – Thank You for Shopping with Us',
-  html:receiptHtml
-});
-
-
 }
 
-const decreaseProductCount = async (checkOutObject : Checkout , response : Response) => {
+// Main webhook handler
+const YocoPaymentWebHook = async (req: Request, res: Response) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  
+  try {
+    const event = req.body;
+    const checkoutId = event?.payload?.metadata?.checkoutId || event?.data?.payload?.metadata?.checkoutId;
 
+    const existingOrder = await orderModel.findOne({ id: checkoutId }).session(session);
+    if (existingOrder) {
+      await session.abortTransaction();
+      return res.status(200).json({ message: 'Order already exists' });
+    }
 
-  let productObject = null;
+    const checkOutObject = await checkOut.findOne({ 'paymentDetails.transactionId': checkoutId }).session(session);
+    if (!checkOutObject) {
+      await session.abortTransaction();
+      return res.status(404).json({ error: "Checkout object not found" });
+    }
 
-  if(checkOutObject){
-
-    checkOutObject.orderItems.map( async (item , index) => {
-
-      try {
-        
-        productObject = await productModel.findOne({_id : item.productId});
-        await productObject?.updateOne({availability: ((productObject.availability || 0) - item.quantity)});
-      } catch (error) {
-        console.error("Transaction error:", error);
-        response.status(500).json({ error: "Internal Server Error" });
-      }
-
+    const newOrder = new orderModel({
+      createdDate: event?.createdDate || event?.data?.createdDate,
+      checkOutObject,
+      id: checkoutId,
+      payload: event?.payload || event?.data?.payload,
+      type: event?.type || event?.data?.type
     });
 
-    if(productObject === null){
+    await newOrder.save({ session });
+    await decreaseProductCount(checkOutObject, res, session);
+    await cartModel.deleteOne({ userId: checkOutObject.userId }).session(session);
+    await checkOutObject.deleteOne().session(session);
+    await sendRecieptEmail(checkOutObject);
 
-      console.log('product update failed');
-      response.status(400).send('product not found');
-      
-    }else{
+    await session.commitTransaction();
+    res.status(200).json({ message: 'Transaction successful' });
+  } catch (error) {
+    console.error("Transaction error:", error);
+    await session.abortTransaction();
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    session.endSession();
+  }
+};
 
-      console.log('product update successfully');
-      response.status(200).send('product updated successfully');
+// Send receipt email
+const sendRecieptEmail = async (checkOutObject: Checkout) => {
+  const { email, addressDetails } = checkOutObject.shippingAddress;
+  const userName = addressDetails[0]?.name;
+  const street = addressDetails[0]?.address;
+  const city = addressDetails[0]?.city;
+  const zipCode = addressDetails[0]?.postalCode;
+  const orderItems = checkOutObject.orderItems;
+  const totalCost = checkOutObject.totalAmount;
+  const deliveryCost = checkOutObject.delivery.cost;
+
+  const receiptHtml = `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2>Thank you for your purchase, ${userName}!</h2>
+      <h3>Order Summary</h3>
+      <table style="border-collapse: collapse; width: 100%;">
+        <thead><tr><th>Item</th><th>Quantity</th><th>Price</th></tr></thead>
+        <tbody>
+          ${orderItems.map(item => `
+            <tr><td>${item.name}</td><td>${item.quantity}</td><td>R${item.price.toFixed(2)}</td></tr>`).join('')}
+        </tbody>
+      </table>
+      <p>SubTotal: R${totalCost.toFixed(2)}</p>
+      <p>Delivery Cost: R${deliveryCost.toFixed(2)}</p>
+      <p>Total: R${(totalCost + deliveryCost).toFixed(2)}</p>
+      <p>Delivery Address: ${street}, ${city}, ${zipCode}</p>
+      <p>If you have any questions, feel free to contact us.</p>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: 'Alkebulan Ya Batho <tetelomaake@gmail.com>',
+    to: email,
+    subject: 'Order Receipt – Alkebulan Shop',
+    html: receiptHtml
+  });
+};
+
+// Decrease product count
+const decreaseProductCount = async (checkOutObject: Checkout, res: Response, session: mongoose.ClientSession) => {
+  for (const item of checkOutObject.orderItems) {
+    const product = await productModel.findById(item.productId).session(session);
+    if (product) {
+      product.availability = (product.availability || 0) - item.quantity;
+      await product.save({ session });
+    } else {
+      console.error("Product not found");
+      await session.abortTransaction();
+      return res.status(400).json({ error: "Product not found" });
     }
   }
-  
-
-
-}
-
+};
 
 export default YocoPaymentWebHook;
