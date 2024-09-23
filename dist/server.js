@@ -58,7 +58,8 @@ const io = new socket_io_1.Server(server, {
         origin: "http://localhost:5173", // Update to your React frontend's origin
         methods: ["GET", "POST"],
         credentials: true
-    }
+    },
+    transports: ['websocket'],
 });
 //create mongo store
 const mongoStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
@@ -69,20 +70,11 @@ const store = new mongoStore({
 });
 //middleware 
 app.use((0, cookie_parser_1.default)());
-// CORS configuration
-const allowedOrigins = ['http://localhost:5173', 'https://yourdomain.com'];
+// Use CORS middleware to handle CORS issues
 app.use((0, cors_1.default)({
-    origin: function (origin, callback) {
-        // allow requests with no origin (e.g. mobile apps or curl requests)
-        if (!origin)
-            return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
-    credentials: true // Allow sending cookies and credentials
+    origin: 'http://localhost:5173', // Your frontend origin
+    methods: ['GET', 'POST'], // Allow specific methods
+    credentials: true // Allow cookies and authentication headers'
 }));
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
