@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const order_schema_1 = require("../model/order_schema"); // Import your order model
 const GetOrderController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params; // Get the orderId from the request parameters
+    const { userId } = req.body; // Get the orderId from the request parameters
     try {
         // Find the order where 'checkOutObject.orderId' matches the passed orderId
         const order = yield order_schema_1.orderModel.findOne({ 'checkOutObject.userId': userId }).exec();
