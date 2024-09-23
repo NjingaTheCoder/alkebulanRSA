@@ -34,12 +34,7 @@ const store  = new mongoStore({
 app.use(cookieParser());
 
 // Enable CORS for all origins
-app.use(cors({
-    origin: '*', // Allow requests from any origin
-    credentials: true, // Allow cookies and other credentials to be sent
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Restrict methods as necessary
-    allowedHeaders: ['Content-Type', 'Authorization'], // Specify which headers are allowed
-}));
+app.use(cors());
 
 app.use(urlencoded({extended:true}));
 
