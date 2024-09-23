@@ -79,8 +79,7 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         yield checkOutObject.deleteOne().session(session);
         yield session.commitTransaction();
         console.log("Order created and transaction committed successfully.");
-        // Emit payment success to the front end via socket
-        res.sendStatus(200);
+        res.status(200).send({ message: 'transaction successful' });
     }
     catch (error) {
         yield session.abortTransaction();
