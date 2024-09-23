@@ -37,6 +37,7 @@ const yocoPayment_1 = __importDefault(require("../controller/yocoPayment"));
 const yocoPaymentWebHook_1 = __importDefault(require("../controller/yocoPaymentWebHook"));
 const yocoCreateWebHook_1 = __importDefault(require("../controller/yocoCreateWebHook"));
 const updateCheckOutController_1 = __importDefault(require("../controller/updateCheckOutController"));
+const getOrderController_1 = __importDefault(require("../controller/getOrderController"));
 const csurfProtection = (0, csurf_1.default)({ cookie: { httpOnly: true } });
 const signUp = process.env.SIGN_UP;
 const signIn = process.env.SIGN_IN;
@@ -58,6 +59,7 @@ const checkOut = process.env.CHECK_OUT;
 const subscribe = process.env.SUBSCRIBE;
 const yocoPayment = process.env.YOCO_PAYMENT;
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
+const order = process.env.ORDER;
 const routes = express_1.default.Router();
 //================================route get up csurf===============================================
 routes.get(`${signUp}`, csurfProtection, getCsurfTokenController_1.GetCsurfTokenController);
@@ -127,4 +129,6 @@ routes.post(`${yocoPayment}`, csurfProtection, yocoPayment_1.default);
 routes.post(`${yocoPaymentWebHook}`, yocoPaymentWebHook_1.default);
 // Route for handling yoco payment creating a webhook
 routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, yocoCreateWebHook_1.default);
+// Route for handling order
+routes.post(`${order}`, csurfProtection, getOrderController_1.default);
 exports.default = routes;

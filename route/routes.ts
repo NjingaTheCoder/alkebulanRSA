@@ -32,6 +32,7 @@ import YocoPayment from '../controller/yocoPayment';
 import YocoPaymentWebHook from '../controller/yocoPaymentWebHook';
 import YocoCreateWebHook from '../controller/yocoCreateWebHook';
 import UpdateCheckOutController from '../controller/updateCheckOutController';
+import GetOrderController from '../controller/getOrderController';
 
 
 const csurfProtection = csurf({cookie : {httpOnly:true}})
@@ -55,6 +56,7 @@ const checkOut = process.env.CHECK_OUT;
 const subscribe = process.env.SUBSCRIBE;
 const yocoPayment = process.env.YOCO_PAYMENT;
 const yocoPaymentWebHook  = process.env.YOCO_PAYMENT_WEBHOOK;
+const order = process.env.ORDER;
 
 const routes = express.Router();
 
@@ -168,6 +170,10 @@ routes.post(`${yocoPaymentWebHook}`,  YocoPaymentWebHook);
 
 // Route for handling yoco payment creating a webhook
 routes.post(`${yocoPaymentWebHook}/create`, csurfProtection ,YocoCreateWebHook);
+
+// Route for handling order
+routes.post(`${order}`, csurfProtection ,GetOrderController);
+
 
 
 
