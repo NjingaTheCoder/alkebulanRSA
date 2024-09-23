@@ -90,25 +90,21 @@ const decreaseProductCount = (checkOutObject, res, session) => __awaiter(void 0,
     }
 });
 const sendRecieptEmail = (checkOutObject) => {
-    var _a, _b;
-    let userName;
-    let orderItems;
-    let totalCost;
-    let deliveryCost;
-    let street;
-    let city;
-    let zipCode;
-    let email;
-    if (checkOutObject) {
-        userName = (_a = checkOutObject.shippingAddress.addressDetails[0]) === null || _a === void 0 ? void 0 : _a.name;
-        orderItems = checkOutObject.orderItems;
-        totalCost = checkOutObject.totalAmount;
-        deliveryCost = checkOutObject.delivery.cost;
-        street = checkOutObject.shippingAddress.addressDetails[0].address;
-        city = checkOutObject.shippingAddress.addressDetails[0].city;
-        zipCode = checkOutObject.shippingAddress.addressDetails[0].postalCode;
-        email = checkOutObject.shippingAddress.email;
+    var _a;
+    if (!checkOutObject || !checkOutObject.shippingAddress || !checkOutObject.orderItems) {
+        console.error('Checkout object is invalid.');
+        return;
     }
+    const addressDetails = checkOutObject.shippingAddress.addressDetails[0];
+    if (!addressDetails) {
+        console.error('Address details missing.');
+        return;
+    }
+    const { name: userName, address: street, city, postalCode: zipCode, } = addressDetails;
+    const { email } = checkOutObject.shippingAddress;
+    const orderItems = checkOutObject.orderItems;
+    const totalCost = checkOutObject.totalAmount;
+    const deliveryCost = checkOutObject.delivery.cost;
     const receiptHtml = `
   
   <div style="font-family: Arial, sans-serif; color: #333;">
@@ -138,7 +134,7 @@ const sendRecieptEmail = (checkOutObject) => {
     </table>
      <p><strong> SubTotal : R${totalCost === null || totalCost === void 0 ? void 0 : totalCost.toFixed(2)}</strong></p>
       <p><strong>Delivery Cost: R${deliveryCost === null || deliveryCost === void 0 ? void 0 : deliveryCost.toFixed(2)}</strong></p>
-    <p><strong>Total Amount: R${(_b = ((totalCost || 0) + (deliveryCost || 0))) === null || _b === void 0 ? void 0 : _b.toFixed(2)}</strong></p>
+    <p><strong>Total Amount: R${(_a = ((totalCost || 0) + (deliveryCost || 0))) === null || _a === void 0 ? void 0 : _a.toFixed(2)}</strong></p>
     <p>
       Your order will be delivered to the following address:<br/>
       ${street}, ${city}, ${zipCode}
@@ -152,7 +148,14 @@ const sendRecieptEmail = (checkOutObject) => {
         from: 'Alkebulan <tetelomaake@gmail.com>',
         to: `${email}`,
         subject: 'Your Alkebulan Shop Order Receipt – Thank You for Shopping with Us',
-        html: receiptHtml
+        html: receiptHtml,
+    }, (error, info) => {
+        if (error) {
+            console.error(`Error sending email: ${error.message}`);
+        }
+        else {
+            console.log(`Email sent: ${info.response}`);
+        }
     });
 };
 exports.default = YocoPaymentWebHook;

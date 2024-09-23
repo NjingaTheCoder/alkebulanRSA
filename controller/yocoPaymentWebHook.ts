@@ -4,7 +4,7 @@ import { orderModel } from "../model/order_schema";
 import { cartModel } from "../model/cart_schema";
 import { productModel } from "../model/product_schema";
 import mongoose from "mongoose";
-import nodemailer, { TransportOptions } from 'nodemailer';
+import nodemailer, { TransportOptions , SentMessageInfo} from 'nodemailer';
 import { URL } from 'url';
 
 const emailHost: string | undefined = process.env.EMAIL_HOST;
@@ -175,27 +175,29 @@ const decreaseProductCount = async (checkOutObject: Checkout, res: Response, ses
 };
 
 
-const sendRecieptEmail = (checkOutObject : Checkout) => {
-
-  let userName ;
-  let orderItems;
-  let totalCost;
-  let deliveryCost ;
-  let street;
-  let city;
-  let zipCode;
-  let email;
-
-  if(checkOutObject){
-    userName = checkOutObject.shippingAddress.addressDetails[0]?.name;
-    orderItems = checkOutObject.orderItems;
-    totalCost = checkOutObject.totalAmount;
-    deliveryCost = checkOutObject.delivery.cost;
-    street = checkOutObject.shippingAddress.addressDetails[0].address;
-    city = checkOutObject.shippingAddress.addressDetails[0].city;
-    zipCode = checkOutObject.shippingAddress.addressDetails[0].postalCode;
-    email = checkOutObject.shippingAddress.email;
+const sendRecieptEmail = (checkOutObject: Checkout): void => {
+  if (!checkOutObject || !checkOutObject.shippingAddress || !checkOutObject.orderItems) {
+    console.error('Checkout object is invalid.');
+    return;
   }
+
+  const addressDetails = checkOutObject.shippingAddress.addressDetails[0];
+  if (!addressDetails) {
+    console.error('Address details missing.');
+    return;
+  }
+
+  const {
+    name: userName,
+    address: street,
+    city,
+    postalCode: zipCode,
+  } = addressDetails;
+  const { email } = checkOutObject.shippingAddress;
+  const orderItems = checkOutObject.orderItems;
+  const totalCost = checkOutObject.totalAmount;
+  const deliveryCost = checkOutObject.delivery.cost;
+
 
   const receiptHtml = `
   
@@ -237,14 +239,21 @@ const sendRecieptEmail = (checkOutObject : Checkout) => {
   </div>
 `;
 
-transporter.sendMail({
-        
-  from:'Alkebulan <tetelomaake@gmail.com>',
-  to:`${email}`,
-  subject:'Your Alkebulan Shop Order Receipt – Thank You for Shopping with Us',
-  html:receiptHtml
-});
 
-}
+  transporter.sendMail({
+    from: 'Alkebulan <tetelomaake@gmail.com>',
+    to: `${email}`,
+    subject: 'Your Alkebulan Shop Order Receipt – Thank You for Shopping with Us',
+    html: receiptHtml,
+  }, (error: Error | null, info: SentMessageInfo) => {
+    if (error) {
+      console.error(`Error sending email: ${error.message}`);
+    } else {
+      console.log(`Email sent: ${info.response}`);
+    }
+  });
+};
+
+
 
 export default YocoPaymentWebHook;
