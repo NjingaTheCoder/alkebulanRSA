@@ -56,7 +56,8 @@ const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     cors: {
         origin: "http://localhost:5173", // Update to your React frontend's origin
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
+        credentials: true
     }
 });
 //create mongo store

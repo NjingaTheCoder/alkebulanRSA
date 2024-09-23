@@ -25,7 +25,8 @@ const server = http.createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
     origin: "http://localhost:5173", // Update to your React frontend's origin
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
+    credentials: true 
   }
 });
 
