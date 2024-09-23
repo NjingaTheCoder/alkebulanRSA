@@ -43,12 +43,21 @@ const store  = new mongoStore({
 //middleware 
 app.use(cookieParser());
 
-// Use CORS middleware to handle CORS issues
+// CORS configuration
+const allowedOrigins = ['http://localhost:5173', 'https://yourdomain.com'];
+
 app.use(cors({
-    origin: 'http://localhost:5173', // Your frontend origin
-    methods: ['GET', 'POST'], // Allow specific methods
-    credentials: true // Allow cookies and authentication headers
-  }));
+  origin: function (origin, callback) {
+    // allow requests with no origin (e.g. mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true // Allow sending cookies and credentials
+}));
 
 app.use(urlencoded({extended:true}));
 
