@@ -16,7 +16,11 @@ const GetCartSizeFromDatabaseController = (request, response) => __awaiter(void 
         const userIdMongo = userId;
         const cart = yield cart_schema_1.cartModel.findOne({ userId: userIdMongo });
         if (cart) {
-            const cartSize = cart.items.length;
+            let totalCount = 0;
+            cart.items.map((item, index) => {
+                totalCount = totalCount + item.quantity;
+            });
+            const cartSize = totalCount;
             return response.status(200).send({ cartSize: cartSize });
         }
         else {
