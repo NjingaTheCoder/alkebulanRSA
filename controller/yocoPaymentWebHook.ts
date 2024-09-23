@@ -6,6 +6,7 @@ import { IProduct } from "../interface&Objects/IOProdcut";
 import { productModel } from "../model/product_schema";
 import mongoose from "mongoose";
 import nodemailer , {TransportOptions} from 'nodemailer';
+import { emitPaymentSuccess } from './socketController.js';
 import {URL} from 'url';
 
 const emailHost : string | undefined = process.env.EMAIL_HOST ;
@@ -170,6 +171,8 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
     
       await session.commitTransaction();
       console.log("Order created and transaction committed successfully.");
+          // Emit payment success to the front end via socket
+      emitPaymentSuccess(checkOutObject.userId, { message: 'Payment successful', checkOutObject});
       res.sendStatus(200);
     } catch (error) {
       await session.abortTransaction();
