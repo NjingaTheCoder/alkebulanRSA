@@ -20,11 +20,11 @@ const YocoCreateWebHook = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
     //this is to everything in check
     try {
-        const response = yield axios_1.default.post('https://payments.yoco.com/api/webhooks', {
+        const response = yield axios_1.default.post('https://payments.yoco.com/api/webhooks', JSON.stringify({
             name: 'Alkebulanrsa Payment Webhook',
             url: url, // Webhook URL from frontend
             event_types: event_types, // Event types from frontend
-        }, {
+        }), {
             headers: {
                 // 'Authorization': `Bearer ${process.env.YOCO_API_KEY}`,
                 'Content-Type': 'application/json',
