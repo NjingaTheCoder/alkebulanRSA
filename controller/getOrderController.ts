@@ -3,7 +3,7 @@ import { orderModel } from '../model/order_schema'; // Import your order model
 import { IOrder } from '../interface&Objects/IOrder'; // Import the interfaces
 
 const GetOrderController = async (req: Request, res: Response) => {
-  const { userId } = req.body; // Get the orderId from the request parameters
+  const { userId , _csrf} = req.body; // Get the orderId from the request parameters
 
   try {
     // Find the order where 'checkOutObject.orderId' matches the passed orderId
