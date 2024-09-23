@@ -82,8 +82,15 @@ const YocoPaymentWebHook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(200).send({ message: 'transaction successful' });
     }
     catch (error) {
-        yield session.abortTransaction();
         console.error("Transaction error:", error);
+        try {
+            if (session.inTransaction()) {
+                yield session.abortTransaction(); // Abort if something goes wrong
+            }
+        }
+        catch (abortError) {
+            console.error("Error aborting transaction:", abortError);
+        }
         res.status(500).json({ error: "Internal Server Error" });
     }
     finally {
