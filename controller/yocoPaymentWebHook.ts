@@ -158,43 +158,6 @@ const YocoPaymentWebHook = async (req: Request, res: Response) => {
   }
 };
 
-// Send receipt email
-const sendRecieptEmail = async (checkOutObject: Checkout) => {
-  const { email, addressDetails } = checkOutObject.shippingAddress;
-  const userName = addressDetails[0]?.name;
-  const street = addressDetails[0]?.address;
-  const city = addressDetails[0]?.city;
-  const zipCode = addressDetails[0]?.postalCode;
-  const orderItems = checkOutObject.orderItems;
-  const totalCost = checkOutObject.totalAmount;
-  const deliveryCost = checkOutObject.delivery.cost;
-
-  const receiptHtml = `
-    <div style="font-family: Arial, sans-serif; color: #333;">
-      <h2>Thank you for your purchase, ${userName}!</h2>
-      <h3>Order Summary</h3>
-      <table style="border-collapse: collapse; width: 100%;">
-        <thead><tr><th>Item</th><th>Quantity</th><th>Price</th></tr></thead>
-        <tbody>
-          ${orderItems.map(item => `
-            <tr><td>${item.name}</td><td>${item.quantity}</td><td>R${item.price.toFixed(2)}</td></tr>`).join('')}
-        </tbody>
-      </table>
-      <p>SubTotal: R${totalCost.toFixed(2)}</p>
-      <p>Delivery Cost: R${deliveryCost.toFixed(2)}</p>
-      <p>Total: R${(totalCost + deliveryCost).toFixed(2)}</p>
-      <p>Delivery Address: ${street}, ${city}, ${zipCode}</p>
-      <p>If you have any questions, feel free to contact us.</p>
-    </div>
-  `;
-
-  await transporter.sendMail({
-    from: 'Alkebulan Ya Batho <tetelomaake@gmail.com>',
-    to: email,
-    subject: 'Order Receipt – Alkebulan Shop',
-    html: receiptHtml
-  });
-};
 
 // Decrease product count
 const decreaseProductCount = async (checkOutObject: Checkout, res: Response, session: mongoose.ClientSession) => {
@@ -210,5 +173,78 @@ const decreaseProductCount = async (checkOutObject: Checkout, res: Response, ses
     }
   }
 };
+
+
+const sendRecieptEmail = (checkOutObject : Checkout) => {
+
+  let userName ;
+  let orderItems;
+  let totalCost;
+  let deliveryCost ;
+  let street;
+  let city;
+  let zipCode;
+  let email;
+
+  if(checkOutObject){
+    userName = checkOutObject.shippingAddress.addressDetails[0]?.name;
+    orderItems = checkOutObject.orderItems;
+    totalCost = checkOutObject.totalAmount;
+    deliveryCost = checkOutObject.delivery.cost;
+    street = checkOutObject.shippingAddress.addressDetails[0].address;
+    city = checkOutObject.shippingAddress.addressDetails[0].city;
+    zipCode = checkOutObject.shippingAddress.addressDetails[0].postalCode;
+    email = checkOutObject.shippingAddress.email;
+  }
+
+  const receiptHtml = `
+  
+  <div style="font-family: Arial, sans-serif; color: #333;">
+    <img src="" alt="Scentor Logo" style="width: 150px;"/>
+    <h2>Thank you for your purchase, ${userName}!</h2>
+    <p>
+      We are pleased to inform you that we have received your order.
+      Below are the details of your purchase:
+    </p>
+    <h3>Order Summary</h3>
+    <table style="border-collapse: collapse; width: 100%;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="padding: 8px; text-align: left;">Item</th>
+          <th style="padding: 8px; text-align: left;">Quantity</th>
+          <th style="padding: 8px; text-align: left;">Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${orderItems?.map(item => `
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">R${item.price.toFixed(2)}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+     <p><strong> SubTotal : R${totalCost?.toFixed(2)}</strong></p>
+      <p><strong>Delivery Cost: R${deliveryCost?.toFixed(2)}</strong></p>
+    <p><strong>Total Amount: R${((totalCost || 0) + (deliveryCost || 0))?.toFixed(2)}</strong></p>
+    <p>
+      Your order will be delivered to the following address:<br/>
+      ${street}, ${city}, ${zipCode}
+    </p>
+    <p>If you have any questions, feel free to contact us.</p>
+    <br/>
+    <p>Best regards,<br/>The Alkebulan Ya Batho Team</p>
+  </div>
+`;
+
+transporter.sendMail({
+        
+  from:'Alkebulan <tetelomaake@gmail.com>',
+  to:`${email}`,
+  subject:'Your Alkebulan Shop Order Receipt – Thank You for Shopping with Us',
+  html:receiptHtml
+});
+
+}
 
 export default YocoPaymentWebHook;
