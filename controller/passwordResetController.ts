@@ -112,7 +112,7 @@ const PasswordResetController = async (request : Request , response : Response) 
 
                 transporter.sendMail({
         
-                    from:'Scentor <tetelomaake@gmail.com>',
+                    from: 'Alkebulan <alkebulanyabatho@gmail.com>',
                     to:`${email}`,
                     subject:'Password Reset Request for Your Alebulan Account',
                     html:resetHtml

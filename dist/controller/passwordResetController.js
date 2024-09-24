@@ -102,7 +102,7 @@ const PasswordResetController = (request, response) => __awaiter(void 0, void 0,
             });
             yield forgotPassword.save();
             transporter.sendMail({
-                from: 'Scentor <tetelomaake@gmail.com>',
+                from: 'Alkebulan <alkebulanyabatho@gmail.com>',
                 to: `${email}`,
                 subject: 'Password Reset Request for Your Alebulan Account',
                 html: resetHtml
