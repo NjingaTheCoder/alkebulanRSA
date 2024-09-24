@@ -78,7 +78,7 @@ const PasswordResetController = async (request : Request , response : Response) 
               <!-- Signature -->
               <p style="font-size: 16px; line-height: 1.5;">
                 Best regards,<br/>
-                The  Alkebulan Ya Batho Team
+                Alkebulan Ya Batho Team
               </p>
             </div>
           `;

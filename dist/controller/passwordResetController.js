@@ -79,7 +79,7 @@ const PasswordResetController = (request, response) => __awaiter(void 0, void 0,
               <!-- Signature -->
               <p style="font-size: 16px; line-height: 1.5;">
                 Best regards,<br/>
-                The  Alkebulan Ya Batho Team
+                Alkebulan Ya Batho Team
               </p>
             </div>
           `;
