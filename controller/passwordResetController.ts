@@ -44,7 +44,7 @@ const PasswordResetController = async (request : Request , response : Response) 
             <div style="font-family: Arial, sans-serif; color: #333; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;">
               <!-- Logo -->
               <div style="text-align: center; margin-bottom: 20px;">
-                <img src="https://yourdomain.com/logo.png" alt="Alkebulan Logo" style="width: 150px;" />
+                <img src="https://i.imgur.com/PA5VTwK.png" alt="Scentor Logo" style="width: 100px; height: auto;" />
               </div>
           
               <!-- Greeting -->
