@@ -7,7 +7,7 @@ const GetOrderController = async (req: Request, res: Response) => {
 
   try {
     // Find the order where 'checkOutObject.orderId' matches the passed orderId
-    const order: Array<IOrder> | null = await orderModel.findOne({ 'checkOutObject.userId': userId }).exec();
+    const order: Array<IOrder> | null = await orderModel.find({ 'checkOutObject.userId': userId }).exec();
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
