@@ -141,7 +141,7 @@ const sendRecieptEmail = (checkOutObject, checkoutId) => {
     </p>
     <p>If you have any questions, feel free to contact us.</p>
     <br/>
-    <p>Best regards,<br/>The Alkebulan Ya Batho Team</p>
+    <p>Best regards,<br/>Alkebulan Ya Batho Team</p>
   </div>
 `;
     transporter.sendMail({
