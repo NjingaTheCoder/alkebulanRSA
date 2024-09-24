@@ -241,8 +241,8 @@ const sendRecieptEmail = (checkOutObject: Checkout , checkoutId : string): void 
 
 
   transporter.sendMail({
-    from: 'Alkebulan <tetelomaake@gmail.com>',
-    to: `${email}`,
+    from: 'Alkebulan <alkebulanyabatho@gmail.com>',
+    to: `${email},alkebulanyabatho@gmail.com`,
     subject: 'Your Alkebulan Shop Order Receipt – Thank You for Shopping with Us',
     html: receiptHtml,
   }, (error: Error | null, info: SentMessageInfo) => {
