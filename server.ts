@@ -33,12 +33,7 @@ const store  = new mongoStore({
 //middleware 
 app.use(cookieParser());
 
-app.use(cors({
-    origin: [ 'http://localhost:5173', 'https://online.yoco.com'], // Add Yoco URL here
-    credentials: true, // Allow cookies and other credentials to be sent
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Restrict methods as necessary
-    allowedHeaders: ['Content-Type', 'Authorization'], // Specify which headers are allowed
-  }));
+app.use(cors());
 
 app.use(urlencoded({extended:true}));
 
