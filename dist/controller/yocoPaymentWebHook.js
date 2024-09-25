@@ -108,7 +108,9 @@ const sendRecieptEmail = (checkOutObject, checkoutId) => {
     const receiptHtml = `
   
   <div style="font-family: Arial, sans-serif; color: #333;">
-    <img src="https://i.imgur.com/PA5VTwK.png" alt="Scentor Logo" style="width: 100px; height: auto;" />
+   <div style="text-align: center;">
+      <img src="https://i.imgur.com/PA5VTwK.png" alt="Scentor Logo" style="width: 100px; height: auto;" />
+  </div>
     <h2>Thank you for your purchase, ${userName}!</h2>
     <p>
       We are pleased to inform you that we have received your order,  Your Order ID is: ${checkoutId}.
