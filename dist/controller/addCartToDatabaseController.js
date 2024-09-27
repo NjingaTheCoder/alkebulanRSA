@@ -11,30 +11,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const AddCartToDatabaseController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     try {
         const { items, _csrf } = request.body;
-        const userId = request.session.userData.userID;
+        const userId = (_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.userID;
+        // Stop execution if userID is missing
         if (!userId) {
-            return response.status(400).json({ messsage: 'Sign in to fill up your cart with ease!' });
+            return response.status(400).json({ message: 'Sign in to fill up your cart with ease!' });
         }
-        // Validate request body
-        if (!userId || !items || items.length === 0) {
-            return response.status(400).json({ message: 'User ID and cart items are required.' });
+        // Validate that items exist in the request
+        if (!items || items.length === 0) {
+            return response.status(400).json({ message: 'Cart items are required.' });
         }
-        const userExist = yield cart_schema_1.cartModel.findOne({ userId: userId });
+        const userExist = yield cart_schema_1.cartModel.findOne({ userId });
         const cartArray = items;
         // Calculate total price
         const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
         const userInfo = userId;
         if (userExist) {
-            let upatedTotalPrice = 0;
-            userExist.items.map((item, index) => {
-                upatedTotalPrice = upatedTotalPrice + (item.price * item.quantity);
+            let updatedTotalPrice = 0;
+            userExist.items.map((item) => {
+                updatedTotalPrice += item.price * item.quantity;
             });
-            upatedTotalPrice = upatedTotalPrice + (cartArray[0].price * cartArray[0].quantity);
+            updatedTotalPrice += cartArray[0].price * cartArray[0].quantity;
             const newCartArray = [...cartArray, ...userExist.items];
-            const updateCart = yield userExist.updateOne({ items: newCartArray });
-            yield userExist.updateOne({ totalPrice: upatedTotalPrice });
+            yield userExist.updateOne({ items: newCartArray });
+            yield userExist.updateOne({ totalPrice: updatedTotalPrice });
             yield userExist.updateOne({ updatedAt: new Date() });
         }
         else {
@@ -44,7 +46,7 @@ const AddCartToDatabaseController = (request, response) => __awaiter(void 0, voi
                 items: cartArray,
                 totalPrice,
                 createdAt: new Date(),
-                updatedAt: new Date()
+                updatedAt: new Date(),
             });
             // Save the cart to the database
             yield cart.save();

@@ -12,69 +12,67 @@ interface ICart{
     _id: mongoose.Schema.Types.ObjectId
 }
 
-const AddCartToDatabaseController = async (request : Request, response : Response) => {
-    try {
-      const {  items , _csrf } = request.body;
-  
-      const userId =  request.session.userData.userID;
+const AddCartToDatabaseController = async (request: Request, response: Response) => {
+  try {
+    const { items, _csrf } = request.body;
+    const userId = request.session?.userData?.userID;
 
-      if(!userId){
+    // Stop execution if userID is missing
+    if (!userId) {
+      return response.status(400).json({ message: 'Sign in to fill up your cart with ease!' });
+    }
 
-        return response.status(400).json({messsage : 'Sign in to fill up your cart with ease!'});
-      }
-      // Validate request body
-      if (!userId || !items || items.length === 0) {
-        return response.status(400).json({ message: 'User ID and cart items are required.' });
-      }
-  
+    // Validate that items exist in the request
+    if (!items || items.length === 0) {
+      return response.status(400).json({ message: 'Cart items are required.' });
+    }
 
-    const userExist = await cartModel.findOne({userId : userId});
+    const userExist = await cartModel.findOne({ userId });
 
-    const cartArray : ICart[] = items;
+    const cartArray: ICart[] = items;
 
-          // Calculate total price
-    const totalPrice = items.reduce((total : number, item : ICart ) => total + item.price * item.quantity, 0);
+    // Calculate total price
+    const totalPrice = items.reduce(
+      (total: number, item: ICart) => total + item.price * item.quantity,
+      0
+    );
 
-    const userInfo :  mongoose.Schema.Types.ObjectId  = userId;
-  
+    const userInfo: mongoose.Schema.Types.ObjectId = userId;
 
-    if(userExist){
+    if (userExist) {
+      let updatedTotalPrice = 0;
 
-
-      let upatedTotalPrice = 0;
-      userExist.items.map((item : ICart ,index : number) =>{
-
-        upatedTotalPrice = upatedTotalPrice + (item.price * item.quantity);
+      userExist.items.map((item: ICart) => {
+        updatedTotalPrice += item.price * item.quantity;
       });
-      
-      upatedTotalPrice = upatedTotalPrice + (cartArray[0].price * cartArray[0].quantity);
-      const newCartArray =  [...cartArray , ...userExist.items];
-      const updateCart = await userExist.updateOne({items : newCartArray});
-      await userExist.updateOne({totalPrice : upatedTotalPrice});
-      await userExist.updateOne({updatedAt : new Date()});
-          
 
-    }else{
+      updatedTotalPrice += cartArray[0].price * cartArray[0].quantity;
+      const newCartArray = [...cartArray, ...userExist.items];
 
-        // Create a new cart document
-        const cart = new cartModel({
-            userId : userInfo, 
-            items : cartArray,
-            totalPrice,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        });
-        
-        // Save the cart to the database
-        await cart.save();
-          
+      await userExist.updateOne({ items: newCartArray });
+      await userExist.updateOne({ totalPrice: updatedTotalPrice });
+      await userExist.updateOne({ updatedAt: new Date() });
+
+    } else {
+      // Create a new cart document
+      const cart = new cartModel({
+        userId: userInfo,
+        items: cartArray,
+        totalPrice,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      // Save the cart to the database
+      await cart.save();
     }
 
-      // Respond with the saved cart data
-      return response.status(201).json({ message: 'Cart saved successfully'});
-    } catch (error) {
-      console.error('Error saving cart:', error);
-      return response.status(500).json({ message: 'Internal Server Error' });
-    }
-  };
+    // Respond with the saved cart data
+    return response.status(201).json({ message: 'Cart saved successfully' });
+  } catch (error) {
+    console.error('Error saving cart:', error);
+    return response.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 export default AddCartToDatabaseController;
