@@ -16,7 +16,13 @@ interface ICart{
 const GetCartFromDatabase = async  (request : Request , response : Response) => {
 
     
-    const {userId} = request.body;
+    const {} = request.body;
+
+    const userId = request.session?.userData?.userID;
+
+    if(!userId){
+      return response.status(400).json({ message: 'Your are not logged in'});
+    }
 
     try {  
 

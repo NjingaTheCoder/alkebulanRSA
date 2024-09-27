@@ -11,7 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const GetCartFromDatabase = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = request.body;
+    var _a, _b;
+    const {} = request.body;
+    const userId = (_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.userID;
+    if (!userId) {
+        return response.status(400).json({ message: 'Your are not logged in' });
+    }
     try {
         const userIdMongo = userId;
         const cart = yield cart_schema_1.cartModel.findOne({ userId: userIdMongo });
