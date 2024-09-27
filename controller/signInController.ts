@@ -32,6 +32,7 @@ const SignInController =  async ( request : Request ,  response : Response) => {
             userName : user.name,
             userSurname : user.surname,
             userPhoneNumber : user.phone_number, 
+            csrfToken : request.csrfToken()
 
         }
 

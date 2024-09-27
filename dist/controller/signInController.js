@@ -34,6 +34,7 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
             userName: user.name,
             userSurname: user.surname,
             userPhoneNumber: user.phone_number,
+            csrfToken: request.csrfToken()
         };
         // Get current date
         const currentDate = new Date();

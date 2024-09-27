@@ -11,12 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const AddCartToDatabaseController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a, _b, _c, _d;
     try {
         const { items, _csrf } = request.body;
         const userId = (_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.userID;
+        const csrfToken = (_d = (_c = request.session) === null || _c === void 0 ? void 0 : _c.userData) === null || _d === void 0 ? void 0 : _d.csrfToken;
         // Stop execution if userID is missing
-        if (!userId) {
+        if (!userId || !csrfToken) {
             return response.status(400).json({ message: 'Sign in to fill up your cart with ease!' });
         }
         // Validate that items exist in the request

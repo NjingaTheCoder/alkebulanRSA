@@ -16,9 +16,10 @@ const AddCartToDatabaseController = async (request: Request, response: Response)
   try {
     const { items, _csrf } = request.body;
     const userId = request.session?.userData?.userID;
+    const csrfToken  = request.session?.userData?.csrfToken;
 
     // Stop execution if userID is missing
-    if (!userId) {
+    if (!userId || !csrfToken) {
       return response.status(400).json({ message: 'Sign in to fill up your cart with ease!' });
     }
 
