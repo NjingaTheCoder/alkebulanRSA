@@ -68,7 +68,7 @@ routes.get(`${signUp}` , csurfProtection , GetCsurfTokenController);
 routes.post(`${signUp}` , csurfProtection , SignUpController);
 
 //================================//Route for handing signing in=======================================
-routes.post(`${signIn}`,SignInController);
+routes.post(`${signIn}`, csurfProtection ,SignInController);
 
 //================================//function for checking if user is Authenticated and the return session data basck=======================================
 routes.get(`${getSession}`, CheckAuthAndReturnSession);
@@ -118,7 +118,7 @@ routes.get(`${bestSellerProduct}` , GetBestSellerProductsFromDatabaseController)
 routes.post(`${singleProduct}` , GetOneProductFromDatabaseController);
 
 //================================//Route for aading product cart to database=======================================
-routes.post(`${cart}` , csurfProtection , AddCartToDatabaseController);
+routes.post(`${cart}` , AddCartToDatabaseController);
 
 
 //================================//Route for getting cart size=======================================
