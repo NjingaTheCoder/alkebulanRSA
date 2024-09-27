@@ -130,5 +130,5 @@ routes.post(`${yocoPaymentWebHook}`, yocoPaymentWebHook_1.default);
 // Route for handling yoco payment creating a webhook
 routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, yocoCreateWebHook_1.default);
 // Route for handling order
-routes.post(`${order}`, csurfProtection, getOrderController_1.default);
+routes.post(`${order}`, getOrderController_1.default);
 exports.default = routes;

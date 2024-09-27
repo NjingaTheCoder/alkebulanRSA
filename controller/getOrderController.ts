@@ -3,7 +3,7 @@ import { orderModel } from '../model/order_schema'; // Import your order model
 import { IOrder } from '../interface&Objects/IOrder'; // Import the interfaces
 
 const GetOrderController = async (req: Request, res: Response) => {
-  const {  _csrf} = req.body; // Get the orderId from the request parameters
+  const { } = req.body; // Get the orderId from the request parameters
 
   const userId =  req.session.userData.userID;
   try {
