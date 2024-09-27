@@ -17,6 +17,11 @@ const AddCartToDatabaseController = async (request : Request, response : Respons
       const {  items , _csrf } = request.body;
   
       const userId =  request.session.userData.userID;
+
+      if(!userId){
+
+        return response.status(400).json({messsage : 'Sign in to fill up your cart with ease!'});
+      }
       // Validate request body
       if (!userId || !items || items.length === 0) {
         return response.status(400).json({ message: 'User ID and cart items are required.' });
