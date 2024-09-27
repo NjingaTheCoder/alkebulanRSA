@@ -26,7 +26,8 @@ const GetCartFromDatabase = async  (request : Request , response : Response) => 
 
     try {  
 
-        const userIdMongo : mongoose.Schema.Types.ObjectId  = userId;
+      const userIdMongo  = new mongoose.Types.ObjectId(userId);
+
         const cart  = await cartModel.findOne({userId : userIdMongo});
 
         if(cart){
