@@ -68,7 +68,7 @@ routes.get(`${signUp}` , csurfProtection , GetCsurfTokenController);
 routes.post(`${signUp}` , csurfProtection , SignUpController);
 
 //================================//Route for handing signing in=======================================
-routes.post(`${signIn}`, csurfProtection ,SignInController);
+routes.post(`${signIn}`,SignInController);
 
 //================================//function for checking if user is Authenticated and the return session data basck=======================================
 routes.get(`${getSession}`, CheckAuthAndReturnSession);
