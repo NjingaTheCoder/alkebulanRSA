@@ -12,7 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const AddCartToDatabaseController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId, items, _csrf } = request.body;
+        const { items, _csrf } = request.body;
+        const userId = request.session.userData.userID;
         // Validate request body
         if (!userId || !items || items.length === 0) {
             return response.status(400).json({ message: 'User ID and cart items are required.' });
