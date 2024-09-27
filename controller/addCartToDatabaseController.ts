@@ -14,7 +14,8 @@ interface ICart{
 
 const AddCartToDatabaseController = async (request: Request, response: Response) => {
   try {
-    const { items, _csrf } = request.body;
+    const { items } = request.body;
+    
     const userId = request.session?.userData?.userID;
     const csrfToken  = request.session?.userData?.csrfToken;
 
