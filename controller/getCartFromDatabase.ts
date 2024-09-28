@@ -16,18 +16,11 @@ interface ICart{
 const GetCartFromDatabase = async  (request : Request , response : Response) => {
 
     
-    const {} = request.body;
-
-    const userId = request.session?.userData?.userID;
-
-    if(!userId){
-      return response.status(400).json({ message: 'Your are not logged in'});
-    }
+    const {userId} = request.body;
 
     try {  
 
-      const userIdMongo  = new mongoose.Types.ObjectId(userId);
-
+        const userIdMongo : mongoose.Schema.Types.ObjectId  = userId;
         const cart  = await cartModel.findOne({userId : userIdMongo});
 
         if(cart){
