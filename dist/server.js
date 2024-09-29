@@ -61,7 +61,6 @@ app.use((0, cookie_parser_1.default)());
 const corsOptions = {
     origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token'], // Allow CSRF tokens and custom headers
     credentials: true // Enable credentials (cookies, authorization headers)
 };
 // Apply CORS middleware
