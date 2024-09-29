@@ -40,7 +40,7 @@ const updateCheckOutController_1 = __importDefault(require("../controller/update
 const getOrderController_1 = __importDefault(require("../controller/getOrderController"));
 const csurfProtection = (0, csurf_1.default)({
     cookie: {
-        httpOnly: false, // Prevents JavaScript access to cookies
+        httpOnly: true, // Prevents JavaScript access to cookies
         secure: true, // Ensures cookies are sent over HTTPS (use this in production)
         sameSite: 'strict', // Helps prevent CSRF attacks by restricting cross-origin requests
     }
