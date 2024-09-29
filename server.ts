@@ -10,7 +10,6 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import router from './route/routes';
-import csurf from 'csurf';
 
 
 
@@ -56,7 +55,7 @@ app.use(session({
         httpOnly: true, // Set to false to allow JavaScript access
         secure: true, // True if in production and using HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 
-        sameSite:  process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     }
 }));
 
