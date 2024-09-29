@@ -33,7 +33,15 @@ const store  = new mongoStore({
 //middleware 
 app.use(cookieParser());
 
-app.use(cors());
+const corsOptions = {
+    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token'], // Allow CSRF tokens and custom headers
+    credentials: true // Enable credentials (cookies, authorization headers)
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
 app.use(urlencoded({extended:true}));
 
