@@ -35,7 +35,13 @@ import UpdateCheckOutController from '../controller/updateCheckOutController';
 import GetOrderController from '../controller/getOrderController';
 
 
-const csrfProtection = csurf({ cookie: true });
+const csurfProtection = csurf({
+    cookie: {
+      httpOnly: false,        // Prevents JavaScript access to cookies
+      secure: true,          // Ensures cookies are sent over HTTPS (use this in production)
+      sameSite: 'strict',    // Helps prevent CSRF attacks by restricting cross-origin requests
+    }
+  });
 const signUp = process.env.SIGN_UP ;
 const signIn = process.env.SIGN_IN ;
 const getSession = process.env.GET_SESSION ;

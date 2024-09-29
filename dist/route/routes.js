@@ -38,7 +38,13 @@ const yocoPaymentWebHook_1 = __importDefault(require("../controller/yocoPaymentW
 const yocoCreateWebHook_1 = __importDefault(require("../controller/yocoCreateWebHook"));
 const updateCheckOutController_1 = __importDefault(require("../controller/updateCheckOutController"));
 const getOrderController_1 = __importDefault(require("../controller/getOrderController"));
-const csrfProtection = (0, csurf_1.default)({ cookie: true });
+const csurfProtection = (0, csurf_1.default)({
+    cookie: {
+        httpOnly: false, // Prevents JavaScript access to cookies
+        secure: true, // Ensures cookies are sent over HTTPS (use this in production)
+        sameSite: 'strict', // Helps prevent CSRF attacks by restricting cross-origin requests
+    }
+});
 const signUp = process.env.SIGN_UP;
 const signIn = process.env.SIGN_IN;
 const getSession = process.env.GET_SESSION;
