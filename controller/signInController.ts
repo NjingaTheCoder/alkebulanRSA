@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 const SignInController =  async ( request : Request ,  response : Response) => {
 
     
-    const {email , password} = request.body;
+    const {email , password ,  _csrf} = request.body;
 
     try {
         const user = await userModel.findOne({ email_address: email });
@@ -32,7 +32,7 @@ const SignInController =  async ( request : Request ,  response : Response) => {
             userName : user.name,
             userSurname : user.surname,
             userPhoneNumber : user.phone_number, 
-            csrfToken : request.csrfToken()
+            csrfToken :  _csrf
 
         }
 

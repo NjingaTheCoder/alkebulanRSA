@@ -76,7 +76,7 @@ app.use((0, express_session_1.default)({
         httpOnly: true, // Set to false to allow JavaScript access
         secure: true, // True if in production and using HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     }
 }));
 const limiter = (0, express_rate_limit_1.default)({

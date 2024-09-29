@@ -55,7 +55,7 @@ app.use(session({
         httpOnly: true, // Set to false to allow JavaScript access
         secure: true, // True if in production and using HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 
-        sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        sameSite:  process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     }
 }));
 

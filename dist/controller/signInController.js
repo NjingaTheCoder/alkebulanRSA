@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_schema_1 = require("../model/user_schema");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const SignInController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = request.body;
+    const { email, password, _csrf } = request.body;
     try {
         const user = yield user_schema_1.userModel.findOne({ email_address: email });
         if (!user) {
@@ -34,7 +34,7 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
             userName: user.name,
             userSurname: user.surname,
             userPhoneNumber: user.phone_number,
-            csrfToken: request.csrfToken()
+            csrfToken: _csrf
         };
         // Get current date
         const currentDate = new Date();
