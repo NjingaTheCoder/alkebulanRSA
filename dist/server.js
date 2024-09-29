@@ -53,8 +53,8 @@ const app = (0, express_1.default)();
 const mongoStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
 const store = new mongoStore({
     uri: db_connect_1.connectionString,
-    databaseName: 'Scentor',
-    collection: "scentor_sessions",
+    databaseName: 'Alkebulan',
+    collection: "alkebulan_sessions",
 });
 //middleware 
 app.use((0, cookie_parser_1.default)());

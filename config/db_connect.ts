@@ -10,7 +10,7 @@ let connectionString  =  process.env.CONNECTION_STRING || '';
 const connectToDatabase = async () => {
     try{
         await Mongoose.connect(connectionString ,{
-            dbName: 'Scentor',
+            dbName: 'Alkebulan',
           });
         return true;
     }catch(error) {

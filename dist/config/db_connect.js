@@ -21,7 +21,7 @@ exports.connectionString = connectionString;
 const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(connectionString, {
-            dbName: 'Scentor',
+            dbName: 'Alkebulan',
         });
         return true;
     }

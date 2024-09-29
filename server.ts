@@ -26,8 +26,8 @@ const mongoStore = mongoSession(session);
 
 const store  = new mongoStore({
     uri: connectionString,
-    databaseName: 'Scentor',
-    collection : "scentor_sessions",
+    databaseName: 'Alkebulan',
+    collection : "alkebulan_sessions",
 });
 
 //middleware 
