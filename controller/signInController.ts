@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 const SignInController =  async ( request : Request ,  response : Response) => {
 
     
+    console.log('i work');
     const {email , password ,  _csrf} = request.body;
 
     try {
