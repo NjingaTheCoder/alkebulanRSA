@@ -65,9 +65,9 @@ app.use((0, express_session_1.default)({
     store: store,
     cookie: {
         httpOnly: true, // Ensure cookies are only sent via HTTP(S)
-        secure: NODE_ENV === 'production', // Secure cookie for HTTPS in production
+        secure: true, // Secure cookie for HTTPS in production
         maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: NODE_ENV === 'production' ? 'strict' : 'lax', // Cookie restrictions based on environment
+        sameSite: 'none', // Cookie restrictions based on environment
     }
 }));
 // CORS options
