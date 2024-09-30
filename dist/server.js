@@ -72,7 +72,7 @@ app.use((0, express_session_1.default)({
 }));
 // CORS options
 const corsOptions = {
-    origin: '*', // Allow only your production URL
+    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true, // Enable credentials (cookies, authorization headers)
 };

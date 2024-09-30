@@ -38,9 +38,10 @@ app.use(session({
         sameSite: NODE_ENV === 'production' ? 'strict' : 'lax', // Cookie restrictions based on environment
     }
 }));
+
 // CORS options
 const corsOptions = {
-    origin: '*', // Allow only your production URL
+    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true, // Enable credentials (cookies, authorization headers)
 };
