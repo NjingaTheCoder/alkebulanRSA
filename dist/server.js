@@ -120,5 +120,5 @@ app.use((err, req, res, next) => {
     if (err.code !== 'EBADCSRFTOKEN') {
         return next(err);
     }
-    res.status(403).send(`client :${req.headers} server : ${req.csrfToken()}`);
+    res.status(403).send(`client :${req.body._csrf} server : ${req.csrfToken()}`);
 });
