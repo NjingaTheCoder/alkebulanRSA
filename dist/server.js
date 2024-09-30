@@ -120,5 +120,5 @@ app.use((err, req, res, next) => {
     if (err.code !== 'EBADCSRFTOKEN') {
         return next(err);
     }
-    res.status(403).send('Error: CSRF Attack Detected 🙊');
+    res.status(403).send(req.body);
 });
