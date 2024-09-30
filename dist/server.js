@@ -57,17 +57,16 @@ const store = new MongoDBStore({
     databaseName: 'Alkebulan',
     collection: 'alkebulan_sessions',
 });
-// Apply session middleware
 app.use((0, express_session_1.default)({
     saveUninitialized: false,
     resave: false,
-    secret: process.env.SECRET || 'fallbacksecret', // Fallback secret
+    secret: process.env.SECRET || 'fallbacksecret',
     store: store,
     cookie: {
-        httpOnly: true, // Ensure cookies are only sent via HTTP(S)
-        secure: true, // Secure cookie for HTTPS in production
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Only secure in production
         maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: 'none', // Cookie restrictions based on environment
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // SameSite=none in production
     }
 }));
 // CORS options
