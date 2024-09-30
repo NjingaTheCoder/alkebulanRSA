@@ -57,17 +57,6 @@ const store = new MongoDBStore({
     databaseName: 'Alkebulan',
     collection: 'alkebulan_sessions',
 });
-// CORS options
-const corsOptions = {
-    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true, // Enable credentials (cookies, authorization headers)
-};
-// Apply middleware
-app.use((0, cors_1.default)(corsOptions));
-app.use((0, cookie_parser_1.default)());
-app.use((0, express_1.urlencoded)({ extended: true }));
-app.use(express_1.default.json());
 // Apply session middleware
 app.use((0, express_session_1.default)({
     saveUninitialized: false,
@@ -81,6 +70,17 @@ app.use((0, express_session_1.default)({
         sameSite: NODE_ENV === 'production' ? 'strict' : 'lax', // Cookie restrictions based on environment
     }
 }));
+// CORS options
+const corsOptions = {
+    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, // Enable credentials (cookies, authorization headers)
+};
+// Apply middleware
+app.use((0, cors_1.default)(corsOptions));
+app.use((0, cookie_parser_1.default)());
+app.use((0, express_1.urlencoded)({ extended: true }));
+app.use(express_1.default.json());
 // Rate limiting for Yoco payment webhook
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
