@@ -45,69 +45,81 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const routes_1 = __importDefault(require("./route/routes"));
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000; // Default to port 3000 if not set
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
-//create express app
+const NODE_ENV = process.env.NODE_ENV || 'development';
+// Create express app
 const app = (0, express_1.default)();
-//add routes to the express app
-app.use(`/`, routes_1.default);
-//create mongo store
-const mongoStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
-const store = new mongoStore({
+// MongoDB session store initialization
+const MongoDBStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
+const store = new MongoDBStore({
     uri: db_connect_1.connectionString,
     databaseName: 'Alkebulan',
-    collection: "alkebulan_sessions",
+    collection: 'alkebulan_sessions',
 });
-//middleware 
-app.use((0, cookie_parser_1.default)());
+// CORS options
 const corsOptions = {
     origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-    credentials: true // Enable credentials (cookies, authorization headers)
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, // Enable credentials (cookies, authorization headers)
 };
-// Apply CORS middleware
+// Apply middleware
 app.use((0, cors_1.default)(corsOptions));
+app.use((0, cookie_parser_1.default)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
+// Apply session middleware
 app.use((0, express_session_1.default)({
     saveUninitialized: false,
     resave: false,
-    secret: process.env.SECRET || '',
+    secret: process.env.SECRET || 'fallbacksecret', // Fallback secret
     store: store,
     cookie: {
-        httpOnly: true, // Set to false to allow JavaScript access
-        secure: true, // True if in production and using HTTPS
-        maxAge: 1000 * 60 * 60 * 24, // 
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        httpOnly: true, // Ensure cookies are only sent via HTTP(S)
+        secure: NODE_ENV === 'production', // Secure cookie for HTTPS in production
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        sameSite: NODE_ENV === 'production' ? 'strict' : 'lax', // Cookie restrictions based on environment
     }
 }));
+// Rate limiting for Yoco payment webhook
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per windowMs
 });
-// Apply the rate limit to your route
+// Apply rate limit middleware to the webhook route
 app.use(`${yocoPaymentWebHook}/create`, limiter);
+// Custom middleware to add additional headers
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
-    // other headers
     next();
 });
-//================================//check if database is connected the run the server on an port.=======================================
+// Apply routes to the express app
+app.use('/', routes_1.default);
+//================================
+// Check if database is connected then run the server on a port.
+//================================
 const checkDatabaseConnection = () => __awaiter(void 0, void 0, void 0, function* () {
-    if (yield (0, db_connect_1.connectToDatabase)()) {
-        app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
-            console.log(`server rocking on port ${PORT}`);
-        }));
+    try {
+        if (yield (0, db_connect_1.connectToDatabase)()) {
+            app.listen(PORT, () => {
+                console.log(`Server running on port ${PORT}`);
+            });
+        }
+        else {
+            console.error('Database connection failed');
+        }
     }
-    else {
-        express_1.response.status(200).send({ message: 'Database connection failed' });
+    catch (error) {
+        console.error('Database connection error:', error);
     }
 });
 checkDatabaseConnection();
-//================================//middleware for catching a csrf attack=======================================
-app.use((err, request, response, next) => {
-    if (err.code !== "EBADCSRFTOKEN") {
+//================================
+// Middleware for catching CSRF attacks
+//================================
+app.use((err, req, res, next) => {
+    if (err.code !== 'EBADCSRFTOKEN') {
         return next(err);
     }
-    response.status(400).send("Error : CSRF Attack Motherfucker🙊");
+    res.status(403).send('Error: CSRF Attack Detected 🙊');
 });
