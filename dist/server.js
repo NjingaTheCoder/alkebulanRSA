@@ -49,6 +49,8 @@ const PORT = process.env.PORT;
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 //create express app
 const app = (0, express_1.default)();
+//add routes to the express app
+app.use(`/`, routes_1.default);
 //create mongo store
 const mongoStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
 const store = new mongoStore({
@@ -102,8 +104,6 @@ const checkDatabaseConnection = () => __awaiter(void 0, void 0, void 0, function
     }
 });
 checkDatabaseConnection();
-//add routes to the express app
-app.use(`/`, routes_1.default);
 //================================//middleware for catching a csrf attack=======================================
 app.use((err, request, response, next) => {
     if (err.code !== "EBADCSRFTOKEN") {

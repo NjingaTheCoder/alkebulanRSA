@@ -20,6 +20,8 @@ const yocoPaymentWebHook  = process.env.YOCO_PAYMENT_WEBHOOK;
 //create express app
 const app = express();
 
+//add routes to the express app
+app.use(`/` , router);
 
 //create mongo store
 const mongoStore = mongoSession(session);
@@ -88,8 +90,7 @@ const checkDatabaseConnection = async () => {
 
 checkDatabaseConnection();
 
-//add routes to the express app
-app.use(`/` , router);
+
 
 
   //================================//middleware for catching a csrf attack=======================================
