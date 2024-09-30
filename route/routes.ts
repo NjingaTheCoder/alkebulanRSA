@@ -35,7 +35,7 @@ import UpdateCheckOutController from '../controller/updateCheckOutController';
 import GetOrderController from '../controller/getOrderController';
 
 
-const csurfProtection = csurf({cookie : {httpOnly:true}})
+const csurfProtection =  csurf({ cookie: { httpOnly: true } });
 const signUp = process.env.SIGN_UP ;
 const signIn = process.env.SIGN_IN ;
 const getSession = process.env.GET_SESSION ;
@@ -60,118 +60,67 @@ const order = process.env.ORDER;
 
 const routes = express.Router();
 
+// Routes for handling CSRF token
+routes.get(`${signUp}`, csurfProtection, GetCsurfTokenController);
 
-//================================route get up csurf===============================================
-routes.get(`${signUp}` , csurfProtection , GetCsurfTokenController);
+// Routes for Sign Up and Sign In
+routes.post(`${signUp}`, csurfProtection, SignUpController);
+routes.post(`${signIn}`, csurfProtection, SignInController);
 
-//================================Router to handle signing up=======================================
-routes.post(`${signUp}` , csurfProtection , SignUpController);
-
-//================================//Route for handing signing in=======================================
-routes.post(`${signIn}`, csurfProtection ,SignInController);
-
-//================================//function for checking if user is Authenticated and the return session data basck=======================================
+// Routes for Authentication
 routes.get(`${getSession}`, CheckAuthAndReturnSession);
+routes.get(`${checkAuth}`, CheckAuth);
 
-//================================//function for checking if user is Authenticated=======================================
-routes.get(`${checkAuth}` , CheckAuth);
+// Password Reset Routes
+routes.post(`${resetEmail}`, csurfProtection, PasswordResetController);
+routes.post(`${checkUpdatePassword}`, CheckResetTokenController);
+routes.patch(`${updatePassword}`, csurfProtection, UpdatePasswordController);
+routes.post(`${destroyResetToken}`, DestoryForgotPasswordTokenController);
 
-//================================//function for sending the password reset email=======================================
-routes.post(`${resetEmail}` , csurfProtection , PasswordResetController );
+// Sign Out Route
+routes.get(`${logOut}`, SignOutController);
 
-//================================//Route for checking if reset token exist=======================================
-routes.post(`${checkUpdatePassword}` , CheckResetTokenController);
+// Address Management Routes
+routes.post(`${addressDetail}`, csurfProtection, AddAddressToDatabase);
+routes.post(`${addressDetail}/delete`, DeleteAddressFromDatabaseController);
+routes.get(`${addressDetail}`, GetAddressFromDatabaseController);
 
-//================================//Route for updating user password =======================================
-routes.patch(`${updatePassword}` , csurfProtection , UpdatePasswordController);
+// Product Management Routes
+routes.post(`${product}`, AddProductToDatabaseController);
+routes.get(`${product}`, GetProductsFromDatabaseController);
+routes.post(`${singleProduct}`, GetOneProductFromDatabaseController);
+routes.post(`${bestSellerProduct}`, addBestSellerProductToDatabaseController);
+routes.get(`${bestSellerProduct}`, GetBestSellerProductsFromDatabaseController);
 
-//================================//Route for destory forgot password token=======================================
-routes.post(`${destroyResetToken}` , DestoryForgotPasswordTokenController);
+// Cart Management Routes
+routes.post(`${cart}`, AddCartToDatabaseController);
+routes.post(`${cartSize}`, GetCartSizeFromDatabaseController);
+routes.post(`${cartSize}/all`, GetCartFromDatabase);
+routes.post(`${cartSize}/delete`, DeleteCartItemFromDatabaseController);
 
-//================================//Route for signing out=======================================
-routes.get(`${logOut}` , SignOutController);
+// Review and Rating Routes
+routes.post(`${review}`, csurfProtection, addReviewToDatabaseController);
+routes.post(`${review}/rating-update`, csurfProtection, addRatingToProductController);
+routes.post(`${review}/question`, csurfProtection, sendProductQuestionEmailController);
+routes.get(`${review}`, GetReviewFromDatabaseController);
 
-//================================//Route for aading address to database=======================================
-routes.post(`${addressDetail}` , csurfProtection , AddAddressToDatabase);
-
-//================================//Route for deleting an address from the database================================
-routes.post(`${addressDetail}/delete` , DeleteAddressFromDatabaseController);
-
-//================================//function for get all the addresss=======================================
-routes.get(`${addressDetail}` , GetAddressFromDatabaseController);
-
-
-//================================//Route for aading product to database=======================================
-routes.post(`${product}` , AddProductToDatabaseController);
-
-//================================//Route for aading best seller product to database=======================================
-routes.post(`${bestSellerProduct}` , addBestSellerProductToDatabaseController);
-
-//================================//function for get all the products=======================================
-routes.get(`${product}` , GetProductsFromDatabaseController);
-
-//================================//function for get all the best seller products=======================================
-routes.get(`${bestSellerProduct}` , GetBestSellerProductsFromDatabaseController);
-
-
-//================================//Route for aading product to database=======================================
-routes.post(`${singleProduct}` , GetOneProductFromDatabaseController);
-
-//================================//Route for aading product cart to database=======================================
-routes.post(`${cart}` , AddCartToDatabaseController);
-
-
-//================================//Route for getting cart size=======================================
-routes.post(`${cartSize}`  , GetCartSizeFromDatabaseController);
-
-//================================//Route for getting user cart=======================================
-routes.post(`${cartSize}/all`  , GetCartFromDatabase);
-
-
-//================================//Route for deleting an cart items from the database================================
-routes.post(`${cartSize}/delete` , DeleteCartItemFromDatabaseController);
-
-
-//================================//Route for posting review data to the database=======================================
-routes.post(`${review}` , csurfProtection  , addReviewToDatabaseController);
-
-//================================//Route for posting review data to the database=======================================
-routes.post(`${review}/rating-update` , csurfProtection  , addRatingToProductController);
-
-
-//================================//Route for sending product question email=======================================
-routes.post(`${review}/question` , csurfProtection  , sendProductQuestionEmailController);
-
-//================================//Route for posting review data to the database=======================================
-routes.get(`${review}` ,  GetReviewFromDatabaseController);
-
-routes.post(`${checkOut}`,csurfProtection , createCheckout);
-
-routes.post(`${checkOut}/get-check-out`,csurfProtection , GetCheckOutFromDatabaseController);
-
+// Checkout and Order Management Routes
+routes.post(`${checkOut}`, csurfProtection, createCheckout);
+routes.post(`${checkOut}/get-check-out`, csurfProtection, GetCheckOutFromDatabaseController);
 routes.put(`${checkOut}/status`, updateOrderStatus);
-
 routes.get(`${checkOut}/orders`, getOrdersByUser);
+routes.post(`${checkOut}/update-payment-details`, csurfProtection, UpdateCheckOutController);
 
-// Route for updating payment detail
-routes.post(`${checkOut}/update-payment-details`, csurfProtection, UpdateCheckOutController );
-
-// Route for subscribing to the newsletter
+// Newsletter Subscription Routes
 routes.post(`${subscribe}`, csurfProtection, subscribeEmail);
-
-// Route for unsubscribing from the newsletter
 routes.post(`${subscribe}/un`, unsubscribeEmail);
 
-// Route for handling yoco payment
-routes.post(`${yocoPayment}`, csurfProtection , YocoPayment);
+// Yoco Payment Routes
+routes.post(`${yocoPayment}`, csurfProtection, YocoPayment);
+routes.post(`${yocoPaymentWebHook}`, YocoPaymentWebHook);
+routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, YocoCreateWebHook);
 
-// Route for handling yoco payment webhook
-routes.post(`${yocoPaymentWebHook}`,  YocoPaymentWebHook);
-
-// Route for handling yoco payment creating a webhook
-routes.post(`${yocoPaymentWebHook}/create`, csurfProtection ,YocoCreateWebHook);
-
-// Route for handling order
+// Order Management Route
 routes.post(`${order}`, GetOrderController);
 
 

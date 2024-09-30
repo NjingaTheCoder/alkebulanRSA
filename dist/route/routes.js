@@ -61,74 +61,54 @@ const yocoPayment = process.env.YOCO_PAYMENT;
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 const order = process.env.ORDER;
 const routes = express_1.default.Router();
-//================================route get up csurf===============================================
+// Routes for handling CSRF token
 routes.get(`${signUp}`, csurfProtection, getCsurfTokenController_1.GetCsurfTokenController);
-//================================Router to handle signing up=======================================
+// Routes for Sign Up and Sign In
 routes.post(`${signUp}`, csurfProtection, signUpController_1.default);
-//================================//Route for handing signing in=======================================
 routes.post(`${signIn}`, csurfProtection, signInController_1.default);
-//================================//function for checking if user is Authenticated and the return session data basck=======================================
+// Routes for Authentication
 routes.get(`${getSession}`, checkAuthController_1.CheckAuthAndReturnSession);
-//================================//function for checking if user is Authenticated=======================================
 routes.get(`${checkAuth}`, checkAuthController_1.CheckAuth);
-//================================//function for sending the password reset email=======================================
+// Password Reset Routes
 routes.post(`${resetEmail}`, csurfProtection, passwordResetController_1.default);
-//================================//Route for checking if reset token exist=======================================
 routes.post(`${checkUpdatePassword}`, checkResetTokenController_1.default);
-//================================//Route for updating user password =======================================
 routes.patch(`${updatePassword}`, csurfProtection, updatePasswordController_1.default);
-//================================//Route for destory forgot password token=======================================
 routes.post(`${destroyResetToken}`, destoryForgotPasswordTokenController_1.default);
-//================================//Route for signing out=======================================
+// Sign Out Route
 routes.get(`${logOut}`, signOutController_1.default);
-//================================//Route for aading address to database=======================================
+// Address Management Routes
 routes.post(`${addressDetail}`, csurfProtection, addAddressToDatabase_1.default);
-//================================//Route for deleting an address from the database================================
 routes.post(`${addressDetail}/delete`, deleteAddressFromDatabaseController_1.default);
-//================================//function for get all the addresss=======================================
 routes.get(`${addressDetail}`, getAddressFromDatabaseController_1.default);
-//================================//Route for aading product to database=======================================
+// Product Management Routes
 routes.post(`${product}`, addProductToDatabaseController_1.default);
-//================================//Route for aading best seller product to database=======================================
-routes.post(`${bestSellerProduct}`, addBestSellerProductToDatabaseController_1.default);
-//================================//function for get all the products=======================================
 routes.get(`${product}`, getProductsFromDatabaseController_1.default);
-//================================//function for get all the best seller products=======================================
-routes.get(`${bestSellerProduct}`, getBestSellerProductsFromDatabaseController_1.default);
-//================================//Route for aading product to database=======================================
 routes.post(`${singleProduct}`, getOneProductFromDatabaseController_1.default);
-//================================//Route for aading product cart to database=======================================
+routes.post(`${bestSellerProduct}`, addBestSellerProductToDatabaseController_1.default);
+routes.get(`${bestSellerProduct}`, getBestSellerProductsFromDatabaseController_1.default);
+// Cart Management Routes
 routes.post(`${cart}`, addCartToDatabaseController_1.default);
-//================================//Route for getting cart size=======================================
 routes.post(`${cartSize}`, getCartSizeFromDatabaseController_1.default);
-//================================//Route for getting user cart=======================================
 routes.post(`${cartSize}/all`, getCartFromDatabase_1.default);
-//================================//Route for deleting an cart items from the database================================
 routes.post(`${cartSize}/delete`, deleteCartItemFromDatabaseController_1.default);
-//================================//Route for posting review data to the database=======================================
+// Review and Rating Routes
 routes.post(`${review}`, csurfProtection, addReviewToDatabaseController_1.default);
-//================================//Route for posting review data to the database=======================================
 routes.post(`${review}/rating-update`, csurfProtection, addRatingToProductController_1.default);
-//================================//Route for sending product question email=======================================
 routes.post(`${review}/question`, csurfProtection, sendProductQuestionEmailController_1.default);
-//================================//Route for posting review data to the database=======================================
 routes.get(`${review}`, getReviewFromDatabaseController_1.default);
+// Checkout and Order Management Routes
 routes.post(`${checkOut}`, csurfProtection, checkOutController_1.createCheckout);
 routes.post(`${checkOut}/get-check-out`, csurfProtection, getCheckOutFromDatabaseController_1.default);
 routes.put(`${checkOut}/status`, checkOutController_1.updateOrderStatus);
 routes.get(`${checkOut}/orders`, checkOutController_1.getOrdersByUser);
-// Route for updating payment detail
 routes.post(`${checkOut}/update-payment-details`, csurfProtection, updateCheckOutController_1.default);
-// Route for subscribing to the newsletter
+// Newsletter Subscription Routes
 routes.post(`${subscribe}`, csurfProtection, addSubsriberTodatabaseController_1.subscribeEmail);
-// Route for unsubscribing from the newsletter
 routes.post(`${subscribe}/un`, addSubsriberTodatabaseController_1.unsubscribeEmail);
-// Route for handling yoco payment
+// Yoco Payment Routes
 routes.post(`${yocoPayment}`, csurfProtection, yocoPayment_1.default);
-// Route for handling yoco payment webhook
 routes.post(`${yocoPaymentWebHook}`, yocoPaymentWebHook_1.default);
-// Route for handling yoco payment creating a webhook
 routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, yocoCreateWebHook_1.default);
-// Route for handling order
+// Order Management Route
 routes.post(`${order}`, getOrderController_1.default);
 exports.default = routes;
