@@ -15,6 +15,7 @@ const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 
 // Create express app
 const app = express();
+app.set('trust proxy', 1); // Tr
 
 // MongoDB session store initialization
 const MongoDBStore = mongoSession(session);
@@ -23,7 +24,7 @@ const store = new MongoDBStore({
     databaseName: 'Alkebulan',
     collection: 'alkebulan_sessions',
 });
-
+app.use(cookieParser());
 app.use(session({
     saveUninitialized: false,
     resave: false,
@@ -47,10 +48,14 @@ const corsOptions = {
 
 // Apply middleware
 app.use(cors(corsOptions));
-app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
 
+// Custom middleware to add additional headers
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
 
 
 // Rate limiting for Yoco payment webhook
@@ -62,11 +67,6 @@ const limiter = rateLimit({
 // Apply rate limit middleware to the webhook route
 app.use(`${yocoPaymentWebHook}/create`, limiter);
 
-// Custom middleware to add additional headers
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Credentials', 'true');
-    next();
-});
 
 // Apply routes to the express app
 app.use('/', router);
