@@ -62,7 +62,6 @@ app.use((0, express_session_1.default)({
     resave: false,
     secret: process.env.SECRET || 'fallbacksecret',
     store: store,
-    name: 'alkebulan',
     proxy: true, // Ensure this remains true if behind a proxy (e.g., Heroku, Nginx)
     cookie: {
         httpOnly: true, // Keeps the cookie inaccessible to client-side JavaScript
