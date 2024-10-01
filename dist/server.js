@@ -45,7 +45,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const routes_1 = __importDefault(require("./route/routes"));
-const PORT = process.env.PORT || 3000; // Default to port 3000 if not set
+const PORT = process.env.PORT || 10000; // Default to port 3000 if not set
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 // Create express app
 const app = (0, express_1.default)();
@@ -119,5 +119,5 @@ app.use((err, req, res, next) => {
     if (err.code !== 'EBADCSRFTOKEN') {
         return next(err);
     }
-    res.status(403).send(`client :${req.body._csrf} server : ${req.csrfToken()}`);
+    res.status(403).send(`client :${req.body._csrf} server :`);
 });

@@ -10,7 +10,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import router from './route/routes';
 
-const PORT = process.env.PORT || 3000; // Default to port 3000 if not set
+const PORT = process.env.PORT || 10000; // Default to port 3000 if not set
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 
 // Create express app
@@ -96,5 +96,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     if (err.code !== 'EBADCSRFTOKEN') {
         return next(err);
     }
-    res.status(403).send(`client :${req.body._csrf} server : ${req.csrfToken()}`);
+    res.status(403).send(`client :${req.body._csrf} server :`);
 });
