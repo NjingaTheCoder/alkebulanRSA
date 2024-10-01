@@ -49,7 +49,6 @@ const PORT = process.env.PORT || 10000; // Default to port 3000 if not set
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 // Create express app
 const app = (0, express_1.default)();
-app.set('trust proxy', 1); // Tr
 // MongoDB session store initialization
 const MongoDBStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
 const store = new MongoDBStore({
@@ -57,7 +56,6 @@ const store = new MongoDBStore({
     databaseName: 'Alkebulan',
     collection: 'alkebulan_sessions',
 });
-app.use((0, cookie_parser_1.default)());
 app.use((0, express_session_1.default)({
     saveUninitialized: false,
     resave: false,
@@ -65,7 +63,7 @@ app.use((0, express_session_1.default)({
     store: store,
     cookie: {
         httpOnly: true,
-        secure: true, // Only secure in production
+        secure: process.env.NODE_ENV === 'production', // Only secure in production
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // SameSite=none in production
     }
@@ -74,18 +72,13 @@ app.use((0, express_session_1.default)({
 const corsOptions = {
     origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    cookieParser: true,
     credentials: true, // Enable credentials (cookies, authorization headers)
 };
 // Apply middleware
 app.use((0, cors_1.default)(corsOptions));
+app.use((0, cookie_parser_1.default)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
-// Custom middleware to add additional headers
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Credentials', 'true');
-    next();
-});
 // Rate limiting for Yoco payment webhook
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -93,6 +86,11 @@ const limiter = (0, express_rate_limit_1.default)({
 });
 // Apply rate limit middleware to the webhook route
 app.use(`${yocoPaymentWebHook}/create`, limiter);
+// Custom middleware to add additional headers
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
 // Apply routes to the express app
 app.use('/', routes_1.default);
 //================================
@@ -121,5 +119,5 @@ app.use((err, req, res, next) => {
     if (err.code !== 'EBADCSRFTOKEN') {
         return next(err);
     }
-    res.status(403).send(`client :${req.body._csrf} server :`);
+    res.status(403).send(`client :${req.body._csrf} server : ${req.csrfToken()}`);
 });
