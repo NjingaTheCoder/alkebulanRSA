@@ -40,7 +40,7 @@ app.use(session({
 
 // CORS options
 const corsOptions = {
-    origin: 'https://alkebulanrsa.co.za/', // Allow only your production URL
+    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     cookieParser: true,
     credentials: true, // Enable credentials (cookies, authorization headers)
