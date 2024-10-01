@@ -12,7 +12,6 @@ import router from './route/routes';
 
 const PORT = process.env.PORT || 3000; // Default to port 3000 if not set
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
-const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Create express app
 const app = express();
@@ -34,7 +33,7 @@ app.use(session({
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',  // Only secure in production
         maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // SameSite=none in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // SameSite=none in production
     }
 }));
 
