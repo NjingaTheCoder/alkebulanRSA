@@ -30,10 +30,10 @@ app.use(session({
     secret: process.env.SECRET || 'fallbacksecret',
     store: store,
     cookie: {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === 'production',  // Only secure in production
         maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // SameSite=none in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // SameSite=none in production
     }
 }));
 
