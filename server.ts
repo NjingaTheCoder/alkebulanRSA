@@ -26,7 +26,7 @@ const store = new MongoDBStore({
 });
 
 app.use(session({
-    saveUninitialized: true,
+    saveUninitialized: false,
     resave: false,
     secret: process.env.SECRET || 'fallbacksecret',
     store: store,
@@ -37,6 +37,7 @@ app.use(session({
         secure: process.env.NODE_ENV === 'production',  // Only secure in production
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         sameSite: 'none' , // SameSite=none in production
+        domain: '.alkebulanrsa.co.za'
     }
 }));
 

@@ -58,7 +58,7 @@ const store = new MongoDBStore({
     collection: 'alkebulan_sessions',
 });
 app.use((0, express_session_1.default)({
-    saveUninitialized: true,
+    saveUninitialized: false,
     resave: false,
     secret: process.env.SECRET || 'fallbacksecret',
     store: store,
@@ -69,6 +69,7 @@ app.use((0, express_session_1.default)({
         secure: process.env.NODE_ENV === 'production', // Only secure in production
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         sameSite: 'none', // SameSite=none in production
+        domain: '.alkebulanrsa.co.za'
     }
 }));
 // CORS options
