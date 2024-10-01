@@ -31,15 +31,16 @@ app.use(session({
     secret: process.env.SECRET || 'fallbacksecret',
     store: store,
     name: 'alkebulan',
-    proxy: true,
+    proxy: true, // Ensure this remains true if behind a proxy (e.g., Heroku, Nginx)
     cookie: {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',  // Only secure in production
+        httpOnly: true, // Keeps the cookie inaccessible to client-side JavaScript
+        secure: true,  // Ensure cookies are only sent over HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: 'none' , // SameSite=none in production
-        domain: '.alkebulanrsa.co.za'
+        sameSite: 'none', // Required for cross-site requests when cookies are used
+        domain: '.alkebulanrsa.co.za' // Use your production domain
     }
 }));
+
 
 // CORS options
 const corsOptions = {
