@@ -41,11 +41,12 @@ app.use(session({
 const corsOptions = {
     origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    cookieParser: true,
     credentials: true, // Enable credentials (cookies, authorization headers)
 };
 
 // Apply middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
