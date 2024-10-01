@@ -40,8 +40,8 @@ const updateCheckOutController_1 = __importDefault(require("../controller/update
 const getOrderController_1 = __importDefault(require("../controller/getOrderController"));
 const csurfProtection = (0, csurf_1.default)({ cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Only secure in production
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+        secure: true, // Only secure in production
+        sameSite: 'none'
     } });
 const signUp = process.env.SIGN_UP;
 const signIn = process.env.SIGN_IN;

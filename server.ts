@@ -31,7 +31,7 @@ app.use(session({
     store: store,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',  // Only secure in production
+        secure: true,  // Only secure in production
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // SameSite=none in production
     }
