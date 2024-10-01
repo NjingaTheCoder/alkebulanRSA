@@ -45,7 +45,7 @@ const corsOptions = {
 };
 
 // Apply middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
