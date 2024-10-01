@@ -67,12 +67,12 @@ app.use((0, express_session_1.default)({
         httpOnly: true,
         secure: true, // Only secure in production
         maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: 'none', // SameSite=none in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // SameSite=none in production
     }
 }));
 // CORS options
 const corsOptions = {
-    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
+    origin: 'https://shop.alkebulanrsa.co.za/sign-in', // Allow only your production URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     cookieParser: true,
     credentials: true, // Enable credentials (cookies, authorization headers)

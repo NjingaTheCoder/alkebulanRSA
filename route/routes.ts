@@ -38,7 +38,6 @@ import GetOrderController from '../controller/getOrderController';
 const csurfProtection =  csurf({ cookie: {
     httpOnly: true,
     secure: true, // Only secure in production
-    sameSite: 'none'
   }});
 
 const signUp = process.env.SIGN_UP ;
