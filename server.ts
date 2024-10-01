@@ -15,6 +15,7 @@ const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 
 // Create express app
 const app = express();
+app.set("trust proxy", 1);
 
 // MongoDB session store initialization
 const MongoDBStore = mongoSession(session);
@@ -25,10 +26,12 @@ const store = new MongoDBStore({
 });
 
 app.use(session({
-    saveUninitialized: false,
+    saveUninitialized: true,
     resave: false,
     secret: process.env.SECRET || 'fallbacksecret',
     store: store,
+    name: 'alkebulan',
+    proxy: true,
     cookie: {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',  // Only secure in production

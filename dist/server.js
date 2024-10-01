@@ -49,6 +49,7 @@ const PORT = process.env.PORT || 10000; // Default to port 3000 if not set
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 // Create express app
 const app = (0, express_1.default)();
+app.set("trust proxy", 1);
 // MongoDB session store initialization
 const MongoDBStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
 const store = new MongoDBStore({
@@ -57,10 +58,12 @@ const store = new MongoDBStore({
     collection: 'alkebulan_sessions',
 });
 app.use((0, express_session_1.default)({
-    saveUninitialized: false,
+    saveUninitialized: true,
     resave: false,
     secret: process.env.SECRET || 'fallbacksecret',
     store: store,
+    name: 'alkebulan',
+    proxy: true,
     cookie: {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production', // Only secure in production
