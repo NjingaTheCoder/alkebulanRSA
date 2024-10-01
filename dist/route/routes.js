@@ -69,7 +69,7 @@ const routes = express_1.default.Router();
 routes.get(`${signUp}`, csurfProtection, getCsurfTokenController_1.GetCsurfTokenController);
 // Routes for Sign Up and Sign In
 routes.post(`${signUp}`, csurfProtection, signUpController_1.default);
-routes.post(`${signIn}`, csurfProtection, signInController_1.default);
+routes.post(`${signIn}`, signInController_1.default);
 // Routes for Authentication
 routes.get(`${getSession}`, checkAuthController_1.CheckAuthAndReturnSession);
 routes.get(`${checkAuth}`, checkAuthController_1.CheckAuth);

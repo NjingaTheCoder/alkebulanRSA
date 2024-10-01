@@ -40,7 +40,7 @@ const csurfProtection =  csurf({ cookie: {
     secure: process.env.NODE_ENV === 'production', // Only secure in production
     sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
   }});
-  
+
 const signUp = process.env.SIGN_UP ;
 const signIn = process.env.SIGN_IN ;
 const getSession = process.env.GET_SESSION ;
@@ -70,7 +70,7 @@ routes.get(`${signUp}`, csurfProtection, GetCsurfTokenController);
 
 // Routes for Sign Up and Sign In
 routes.post(`${signUp}`, csurfProtection, SignUpController);
-routes.post(`${signIn}`, csurfProtection, SignInController);
+routes.post(`${signIn}`,  SignInController);
 
 // Routes for Authentication
 routes.get(`${getSession}`, CheckAuthAndReturnSession);
