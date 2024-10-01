@@ -70,7 +70,7 @@ routes.get(`${signUp}`, csurfProtection, GetCsurfTokenController);
 
 // Routes for Sign Up and Sign In
 routes.post(`${signUp}`, csurfProtection, SignUpController);
-routes.post(`${signIn}`,  SignInController);
+routes.post(`${signIn}`, csurfProtection , SignInController);
 
 // Routes for Authentication
 routes.get(`${getSession}`, CheckAuthAndReturnSession);
