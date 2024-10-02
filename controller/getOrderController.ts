@@ -6,6 +6,11 @@ const GetOrderController = async (req: Request, res: Response) => {
   const { } = req.body; // Get the orderId from the request parameters
 
   const userId =  req.session?.userData?.userID;
+
+  if(!userId){
+
+    res.status(400).send({message : 'User not found😪'});
+  }
   try {
     // Find the order where 'checkOutObject.orderId' matches the passed orderId
     const order: Array<IOrder> | null = await orderModel.find({ 'checkOutObject.userId': userId }).exec();
