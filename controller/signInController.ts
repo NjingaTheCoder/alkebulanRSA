@@ -37,7 +37,6 @@ const SignInController =  async ( request : Request ,  response : Response) => {
 
         }
 
-        console.log(userData);
 
         // Get current date
         const currentDate = new Date();
@@ -47,6 +46,7 @@ const SignInController =  async ( request : Request ,  response : Response) => {
 
 
         request.session.userData = userData;
+        console.log('Session data set:', request.session.userData);
         response.status(200).send({ message: 'Login successful' });
       } catch (error) {
         console.error('Error during login:', error);

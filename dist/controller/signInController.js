@@ -37,13 +37,13 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
             userPhoneNumber: user.phone_number,
             csrfToken: _csrf
         };
-        console.log(userData);
         // Get current date
         const currentDate = new Date();
         const last_logged_date = currentDate.toISOString();
         //update last loggin date
         yield user.updateOne({ last_logged_in: last_logged_date });
         request.session.userData = userData;
+        console.log('Session data set:', request.session.userData);
         response.status(200).send({ message: 'Login successful' });
     }
     catch (error) {
