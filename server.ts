@@ -15,6 +15,20 @@ const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 
 // Create express app
 const app = express();
+
+// CORS options
+const corsOptions = {
+    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, // Enable credentials (cookies, authorization headers)
+};
+
+// Apply middleware
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Enable preflight requests for all routes
+
+
+
 app.set("trust proxy", 1);
 
 // MongoDB session store initialization
@@ -40,15 +54,7 @@ app.use(session({
 }));
 
 
-// CORS options
-const corsOptions = {
-    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true, // Enable credentials (cookies, authorization headers)
-};
 
-// Apply middleware
-app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 app.use(express.json());

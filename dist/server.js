@@ -49,6 +49,15 @@ const PORT = process.env.PORT || 10000; // Default to port 3000 if not set
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 // Create express app
 const app = (0, express_1.default)();
+// CORS options
+const corsOptions = {
+    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, // Enable credentials (cookies, authorization headers)
+};
+// Apply middleware
+app.use((0, cors_1.default)(corsOptions));
+app.options('*', (0, cors_1.default)(corsOptions)); // Enable preflight requests for all routes
 app.set("trust proxy", 1);
 // MongoDB session store initialization
 const MongoDBStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
@@ -70,14 +79,6 @@ app.use((0, express_session_1.default)({
         sameSite: 'none', // Required for cross-site requests when cookies are used
     }
 }));
-// CORS options
-const corsOptions = {
-    origin: 'https://shop.alkebulanrsa.co.za', // Allow only your production URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true, // Enable credentials (cookies, authorization headers)
-};
-// Apply middleware
-app.use((0, cors_1.default)(corsOptions));
 app.use((0, cookie_parser_1.default)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
