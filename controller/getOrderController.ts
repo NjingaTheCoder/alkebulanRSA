@@ -6,7 +6,7 @@ const GetOrderController = async (req: Request, res: Response) => {
   const { } = req.body; // Get the orderId from the request parameters
 
   const userId =  req.session?.userData?.userID;
-  console.log('Session data set:', req.session.userData);
+  console.log('Session data set:', req.session);
 
   console.log(`User ID ${userId}`);
   try {
