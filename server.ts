@@ -25,6 +25,10 @@ const store = new MongoDBStore({
     collection: 'alkebulan_sessions',
 });
 
+store.on('error', function(error) {
+    console.error('Session store error:', error);
+});
+
 app.use(session({
     saveUninitialized: false,
     resave: false,
