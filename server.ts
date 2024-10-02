@@ -15,7 +15,6 @@ const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
 
 // Create express app
 const app = express();
-app.set("trust proxy", 1);
 
 // MongoDB session store initialization
 const MongoDBStore = mongoSession(session);
@@ -44,6 +43,7 @@ app.use(session({
     }
 }));
 
+app.set("trust proxy", 1);
 
 // CORS options
 const corsOptions = {
