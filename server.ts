@@ -29,6 +29,7 @@ store.on('error', function(error) {
 });
 
 app.use(cookieParser());
+
 app.use(session({
     saveUninitialized: false,
     resave: false,
@@ -106,5 +107,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     if (err.code !== 'EBADCSRFTOKEN') {
         return next(err);
     }
-    res.status(403).send(`client :${req.body._csrf} server : ${req.csrfToken()}`);
+    res.status(403).send(`CRF attack motherfucker 🙊`);
 });
