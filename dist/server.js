@@ -72,7 +72,6 @@ app.use((0, express_session_1.default)({
         secure: true, // Ensure cookies are only sent over HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         sameSite: 'none', // Required for cross-site requests when cookies are used
-        domain: 'shop.alkebulanrsa.co.za',
     }
 }));
 app.set("trust proxy", 1);
@@ -98,6 +97,10 @@ app.use(`${yocoPaymentWebHook}/create`, limiter);
 // Custom middleware to add additional headers
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
+app.use((req, res, next) => {
+    console.log('Session Data:', req.session.userData); // Check if session is accessible
     next();
 });
 // Apply routes to the express app
