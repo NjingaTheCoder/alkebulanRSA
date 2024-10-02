@@ -59,7 +59,8 @@ const corsOptions = {
     'Access-Control-Allow-Origin',
     'Content-Type',
     'Authorization',
-    'xsrf-token'
+    'xsrf-token',
+    'x-csrf-token'
   ]
 };
 
