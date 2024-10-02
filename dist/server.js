@@ -77,11 +77,17 @@ app.use((0, express_session_1.default)({
 app.set("trust proxy", 1);
 // CORS options
 const corsOptions = {
-    origin: ['https://shop.alkebulanrsa.co.za',
-        'https://shop.alkebulanrsa.co.za/sign-in',
-        'https://shop.alkebulanrsa.co.za/account'], // Allow only your production URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true, // Enable credentials (cookies, authorization headers)
+    origin: ['https://shop.alkebulanrsa.co.za'], // Allow only your production URL
+    credentials: true,
+    optionSuccessStatus: 200,
+    Headers: true,
+    exposedHeaders: 'Set-Cookie',
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Access-Control-Allow-Origin',
+        'Content-Type',
+        'Authorization'
+    ]
 };
 // Apply middleware
 app.use((0, cors_1.default)(corsOptions));
