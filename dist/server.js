@@ -71,7 +71,7 @@ app.use((0, express_session_1.default)({
         httpOnly: true, // Keeps the cookie inaccessible to client-side JavaScript
         secure: true, // Ensure cookies are only sent over HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: 'lax', // Required for cross-site requests when cookies are used
+        sameSite: 'none', // Required for cross-site requests when cookies are used
     }
 }));
 app.set("trust proxy", 1);
