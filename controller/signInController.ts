@@ -37,6 +37,8 @@ const SignInController =  async ( request : Request ,  response : Response) => {
 
         }
 
+        console.log(userData);
+
         // Get current date
         const currentDate = new Date();
         const last_logged_date = currentDate.toISOString();

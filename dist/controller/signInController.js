@@ -37,6 +37,7 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
             userPhoneNumber: user.phone_number,
             csrfToken: _csrf
         };
+        console.log(userData);
         // Get current date
         const currentDate = new Date();
         const last_logged_date = currentDate.toISOString();
