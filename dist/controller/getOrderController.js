@@ -11,9 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const order_schema_1 = require("../model/order_schema"); // Import your order model
 const GetOrderController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a;
     const {} = req.body; // Get the orderId from the request parameters
-    const userId = (_b = (_a = req.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.userID;
+    const userId = (_a = req.session.userData) === null || _a === void 0 ? void 0 : _a.userID;
     console.log('Session data set:', req.session);
     console.log(`User ID ${userId}`);
     try {

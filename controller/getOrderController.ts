@@ -5,7 +5,7 @@ import { IOrder } from '../interface&Objects/IOrder'; // Import the interfaces
 const GetOrderController = async (req: Request, res: Response) => {
   const { } = req.body; // Get the orderId from the request parameters
 
-  const userId =  req.session?.userData?.userID;
+  const userId =  req.session.userData?.userID;
   console.log('Session data set:', req.session);
 
   console.log(`User ID ${userId}`);

@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_schema_1 = require("../model/user_schema");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const SignInController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('i work');
     const { email, password, _csrf } = request.body;
     try {
         const user = yield user_schema_1.userModel.findOne({ email_address: email });
