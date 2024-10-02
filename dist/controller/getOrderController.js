@@ -14,9 +14,6 @@ const GetOrderController = (req, res) => __awaiter(void 0, void 0, void 0, funct
     var _a, _b;
     const {} = req.body; // Get the orderId from the request parameters
     const userId = (_b = (_a = req.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.userID;
-    if (!userId) {
-        res.status(400).send({ message: 'User not found😪' });
-    }
     try {
         // Find the order where 'checkOutObject.orderId' matches the passed orderId
         const order = yield order_schema_1.orderModel.find({ 'checkOutObject.userId': userId }).exec();

@@ -19,7 +19,6 @@ const AddCartToDatabaseController = async (request: Request, response: Response)
     const userId = request.session?.userData?.userID;
     const csrfToken  = request.session?.userData?.csrfToken;
 
-    console.log(csrfToken);
 
     // Stop execution if userID is missing
     if (!userId || !csrfToken) {
