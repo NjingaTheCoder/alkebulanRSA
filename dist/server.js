@@ -57,7 +57,6 @@ const corsOptions = {
 };
 // Apply middleware
 app.use((0, cors_1.default)(corsOptions));
-app.options('*', (0, cors_1.default)(corsOptions)); // Enable preflight requests for all routes
 app.set("trust proxy", 1);
 // MongoDB session store initialization
 const MongoDBStore = (0, connect_mongodb_session_1.default)(express_session_1.default);

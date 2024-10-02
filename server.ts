@@ -25,8 +25,6 @@ const corsOptions = {
 
 // Apply middleware
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Enable preflight requests for all routes
-
 
 
 app.set("trust proxy", 1);
