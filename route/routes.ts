@@ -39,7 +39,7 @@ const csurfProtection =  csurf({
     cookie: {
         httpOnly: true,
         secure: true,  // Ensure secure cookie over HTTPS
-        sameSite: 'lax',  // Required for cross-site requests
+        sameSite: 'none',  // Required for cross-site requests
         
     },
 });
