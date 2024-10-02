@@ -59,6 +59,7 @@ const store = new MongoDBStore({
 store.on('error', function (error) {
     console.error('Session store error:', error);
 });
+app.use((0, cookie_parser_1.default)());
 app.use((0, express_session_1.default)({
     saveUninitialized: false,
     resave: false,
@@ -84,7 +85,6 @@ const corsOptions = {
 };
 // Apply middleware
 app.use((0, cors_1.default)(corsOptions));
-app.use((0, cookie_parser_1.default)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
 // Rate limiting for Yoco payment webhook

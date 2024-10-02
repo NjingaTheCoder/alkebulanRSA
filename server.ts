@@ -28,6 +28,7 @@ store.on('error', function(error) {
     console.error('Session store error:', error);
 });
 
+app.use(cookieParser());
 app.use(session({
     saveUninitialized: false,
     resave: false,
@@ -56,7 +57,6 @@ const corsOptions = {
 
 // Apply middleware
 app.use(cors(corsOptions));
-app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
 
