@@ -42,7 +42,7 @@ const csurfProtection = (0, csurf_1.default)({
     cookie: {
         httpOnly: true,
         secure: true, // Ensure secure cookie over HTTPS
-        sameSite: 'none', // Required for cross-site requests
+        sameSite: 'lax', // Required for cross-site requests
     },
 });
 const signUp = process.env.SIGN_UP;
