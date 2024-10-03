@@ -4,13 +4,13 @@ import { IOrder } from '../interface&Objects/IOrder'; // Import the interfaces
 
 const GetOrderController = async (req: Request, res: Response) => {
 
-  const userId =  req.session.userData?.userID;
+  const {sessionID} = req.body;
 
 
-  console.log(`User Order ID ${userId}`);
+  console.log(`User Order ID ${sessionID}`);
   try {
     // Find the order where 'checkOutObject.orderId' matches the passed orderId
-    const order: Array<IOrder> | null = await orderModel.find({ 'checkOutObject.userId': req.session.userData?.userID }).exec();
+    const order: Array<IOrder> | null = await orderModel.find({ 'checkOutObject.userId': sessionID }).exec();
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });

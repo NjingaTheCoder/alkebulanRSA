@@ -11,12 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const order_schema_1 = require("../model/order_schema"); // Import your order model
 const GetOrderController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    const userId = (_a = req.session.userData) === null || _a === void 0 ? void 0 : _a.userID;
-    console.log(`User Order ID ${userId}`);
+    const { sessionID } = req.body;
+    console.log(`User Order ID ${sessionID}`);
     try {
         // Find the order where 'checkOutObject.orderId' matches the passed orderId
-        const order = yield order_schema_1.orderModel.find({ 'checkOutObject.userId': (_b = req.session.userData) === null || _b === void 0 ? void 0 : _b.userID }).exec();
+        const order = yield order_schema_1.orderModel.find({ 'checkOutObject.userId': sessionID }).exec();
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }

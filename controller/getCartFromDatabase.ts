@@ -18,7 +18,6 @@ const GetCartFromDatabase = async  (request : Request , response : Response) => 
     
     const {userId} = request.body;
 
-    console.log( `Cart user ID ${request.session.cookie}`);
     try {  
 
         const userIdMongo : mongoose.Schema.Types.ObjectId  = userId;
