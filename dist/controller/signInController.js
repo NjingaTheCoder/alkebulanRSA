@@ -26,7 +26,7 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
             return response.status(401).send({ error: 'Invalid email or password' });
         }
         //object for storing user data
-        const userData = {
+        request.session.userData = {
             isAuthenticated: true,
             forgotPassword: false,
             userID: user._id,
@@ -41,8 +41,15 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
         const last_logged_date = currentDate.toISOString();
         //update last loggin date
         yield user.updateOne({ last_logged_in: last_logged_date });
-        request.session.userData = userData;
-        response.status(200).send({ message: 'Login successful' });
+        // Save session and return success
+        request.session.save((err) => {
+            if (err) {
+                console.error('Error saving session:', err);
+                return response.status(500).send({ error: 'Session error' });
+            }
+            console.log('Session data after login:', request.session);
+            response.status(200).send({ message: 'Login successful' });
+        });
     }
     catch (error) {
         console.error('Error during login:', error);
