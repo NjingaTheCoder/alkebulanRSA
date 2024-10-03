@@ -16,7 +16,7 @@ exports.unsubscribeEmail = exports.subscribeEmail = void 0;
 const subscriber_schema_1 = __importDefault(require("../interface&Objects/subscriber_schema"));
 // Subscribe to the newsletter
 const subscribeEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email } = req.body;
+    const { email, _csrf } = req.body;
     try {
         let subscription = yield subscriber_schema_1.default.findOne({ email });
         // If email exists and is already subscribed, return a message

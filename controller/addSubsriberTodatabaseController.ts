@@ -3,7 +3,7 @@ import Subscription from "../interface&Objects/subscriber_schema";
 
 // Subscribe to the newsletter
 export const subscribeEmail = async (req: Request, res: Response) => {
-  const { email } = req.body;
+  const { email , _csrf} = req.body;
 
   try {
     let subscription = await Subscription.findOne({ email });
