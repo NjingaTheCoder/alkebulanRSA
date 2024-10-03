@@ -3,7 +3,7 @@ import { addressModel } from '../model/address_schema';
 
 const GetAddressFromDatabaseController = async ( request : Request , response : Response) => {
 
-    console.log('Session data set:', request.session);
+    console.log('Session data set in Address:', request.session);
     const addressObject = await addressModel.findOne({email :  request.session.userData?.userEmail});
     if (addressObject) {
         return response.status(200).send({ addressObject : addressObject});
