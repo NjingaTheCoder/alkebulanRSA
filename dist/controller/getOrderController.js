@@ -13,7 +13,9 @@ const order_schema_1 = require("../model/order_schema"); // Import your order mo
 const GetOrderController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     const userId = (_a = req.session.userData) === null || _a === void 0 ? void 0 : _a.userID;
-    console.log(`User Order ID ${userId}`);
+    // Log the cookies to check if the session cookie is present
+    console.log('Cookies:', req.cookies);
+    console.log('Session Cookie (alkebulan):', req.cookies.alkebulan);
     try {
         // Find the order where 'checkOutObject.orderId' matches the passed orderId
         const order = yield order_schema_1.orderModel.find({ 'checkOutObject.userId': (_b = req.session.userData) === null || _b === void 0 ? void 0 : _b.userID }).exec();

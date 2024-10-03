@@ -7,7 +7,9 @@ const GetOrderController = async (req: Request, res: Response) => {
   const userId =  req.session.userData?.userID;
 
 
-  console.log(`User Order ID ${userId}`);
+  // Log the cookies to check if the session cookie is present
+  console.log('Cookies:', req.cookies);
+  console.log('Session Cookie (alkebulan):', req.cookies.alkebulan);
   try {
     // Find the order where 'checkOutObject.orderId' matches the passed orderId
     const order: Array<IOrder> | null = await orderModel.find({ 'checkOutObject.userId': req.session.userData?.userID }).exec();
