@@ -83,7 +83,7 @@ routes.post(`${destroyResetToken}`, destoryForgotPasswordTokenController_1.defau
 // Sign Out Route
 routes.get(`${logOut}`, signOutController_1.default);
 // Address Management Routes
-routes.post(`${addressDetail}`, csurfProtection, addAddressToDatabase_1.default);
+routes.post(`${addressDetail}`, addAddressToDatabase_1.default);
 routes.post(`${addressDetail}/delete`, deleteAddressFromDatabaseController_1.default);
 routes.get(`${addressDetail}`, getAddressFromDatabaseController_1.default);
 // Product Management Routes
@@ -109,7 +109,7 @@ routes.put(`${checkOut}/status`, checkOutController_1.updateOrderStatus);
 routes.get(`${checkOut}/orders`, checkOutController_1.getOrdersByUser);
 routes.post(`${checkOut}/update-payment-details`, csurfProtection, updateCheckOutController_1.default);
 // Newsletter Subscription Routes
-routes.post(`${subscribe}`, csurfProtection, addSubsriberTodatabaseController_1.subscribeEmail);
+routes.post(`${subscribe}`, addSubsriberTodatabaseController_1.subscribeEmail);
 routes.post(`${subscribe}/un`, addSubsriberTodatabaseController_1.unsubscribeEmail);
 // Yoco Payment Routes
 routes.post(`${yocoPayment}`, csurfProtection, yocoPayment_1.default);
