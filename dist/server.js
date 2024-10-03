@@ -109,7 +109,7 @@ app.use((req, res, next) => {
     next();
 });
 app.use((req, res, next) => {
-    console.log('Session Data:', req.session.userData); // Check if session is accessible
+    console.log('Session Data Server Test File:', req.session.userData); // Check if session is accessible
     next();
 });
 // Apply routes to the express app
