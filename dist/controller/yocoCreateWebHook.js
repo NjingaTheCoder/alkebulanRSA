@@ -29,7 +29,8 @@ const YocoCreateWebHook = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 // 'Authorization': `Bearer ${process.env.YOCO_API_KEY}`,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`
-            }
+            },
+            withCredentials: true
         });
         res.status(200).json(response.data); // Send the successful response back to frontend
     }
