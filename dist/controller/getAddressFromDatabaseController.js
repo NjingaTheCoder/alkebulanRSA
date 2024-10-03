@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const address_schema_1 = require("../model/address_schema");
 const GetAddressFromDatabaseController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    console.log('Session data set in Address:', request.session);
     const addressObject = yield address_schema_1.addressModel.findOne({ email: (_a = request.session.userData) === null || _a === void 0 ? void 0 : _a.userEmail });
     if (addressObject) {
         return response.status(200).send({ addressObject: addressObject });
