@@ -14,7 +14,6 @@ const GetOrderController = (req, res) => __awaiter(void 0, void 0, void 0, funct
     var _a;
     const {} = req.body; // Get the orderId from the request parameters
     const userId = (_a = req.session.userData) === null || _a === void 0 ? void 0 : _a.userID;
-    console.log('Session data set:', req.session);
     console.log(`User ID ${userId}`);
     try {
         // Find the order where 'checkOutObject.orderId' matches the passed orderId

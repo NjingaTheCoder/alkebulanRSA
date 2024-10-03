@@ -46,9 +46,6 @@ const SignInController =  async ( request : Request ,  response : Response) => {
 
 
         request.session.userData = userData;
-
-        console.log('Session after login:', request.session);
-        console.log('Cookies after login:', response.getHeader('Set-Cookie'));
         response.status(200).send({ message: 'Login successful' });
       } catch (error) {
         console.error('Error during login:', error);
