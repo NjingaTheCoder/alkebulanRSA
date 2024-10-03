@@ -37,7 +37,7 @@ import GetOrderController from '../controller/getOrderController';
 
 const csurfProtection =  csurf({
     cookie: {
-        httpOnly: true,
+        httpOnly: false,
         secure: true,  // Ensure secure cookie over HTTPS
         sameSite: 'none',  // Required for cross-site requests
         

@@ -68,7 +68,7 @@ app.use((0, express_session_1.default)({
     name: 'alkebulan',
     proxy: true, // Ensure this remains true if behind a proxy (e.g., Heroku, Nginx)
     cookie: {
-        httpOnly: true, // Keeps the cookie inaccessible to client-side JavaScript
+        httpOnly: false, // Keeps the cookie inaccessible to client-side JavaScript
         secure: true, // Ensure cookies are only sent over HTTPS
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         sameSite: 'none', // Required for cross-site requests when cookies are used
