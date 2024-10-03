@@ -13,8 +13,8 @@ const YocoPayment = async (req :Request , res : Response) => {
             token: token,
             amount: parseInt(amount),
             currency: 'ZAR',
-            successUrl : "http://localhost:5173/account",
-            failureUrl : "http://localhost:5173/failure",
+            successUrl : "https://shop.alkebulanrsa.co.za/account",
+            failureUrl : "https://shop.alkebulanrsa.co.za/failure",
         }, {
             headers: {
                 'Content-Type': 'application/json',
