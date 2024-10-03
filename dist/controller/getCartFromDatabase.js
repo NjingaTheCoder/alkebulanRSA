@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const GetCartFromDatabase = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = request.body;
+    console.log(`Cart user ID ${userId}`);
     try {
         const userIdMongo = userId;
         const cart = yield cart_schema_1.cartModel.findOne({ userId: userIdMongo });
