@@ -6,6 +6,7 @@ const YocoCreateWebHook = async (req : Request , res : Response) => {
     const { event_types, url } = req.body;
 
  
+    console.log('webhook created..........');
     if (!event_types || !url) {
       return res.status(400).json({ message: 'Invalid data provided' });
     }
