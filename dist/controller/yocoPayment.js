@@ -22,7 +22,7 @@ const YocoPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             amount: parseInt(amount),
             currency: 'ZAR',
             successUrl: "https://shop.alkebulanrsa.co.za/account",
-            failureUrl: "https://shop.alkebulanrsa.co.za/failure",
+            failureUrl: "http://localhost:5173/failure",
         }, {
             headers: {
                 'Content-Type': 'application/json',
