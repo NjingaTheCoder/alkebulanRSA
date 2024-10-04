@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const YocoPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { token, amount, _csrf } = req.body;
+    console.log('', token, amount, _csrf);
     // Check if the token or amount is missing or invalid
     if (!token || typeof token !== "string" || token.trim() === "") {
         return res.status(400).json({ success: false, message: "Invalid token provided" });
