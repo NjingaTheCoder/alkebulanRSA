@@ -5,7 +5,7 @@ const YocoPayment = async (req: Request, res: Response) => {
   const { token, amount, _csrf } = req.body;
 
 
-  console.log( '' , token  ,  amount , _csrf);
+  console.log( 'Yoco Payment :' , token  ,  amount , _csrf);
   // Check if the token or amount is missing or invalid
   if (!token || typeof token !== "string" || token.trim() === "") {
     return res.status(400).json({ success: false, message: "Invalid token provided" });
