@@ -22,7 +22,7 @@ const emailPort = process.env.EMAIL_PORT;
 const emailHostUser = process.env.EMAIL_HOST_USER;
 const emailHostPassword = process.env.EMAIL_HOST_PASSWORD;
 const secretKey = process.env.SECRET || 'koffieking';
-const resetRedirectLink = new url_1.URL(`http://localhost:5173/reset-password`);
+const resetRedirectLink = new url_1.URL(`https://shop.alkebulanrsa.co.za//reset-password`);
 //set up email transporter
 const transporter = nodemailer_1.default.createTransport({
     host: emailHost,
