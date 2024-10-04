@@ -8,6 +8,7 @@ const YocoPayment = async (req :Request , res : Response) => {
     
     const { token, amount , _csrf } = req.body;
 
+    console.log('yoco payment : ' , amount , token , _csrf);
     try {
         const response = await axios.post('https://payments.yoco.com/api/checkouts', {
             token: token,

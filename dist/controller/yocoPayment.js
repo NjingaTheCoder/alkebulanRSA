@@ -16,6 +16,7 @@ const axios_1 = __importDefault(require("axios"));
 const YocoPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const secret = process.env.YOCO_KEY;
     const { token, amount, _csrf } = req.body;
+    console.log('yoco payment : ', amount, token, _csrf);
     try {
         const response = yield axios_1.default.post('https://payments.yoco.com/api/checkouts', {
             token: token,
