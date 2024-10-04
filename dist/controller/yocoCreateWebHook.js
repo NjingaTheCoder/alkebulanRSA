@@ -15,13 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const YocoCreateWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { event_types, url } = req.body;
-    console.log('webhook created..........');
     if (!event_types || !url) {
         return res.status(400).json({ message: 'Invalid data provided' });
     }
     //this is to everything in check
     try {
-        const response = yield axios_1.default.post('https://payments.yoco.com/api/webhooks', JSON.stringify({
+        const response = yield axios_1.default.post('https://payments.yoco.com/api/webhooks', ({
             name: 'Alkebulanrsa Payment Webhook',
             url: url, // Webhook URL from frontend
             event_types: event_types, // Event types from frontend
@@ -30,7 +29,8 @@ const YocoCreateWebHook = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 // 'Authorization': `Bearer ${process.env.YOCO_API_KEY}`,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`
-            }
+            },
+            withCredentials: true
         });
         res.status(200).json(response.data); // Send the successful response back to frontend
     }

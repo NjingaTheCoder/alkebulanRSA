@@ -6,7 +6,6 @@ const YocoCreateWebHook = async (req : Request , res : Response) => {
     const { event_types, url } = req.body;
 
  
-    console.log('webhook created..........');
     if (!event_types || !url) {
       return res.status(400).json({ message: 'Invalid data provided' });
     }
@@ -15,7 +14,7 @@ const YocoCreateWebHook = async (req : Request , res : Response) => {
     try {
       const response = await axios.post(
         'https://payments.yoco.com/api/webhooks',
-        JSON.stringify({
+        ({
           name: 'Alkebulanrsa Payment Webhook', 
           url: url,                   // Webhook URL from frontend
           event_types: event_types,    // Event types from frontend
@@ -25,7 +24,8 @@ const YocoCreateWebHook = async (req : Request , res : Response) => {
            // 'Authorization': `Bearer ${process.env.YOCO_API_KEY}`,
             'Content-Type': 'application/json',
             'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`
-          }
+          },
+          withCredentials : true
         }
       );
   
