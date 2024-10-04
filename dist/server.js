@@ -85,8 +85,6 @@ const corsOptions = {
 app.use((0, cors_1.default)(corsOptions));
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
-// Apply rate limit middleware to the webhook route
-app.use(`${yocoPaymentWebHook}/create`, limiter);
 // Custom middleware to add additional headers
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');

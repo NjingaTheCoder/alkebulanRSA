@@ -63,10 +63,6 @@ app.use(express.json());
 
 
 
-
-// Apply rate limit middleware to the webhook route
-app.use(`${yocoPaymentWebHook}/create`, limiter);
-
 // Custom middleware to add additional headers
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
