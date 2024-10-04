@@ -62,11 +62,7 @@ app.use(express.json());
 
 
 
-// Rate limiting for Yoco payment webhook
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
-});
+
 
 // Apply rate limit middleware to the webhook route
 app.use(`${yocoPaymentWebHook}/create`, limiter);
