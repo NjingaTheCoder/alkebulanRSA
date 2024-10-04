@@ -2,14 +2,11 @@ import { Request, Response } from "express";
 import axios from "axios";
 
 const YocoPayment = async (req: Request, res: Response) => {
-  const { token, amount, _csrf } = req.body;
+    
+  const { amount, _csrf } = req.body;
 
 
-  console.log( 'Yoco Payment :' , token  ,  amount , _csrf);
-  // Check if the token or amount is missing or invalid
-  if (!token || typeof token !== "string" || token.trim() === "") {
-    return res.status(400).json({ success: false, message: "Invalid token provided" });
-  }
+
 
   if (!amount || isNaN(parseInt(amount))) {
     return res.status(400).json({ success: false, message: "Invalid amount provided" });
@@ -19,7 +16,6 @@ const YocoPayment = async (req: Request, res: Response) => {
     const response = await axios.post(
       "https://payments.yoco.com/api/checkouts",
       {
-        token: token,
         amount: parseInt(amount),
         currency: "ZAR",
         successUrl: "https://shop.alkebulanrsa.co.za/account",

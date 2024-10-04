@@ -14,18 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const YocoPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { token, amount, _csrf } = req.body;
-    console.log('Yoco Payment :', token, amount, _csrf);
-    // Check if the token or amount is missing or invalid
-    if (!token || typeof token !== "string" || token.trim() === "") {
-        return res.status(400).json({ success: false, message: "Invalid token provided" });
-    }
+    const { amount, _csrf } = req.body;
     if (!amount || isNaN(parseInt(amount))) {
         return res.status(400).json({ success: false, message: "Invalid amount provided" });
     }
     try {
         const response = yield axios_1.default.post("https://payments.yoco.com/api/checkouts", {
-            token: token,
             amount: parseInt(amount),
             currency: "ZAR",
             successUrl: "https://shop.alkebulanrsa.co.za/account",
