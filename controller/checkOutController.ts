@@ -35,6 +35,11 @@ export const createCheckout = async (req: Request, res: Response) => {
 
     if(cartExists){
        await checkOut.deleteOne({userId : userId});
+
+       if (cartExists) {
+        const deleted = await checkOut.deleteOne({ userId: userId });
+        console.log('Deleted previous cart:', deleted);
+      }
     }
 
     // Create new checkout instance

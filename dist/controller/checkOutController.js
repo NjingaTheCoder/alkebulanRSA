@@ -26,6 +26,10 @@ const createCheckout = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const cartExists = yield check_out_schema_1.checkOut.findOne({ userId: userId });
         if (cartExists) {
             yield check_out_schema_1.checkOut.deleteOne({ userId: userId });
+            if (cartExists) {
+                const deleted = yield check_out_schema_1.checkOut.deleteOne({ userId: userId });
+                console.log('Deleted previous cart:', deleted);
+            }
         }
         // Create new checkout instance
         const newCheckout = new check_out_schema_1.checkOut({
