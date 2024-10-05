@@ -14,6 +14,8 @@ interface ICart{
 }
 
 export const createCheckout = async (req: Request, res: Response) => {
+
+  console.log('Check me out man');
   try {
     const { userId, orderItems, shippingAddress, paymentDetails, totalAmount, shippingCost,deliveryMethod, deliveryDate , tax , email } = req.body;
 
