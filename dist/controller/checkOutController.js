@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOrdersByUser = exports.updateOrderStatus = exports.createCheckout = void 0;
 const check_out_schema_1 = require("../model/check_out_schema");
 const createCheckout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Check me out man');
     try {
         const { userId, orderItems, shippingAddress, paymentDetails, totalAmount, shippingCost, deliveryMethod, deliveryDate, tax, email } = req.body;
         // Ensure that orderItems is an array of ICart

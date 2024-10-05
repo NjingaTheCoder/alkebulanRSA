@@ -1,5 +1,6 @@
 import { Response , Request } from "express";
 import { userModel } from '../model/user_schema';
+import sessionModel from "../model/session_schema";
 import bcrypt from 'bcrypt';
 
 
@@ -21,7 +22,12 @@ const SignInController =  async ( request : Request ,  response : Response) => {
         if (!isPasswordValid) {
           return response.status(401).send({ error: 'Invalid email or password' });
         }
-    
+
+        const deletedSession = await sessionModel.findOneAndDelete({ 'session.userData.userEmail': email });
+
+        if (!deletedSession) {
+          return { message: 'Session not found for the provided email.' };
+        }    
 
         //object for storing user data
         request.session.userData = {

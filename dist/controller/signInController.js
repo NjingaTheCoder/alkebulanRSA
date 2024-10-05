@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_schema_1 = require("../model/user_schema");
+const session_schema_1 = __importDefault(require("../model/session_schema"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const SignInController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, _csrf } = request.body;
@@ -24,6 +25,10 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
         const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
         if (!isPasswordValid) {
             return response.status(401).send({ error: 'Invalid email or password' });
+        }
+        const deletedSession = yield session_schema_1.default.findOneAndDelete({ 'session.userData.userEmail': email });
+        if (!deletedSession) {
+            return { message: 'Session not found for the provided email.' };
         }
         //object for storing user data
         request.session.userData = {
