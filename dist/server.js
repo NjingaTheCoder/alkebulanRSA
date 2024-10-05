@@ -92,7 +92,7 @@ const limiter = (0, express_rate_limit_1.default)({
     max: 100, // Limit each IP to 100 requests per windowMs
 });
 // Apply rate limit middleware to the webhook route
-//app.use(`${yocoPaymentWebHook}/create`, limiter);
+app.use(`${yocoPaymentWebHook}/create`, limiter);
 // Custom middleware to add additional headers
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');

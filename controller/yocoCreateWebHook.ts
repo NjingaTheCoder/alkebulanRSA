@@ -14,22 +14,22 @@ const YocoCreateWebHook = async (req : Request , res : Response) => {
   
     //this is to everything in check
     try {
-      
+
       const response = await axios.post(
         'https://payments.yoco.com/api/webhooks',
         {
-          name: 'Alkebulanrsa Payment Webhook', 
-          url: url,                   // Webhook URL from frontend
-          event_types: event_types,    // Event types from frontend
+          name: 'Alkebulanrsa Payment Webhook',
+          url: url,
+          event_types: event_types,
         },
         {
           headers: {
-            'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`,           
+            'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`,  // Environment variable
+            'Content-Type': 'application/json'
           }
         }
       );
       
-
       console.log('Webhook created');
   
       res.status(200).json(response.data); // Send the successful response back to frontend
