@@ -77,7 +77,7 @@ app.use((0, express_session_1.default)({
 app.set("trust proxy", 1);
 // CORS options
 const corsOptions = {
-    origin: ['https://shop.alkebulanrsa.co.za', 'https://c.yoco.com'], // Allow only your production URL
+    origin: ['https://shop.alkebulanrsa.co.za', 'https://c.yoco.com', 'https://clientstream.launchdarkly.com'], // Allow only your production URL
     credentials: true,
     optionSuccessStatus: 200,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS', 'PATCH'],
