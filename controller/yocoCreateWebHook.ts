@@ -3,7 +3,7 @@ import axios from "axios";
 
 const YocoCreateWebHook = async (req : Request , res : Response) => {
 
-    const { event_types, url } = req.body;
+    const { event_types, url , _csrf } = req.body;
 
    
  

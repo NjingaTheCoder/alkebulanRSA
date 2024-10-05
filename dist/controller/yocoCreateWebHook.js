@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const YocoCreateWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { event_types, url } = req.body;
+    const { event_types, url, _csrf } = req.body;
     console.log('Create Webhook : ', event_types, url);
     if (!event_types || !url) {
         return res.status(400).json({ message: 'Invalid data provided' });

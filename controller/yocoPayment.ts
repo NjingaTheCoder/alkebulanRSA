@@ -25,7 +25,6 @@ const YocoPayment = async (req :Request , res : Response) => {
         });
 
                 
-        console.log({paymentData : response.data});
         // Check if the payment session is created and provide the redirect URL
         if (response.data.status === 'created') {
             // Send the redirect URL back to the frontend
