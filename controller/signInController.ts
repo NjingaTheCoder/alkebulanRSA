@@ -23,11 +23,7 @@ const SignInController =  async ( request : Request ,  response : Response) => {
           return response.status(401).send({ error: 'Invalid email or password' });
         }
 
-        const deletedSession = await sessionModel.findOneAndDelete({ 'session.userData.userEmail': email });
-
-        if (!deletedSession) {
-          return { message: 'Session not found for the provided email.' };
-        }    
+        await sessionModel.findOneAndDelete({ 'session.userData.userEmail': email });
 
         //object for storing user data
         request.session.userData = {

@@ -26,10 +26,7 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
         if (!isPasswordValid) {
             return response.status(401).send({ error: 'Invalid email or password' });
         }
-        const deletedSession = yield session_schema_1.default.findOneAndDelete({ 'session.userData.userEmail': email });
-        if (!deletedSession) {
-            return { message: 'Session not found for the provided email.' };
-        }
+        yield session_schema_1.default.findOneAndDelete({ 'session.userData.userEmail': email });
         //object for storing user data
         request.session.userData = {
             isAuthenticated: true,
