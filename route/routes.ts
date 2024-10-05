@@ -113,7 +113,7 @@ routes.post(`${review}/question`, csurfProtection, sendProductQuestionEmailContr
 routes.get(`${review}`, GetReviewFromDatabaseController);
 
 // Checkout and Order Management Routes
-routes.post(`${checkOut}`, csurfProtection, createCheckout);
+routes.post(`${checkOut}`,  createCheckout);
 routes.post(`${checkOut}/get-check-out`, csurfProtection, GetCheckOutFromDatabaseController);
 routes.put(`${checkOut}/status`, updateOrderStatus);
 routes.get(`${checkOut}/orders`, getOrdersByUser);
