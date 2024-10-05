@@ -69,7 +69,7 @@ const limiter = rateLimit({
 });
 
 // Apply rate limit middleware to the webhook route
-app.use(`${yocoPaymentWebHook}/create`, limiter);
+//app.use(`${yocoPaymentWebHook}/create`, limiter);
 
 // Custom middleware to add additional headers
 app.use((req, res, next) => {
