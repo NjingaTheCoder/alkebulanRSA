@@ -43,6 +43,7 @@ const express_session_1 = __importDefault(require("express-session"));
 const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const routes_1 = __importDefault(require("./route/routes"));
 const PORT = process.env.PORT || 10000; // Default to port 3000 if not set
 const yocoPaymentWebHook = process.env.YOCO_PAYMENT_WEBHOOK;
@@ -85,6 +86,13 @@ const corsOptions = {
 app.use((0, cors_1.default)(corsOptions));
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
+// Rate limiting for Yoco payment webhook
+const limiter = (0, express_rate_limit_1.default)({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+});
+// Apply rate limit middleware to the webhook route
+app.use(`${yocoPaymentWebHook}/create`, limiter);
 // Custom middleware to add additional headers
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
