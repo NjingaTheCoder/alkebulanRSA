@@ -51,8 +51,8 @@ const sendProductQuestionEmailController = async (request: Request, response: Re
 
       // Send the email
       transporter.sendMail({
-        from: 'Product Support <support@yourcompany.com>',
-        to:`tetelomaake@gmail.com`,
+        from: 'Product Support <alkebulanyabatho@gmail.com>',
+        to:`alkebulanyabatho@gmail.com`,
         subject: `New Product Question from ${name}`,
         html: productQuestionHtml,
       });
