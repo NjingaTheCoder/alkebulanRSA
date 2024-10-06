@@ -38,7 +38,6 @@ const yocoPaymentWebHook_1 = __importDefault(require("../controller/yocoPaymentW
 const yocoCreateWebHook_1 = __importDefault(require("../controller/yocoCreateWebHook"));
 const updateCheckOutController_1 = __importDefault(require("../controller/updateCheckOutController"));
 const getOrderController_1 = __importDefault(require("../controller/getOrderController"));
-const getAllWebHooks_1 = __importDefault(require("./../controller/getAllWebHooks"));
 const csurfProtection = (0, csurf_1.default)({
     cookie: {
         httpOnly: true,
@@ -118,5 +117,4 @@ routes.post(`${yocoPaymentWebHook}`, yocoPaymentWebHook_1.default);
 routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, yocoCreateWebHook_1.default);
 // Order Management Route
 routes.post(`${order}`, getOrderController_1.default);
-routes.get(`/api/scentor/all-hooks`, getAllWebHooks_1.default);
 exports.default = routes;

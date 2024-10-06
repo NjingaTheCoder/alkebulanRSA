@@ -133,7 +133,5 @@ routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, YocoCreateWebHook);
 routes.post(`${order}`, GetOrderController);
 
 
-routes.get(`/api/scentor/all-hooks`,yocoWebhookHandler);
-
 export default routes;
 

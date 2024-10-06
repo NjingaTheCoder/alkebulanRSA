@@ -6,16 +6,14 @@ const YocoPayment = async (req :Request , res : Response) => {
     const secret = process.env.YOCO_KEY;
 
     
-    const { token, amount , _csrf } = req.body;
+    const {  amount , _csrf } = req.body;
 
-    console.log('yoco payment : ' , amount , token , _csrf);
     try {
         const response = await axios.post('https://payments.yoco.com/api/checkouts', {
-            token: token,
             amount: parseInt(amount),
             currency: 'ZAR',
             successUrl : "https://shop.alkebulanrsa.co.za/account",
-            failureUrl : "http://localhost:5173/failure",
+            failureUrl : "https://shop.alkebulanrsa.co.za/failure",
         }, {
             headers: {
                 'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`,

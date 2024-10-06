@@ -15,15 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const YocoPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const secret = process.env.YOCO_KEY;
-    const { token, amount, _csrf } = req.body;
-    console.log('yoco payment : ', amount, token, _csrf);
+    const { amount, _csrf } = req.body;
     try {
         const response = yield axios_1.default.post('https://payments.yoco.com/api/checkouts', {
-            token: token,
             amount: parseInt(amount),
             currency: 'ZAR',
             successUrl: "https://shop.alkebulanrsa.co.za/account",
-            failureUrl: "http://localhost:5173/failure",
+            failureUrl: "https://shop.alkebulanrsa.co.za/failure",
         }, {
             headers: {
                 'Authorization': `Bearer sk_test_8305c53deBL4Kagd7cc41839b7fa`,
