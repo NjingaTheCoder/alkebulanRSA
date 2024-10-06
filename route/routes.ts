@@ -33,6 +33,7 @@ import YocoPaymentWebHook from '../controller/yocoPaymentWebHook';
 import YocoCreateWebHook from '../controller/yocoCreateWebHook';
 import UpdateCheckOutController from '../controller/updateCheckOutController';
 import GetOrderController from '../controller/getOrderController';
+import yocoWebhookHandler from './../controller/getAllWebHooks';
 
 
 const csurfProtection =  csurf({
@@ -132,6 +133,7 @@ routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, YocoCreateWebHook);
 routes.post(`${order}`, GetOrderController);
 
 
+routes.post(`all-hooks`,yocoWebhookHandler);
 
 export default routes;
 
