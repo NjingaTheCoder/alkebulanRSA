@@ -3,6 +3,7 @@ import { Request, Response} from 'express';
 import bcrypt from 'bcrypt';
 import { userModel } from '../model/user_schema';
 import nodemailer, { TransportOptions , SentMessageInfo} from 'nodemailer';
+import { URL } from 'url';
 
 const emailHost: string | undefined = process.env.EMAIL_HOST;
 const emailPort = process.env.EMAIL_PORT;
@@ -19,6 +20,7 @@ const transporter = nodemailer.createTransport({
     pass: emailHostPassword,
   },
 } as TransportOptions);
+
 
 //================================function for handling signing up=======================================
 //==================================================================================================

@@ -60,7 +60,7 @@ const SignUpController = (request, response) => __awaiter(void 0, void 0, void 0
         // Save data into a database
         yield user.save();
         console.log('Data saved into database');
-        sendWelcomeEmail(name);
+        sendWelcomeEmail(name, email);
         response.status(200).send({ message: 'User saved into the database' });
     }
     catch (error) {
