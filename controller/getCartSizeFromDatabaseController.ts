@@ -19,7 +19,15 @@ const GetCartSizeFromDatabaseController = async (request : Request , response : 
 
     try {  
 
-        const userIdMongo : mongoose.Schema.Types.ObjectId  = userId;
+
+
+        let userIdMongo : mongoose.Schema.Types.ObjectId  = userId;
+
+        if(request.session?.guestCart?.userId){
+
+          userIdMongo = request.session?.guestCart?.userId;
+        }
+        
         const cart = await cartModel.findOne({userId : userIdMongo});
 
         if(cart){
