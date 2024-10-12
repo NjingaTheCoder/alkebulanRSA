@@ -21,6 +21,9 @@ export const CheckAuthAndReturnSession = ( request : Request , response : Respon
     if (isAuth) {
         return response.status(200).send({ userSession : request.session.userData });
     } else {
+        if(request.session?.guestCart?.userId || false){
+            return response.status(210).send({ userSession : request.session.guestCart?.userId });
+        }
         return response.status(401).send({ message: 'User is not authenticated' });
     }
 }
