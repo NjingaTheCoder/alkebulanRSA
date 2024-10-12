@@ -1,6 +1,7 @@
 import { Request , Response } from "express";
 import { cartModel } from "../model/cart_schema";
-import mongoose from "mongoose";
+import mongoose  from "mongoose";
+import { ObjectId } from 'mongodb';
 
 interface ICart{
     productId : mongoose.Schema.Types.ObjectId, 
@@ -12,17 +13,25 @@ interface ICart{
     _id: mongoose.Schema.Types.ObjectId
 }
 
+
+
 const AddCartToDatabaseController = async (request: Request, response: Response) => {
   try {
     const { items } = request.body;
     
-    const userId = request.session?.userData?.userID;
+    let userId = request.session?.userData?.userID;
     const csrfToken  = request.session?.userData?.csrfToken;
 
 
     // Stop execution if userID is missing
     if (!userId || !csrfToken) {
-      return response.status(400).json({ message: 'Sign in to fill up your cart with ease!' });
+      
+
+      const newId = new ObjectId();
+       userId = newId.toString();  // Output a new unique MongoDB ObjectId
+        request.session.guestCart = {
+          userId : userId,
+      }
     }
 
     // Validate that items exist in the request
