@@ -28,6 +28,7 @@ const AddCartToDatabaseController = async (request: Request, response: Response)
       
 
       if(request.session?.guestCart?.userId || false){
+        userId = request.session?.guestCart?.userId ;
       }else{
         const newId = new ObjectId();
         userId = newId.toString();  // Output a new unique MongoDB ObjectId

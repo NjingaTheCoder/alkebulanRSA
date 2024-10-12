@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const mongodb_1 = require("mongodb");
 const AddCartToDatabaseController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     try {
         const { items } = request.body;
         let userId = (_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.userID;
@@ -20,6 +20,7 @@ const AddCartToDatabaseController = (request, response) => __awaiter(void 0, voi
         // Stop execution if userID is missing
         if (!userId || !csrfToken) {
             if (((_f = (_e = request.session) === null || _e === void 0 ? void 0 : _e.guestCart) === null || _f === void 0 ? void 0 : _f.userId) || false) {
+                userId = (_h = (_g = request.session) === null || _g === void 0 ? void 0 : _g.guestCart) === null || _h === void 0 ? void 0 : _h.userId;
             }
             else {
                 const newId = new mongodb_1.ObjectId();
