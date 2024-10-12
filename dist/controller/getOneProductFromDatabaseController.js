@@ -14,9 +14,6 @@ const GetOneProductFromDatabaseController = (request, response) => __awaiter(voi
     var _a, _b;
     const { model } = request.body;
     const csrfToken = (_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.csrfToken;
-    if (!csrfToken) {
-        return response.status(400).json({ message: `Oops! It looks like you're not signed in. Please sign in to proceed.` });
-    }
     try {
         const requestedProduct = yield product_schema_1.productModel.findOne({ model: model });
         response.status(200).send({ model: requestedProduct });

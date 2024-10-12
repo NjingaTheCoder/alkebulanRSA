@@ -8,11 +8,6 @@ const GetOneProductFromDatabaseController = async (request :Request , response :
     const csrfToken  = request.session?.userData?.csrfToken;
 
 
-    if (!csrfToken) {
-      return response.status(400).json({ message: `Oops! It looks like you're not signed in. Please sign in to proceed.` });
-    }
-
-
     try{
 
         const requestedProduct = await productModel.findOne({model : model})
