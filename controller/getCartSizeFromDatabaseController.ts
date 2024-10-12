@@ -40,7 +40,6 @@ const GetCartSizeFromDatabaseController = async (request : Request , response : 
           });
 
           const cartSize = totalCount;
-          console.log(cartSize );
           return response.status(200).send({cartSize : cartSize});
         }else{
             return response.status(500).json({ message: 'Internal Server Error' });

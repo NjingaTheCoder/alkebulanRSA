@@ -11,9 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const GetCartFromDatabase = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d;
     const { userId } = request.body;
     try {
-        const userIdMongo = userId;
+        let userIdMongo = userId;
+        if (((_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.guestCart) === null || _b === void 0 ? void 0 : _b.userId) || false) {
+            userIdMongo = (_d = (_c = request.session) === null || _c === void 0 ? void 0 : _c.guestCart) === null || _d === void 0 ? void 0 : _d.userId;
+        }
         const cart = yield cart_schema_1.cartModel.findOne({ userId: userIdMongo });
         if (cart) {
             const cartSize = cart.items;

@@ -20,7 +20,13 @@ const GetCartFromDatabase = async  (request : Request , response : Response) => 
 
     try {  
 
-        const userIdMongo : mongoose.Schema.Types.ObjectId  = userId;
+        let userIdMongo : mongoose.Schema.Types.ObjectId  = userId;
+
+        if(request.session?.guestCart?.userId || false){
+
+          userIdMongo = request.session?.guestCart?.userId;
+        }
+        
         const cart  = await cartModel.findOne({userId : userIdMongo});
 
         if(cart){

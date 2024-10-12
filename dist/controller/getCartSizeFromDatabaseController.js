@@ -25,7 +25,6 @@ const GetCartSizeFromDatabaseController = (request, response) => __awaiter(void 
                 totalCount = totalCount + item.quantity;
             });
             const cartSize = totalCount;
-            console.log(cartSize);
             return response.status(200).send({ cartSize: cartSize });
         }
         else {
