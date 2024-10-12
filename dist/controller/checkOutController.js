@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOrdersByUser = exports.updateOrderStatus = exports.createCheckout = void 0;
 const check_out_schema_1 = require("../model/check_out_schema");
 const createCheckout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
     try {
         const { userId, orderItems, shippingAddress, paymentDetails, totalAmount, shippingCost, deliveryMethod, deliveryDate, tax, email } = req.body;
         // Ensure that orderItems is an array of ICart
@@ -53,6 +54,17 @@ const createCheckout = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
         // Save the order to the database
         const savedCheckout = yield newCheckout.save();
+        if (req.session && ((_a = req.session) === null || _a === void 0 ? void 0 : _a.guestCart)) {
+            (_c = (_b = req.session) === null || _b === void 0 ? void 0 : _b.guestCart) === null || _c === void 0 ? true : delete _c.userId;
+            req.session.save((err) => {
+                if (err) {
+                    console.error("Failed to save session after deleting guestCart userId:", err);
+                }
+                else {
+                    console.log("guestCart userId deleted from session successfully.");
+                }
+            });
+        }
         return res.status(201).json({ message: 'Order successfully placed', order: savedCheckout });
     }
     catch (error) {
