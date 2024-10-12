@@ -11,12 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const GetCartSizeFromDatabaseController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     const { userId } = request.body;
     try {
         let userIdMongo = userId;
-        if ((_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.guestCart) === null || _b === void 0 ? void 0 : _b.userId) {
-            userIdMongo = (_d = (_c = request.session) === null || _c === void 0 ? void 0 : _c.guestCart) === null || _d === void 0 ? void 0 : _d.userId;
+        console.log((_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.guestCart) === null || _b === void 0 ? void 0 : _b.userId);
+        if ((_d = (_c = request.session) === null || _c === void 0 ? void 0 : _c.guestCart) === null || _d === void 0 ? void 0 : _d.userId) {
+            userIdMongo = (_f = (_e = request.session) === null || _e === void 0 ? void 0 : _e.guestCart) === null || _f === void 0 ? void 0 : _f.userId;
         }
         const cart = yield cart_schema_1.cartModel.findOne({ userId: userIdMongo });
         if (cart) {
