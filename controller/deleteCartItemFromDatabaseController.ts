@@ -16,10 +16,10 @@ const DeleteCartItemFromDatabaseController = async (request : Request , response
     const { userId , productId } = request.body;
     const isAuth = request.session.userData?.isAuthenticated || false;
 
-    if (isAuth) {
+    if (isAuth || request.session?.guestCart?.userId ) {
         try {
 
-            
+       
             const cartObject = await cartModel.findOne({ userId : userId});
             if (cartObject) {
 

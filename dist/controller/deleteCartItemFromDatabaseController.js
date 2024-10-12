@@ -11,10 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const DeleteCartItemFromDatabaseController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b, _c;
     const { userId, productId } = request.body;
     const isAuth = ((_a = request.session.userData) === null || _a === void 0 ? void 0 : _a.isAuthenticated) || false;
-    if (isAuth) {
+    if (isAuth || ((_c = (_b = request.session) === null || _b === void 0 ? void 0 : _b.guestCart) === null || _c === void 0 ? void 0 : _c.userId)) {
         try {
             const cartObject = yield cart_schema_1.cartModel.findOne({ userId: userId });
             if (cartObject) {
