@@ -24,14 +24,18 @@ const AddCartToDatabaseController = async (request: Request, response: Response)
 
 
     // Stop execution if userID is missing
-    if (!userId || !csrfToken) {
+    if (!userId || !csrfToken ) {
       
 
-      const newId = new ObjectId();
-       userId = newId.toString();  // Output a new unique MongoDB ObjectId
-        request.session.guestCart = {
-          userId : userId,
+      if(request.session?.guestCart?.userId || false){
+      }else{
+        const newId = new ObjectId();
+        userId = newId.toString();  // Output a new unique MongoDB ObjectId
+         request.session.guestCart = {
+           userId : userId,
+       }
       }
+
     }
 
     // Validate that items exist in the request

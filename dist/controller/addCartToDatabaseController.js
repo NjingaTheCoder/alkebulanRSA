@@ -12,18 +12,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cart_schema_1 = require("../model/cart_schema");
 const mongodb_1 = require("mongodb");
 const AddCartToDatabaseController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     try {
         const { items } = request.body;
         let userId = (_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.userData) === null || _b === void 0 ? void 0 : _b.userID;
         const csrfToken = (_d = (_c = request.session) === null || _c === void 0 ? void 0 : _c.userData) === null || _d === void 0 ? void 0 : _d.csrfToken;
         // Stop execution if userID is missing
         if (!userId || !csrfToken) {
-            const newId = new mongodb_1.ObjectId();
-            userId = newId.toString(); // Output a new unique MongoDB ObjectId
-            request.session.guestCart = {
-                userId: userId,
-            };
+            if (((_f = (_e = request.session) === null || _e === void 0 ? void 0 : _e.guestCart) === null || _f === void 0 ? void 0 : _f.userId) || false) {
+            }
+            else {
+                const newId = new mongodb_1.ObjectId();
+                userId = newId.toString(); // Output a new unique MongoDB ObjectId
+                request.session.guestCart = {
+                    userId: userId,
+                };
+            }
         }
         // Validate that items exist in the request
         if (!items || items.length === 0) {
