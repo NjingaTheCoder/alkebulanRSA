@@ -67,18 +67,6 @@ export const createCheckout = async (req: Request, res: Response) => {
     // Save the order to the database
     const savedCheckout = await newCheckout.save();
 
-    if (req.session && req.session?.guestCart) {
-      delete req.session?.guestCart?.userId;
-      req.session.save((err) => {
-        if (err) {
-          console.error("Failed to save session after deleting guestCart userId:", err);
-        } else {
-          console.log("guestCart userId deleted from session successfully.");
-        }
-      });
-    }
-    
-
     return res.status(201).json({ message: 'Order successfully placed', order: savedCheckout });
   } catch (error) {
     console.error('Error during checkout creation:', error); // Log the actual error for debugging

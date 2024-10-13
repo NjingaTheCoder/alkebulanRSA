@@ -2,6 +2,8 @@ import { Response , Request } from "express";
 import { userModel } from '../model/user_schema';
 import sessionModel from "../model/session_schema";
 import bcrypt from 'bcrypt';
+import { cartModel } from "../model/cart_schema";
+import mongoose from "mongoose";
 
 
 const SignInController =  async ( request : Request ,  response : Response) => {
@@ -46,6 +48,26 @@ const SignInController =  async ( request : Request ,  response : Response) => {
         //update last loggin date
         await user.updateOne({last_logged_in:last_logged_date});
 
+        
+        if (request.session && request.session?.guestCart) {
+
+          const result = await cartModel.findOne({userId : request.session?.guestCart?.userId });
+          result.userId = user._id;
+          await result.save();
+          
+
+          delete request.session?.guestCart?.userId;
+          request.session.save((err) => {
+            if (err) {
+              console.error("Failed to save session after deleting guestCart userId:", err);
+            } else {
+              console.log("guestCart userId deleted from session successfully.");
+            }
+          });
+
+
+        }
+    
 
          // Save session and return success
         request.session.save((err) => {

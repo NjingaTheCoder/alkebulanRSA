@@ -15,7 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_schema_1 = require("../model/user_schema");
 const session_schema_1 = __importDefault(require("../model/session_schema"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const cart_schema_1 = require("../model/cart_schema");
 const SignInController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d, _e;
     const { email, password, _csrf } = request.body;
     try {
         const user = yield user_schema_1.userModel.findOne({ email_address: email });
@@ -43,6 +45,20 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
         const last_logged_date = currentDate.toISOString();
         //update last loggin date
         yield user.updateOne({ last_logged_in: last_logged_date });
+        if (request.session && ((_a = request.session) === null || _a === void 0 ? void 0 : _a.guestCart)) {
+            const result = yield cart_schema_1.cartModel.findOne({ userId: (_c = (_b = request.session) === null || _b === void 0 ? void 0 : _b.guestCart) === null || _c === void 0 ? void 0 : _c.userId });
+            result.userId = user._id;
+            yield result.save();
+            (_e = (_d = request.session) === null || _d === void 0 ? void 0 : _d.guestCart) === null || _e === void 0 ? true : delete _e.userId;
+            request.session.save((err) => {
+                if (err) {
+                    console.error("Failed to save session after deleting guestCart userId:", err);
+                }
+                else {
+                    console.log("guestCart userId deleted from session successfully.");
+                }
+            });
+        }
         // Save session and return success
         request.session.save((err) => {
             if (err) {
