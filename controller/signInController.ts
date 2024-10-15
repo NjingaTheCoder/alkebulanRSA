@@ -72,21 +72,28 @@ const SignInController =  async ( request : Request ,  response : Response) => {
         await user.updateOne({last_logged_in:last_logged_date});
 
         
+
         const guestCart = await cartModel.findOne({ userId: request.session?.guestCart?.userId });
         const userCart = await cartModel.findOne({ userId: user._id });
         
         if (userCart && guestCart) {
-            // Merge items (you might need to define your own merging logic based on your schema)
-            guestCart.items.forEach((item : CartItem ) => {
-                const existingItem = userCart.items.find((cartItem : CartItem)  => cartItem.productId.equals(item?.productId));
+            // Merge items from guestCart to userCart
+            guestCart.items.forEach((item: CartItem) => {
+                const existingItem = userCart.items.find((cartItem: CartItem) => cartItem.productId.equals(item?.productId));
                 if (existingItem) {
-                    existingItem.quantity += item.quantity;  // Update quantity
+                    existingItem.quantity += item.quantity;  // Update quantity for existing items
                 } else {
-                    userCart.items.push(item);  // Add new item
+                    userCart.items.push(item);  // Add new item to the user's cart
                 }
             });
-            await userCart.save();  // Save updated user cart
+        
+            await userCart.save();  // Save the updated user cart
+        
+            // Delete the guest cart from the database after merging
+            await cartModel.deleteOne({ userId: request.session?.guestCart?.userId });
+        
         } else if (guestCart) {
+            // If no user cart exists, assign the guest cart to the user and save
             guestCart.userId = user._id;
             await guestCart.save();
         }

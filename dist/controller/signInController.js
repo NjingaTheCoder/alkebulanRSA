@@ -17,7 +17,7 @@ const session_schema_1 = __importDefault(require("../model/session_schema"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const cart_schema_1 = require("../model/cart_schema");
 const SignInController = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     const { email, password, _csrf } = request.body;
     try {
         const user = yield user_schema_1.userModel.findOne({ email_address: email });
@@ -48,24 +48,27 @@ const SignInController = (request, response) => __awaiter(void 0, void 0, void 0
         const guestCart = yield cart_schema_1.cartModel.findOne({ userId: (_b = (_a = request.session) === null || _a === void 0 ? void 0 : _a.guestCart) === null || _b === void 0 ? void 0 : _b.userId });
         const userCart = yield cart_schema_1.cartModel.findOne({ userId: user._id });
         if (userCart && guestCart) {
-            // Merge items (you might need to define your own merging logic based on your schema)
+            // Merge items from guestCart to userCart
             guestCart.items.forEach((item) => {
                 const existingItem = userCart.items.find((cartItem) => cartItem.productId.equals(item === null || item === void 0 ? void 0 : item.productId));
                 if (existingItem) {
-                    existingItem.quantity += item.quantity; // Update quantity
+                    existingItem.quantity += item.quantity; // Update quantity for existing items
                 }
                 else {
-                    userCart.items.push(item); // Add new item
+                    userCart.items.push(item); // Add new item to the user's cart
                 }
             });
-            yield userCart.save(); // Save updated user cart
+            yield userCart.save(); // Save the updated user cart
+            // Delete the guest cart from the database after merging
+            yield cart_schema_1.cartModel.deleteOne({ userId: (_d = (_c = request.session) === null || _c === void 0 ? void 0 : _c.guestCart) === null || _d === void 0 ? void 0 : _d.userId });
         }
         else if (guestCart) {
+            // If no user cart exists, assign the guest cart to the user and save
             guestCart.userId = user._id;
             yield guestCart.save();
         }
         // Clean up guest cart session after merging
-        (_d = (_c = request.session) === null || _c === void 0 ? void 0 : _c.guestCart) === null || _d === void 0 ? true : delete _d.userId;
+        (_f = (_e = request.session) === null || _e === void 0 ? void 0 : _e.guestCart) === null || _f === void 0 ? true : delete _f.userId;
         // Save session and return success
         request.session.save((err) => {
             if (err) {
