@@ -4,6 +4,29 @@ import sessionModel from "../model/session_schema";
 import bcrypt from 'bcrypt';
 import { cartModel } from "../model/cart_schema";
 import mongoose from "mongoose";
+import { Types } from 'mongoose';
+
+interface CartItem {
+  productId: Types.ObjectId;
+  name: string;
+  price: number;
+  quantity: number;
+  size: string;
+  image: string;
+  _id: Types.ObjectId;
+}
+
+interface Cart {
+  _id: Types.ObjectId;
+  userId: Types.ObjectId;
+  items: CartItem[];
+  totalPrice: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+
+
 
 
 const SignInController =  async ( request : Request ,  response : Response) => {
@@ -49,24 +72,27 @@ const SignInController =  async ( request : Request ,  response : Response) => {
         await user.updateOne({last_logged_in:last_logged_date});
 
         
-        if (request.session && request.session?.guestCart) {
-
-          const result = await cartModel.findOne({userId : request.session?.guestCart?.userId });
-          result.userId = user._id;
-          await result.save();
-          
-
-          delete request.session?.guestCart?.userId;
-          request.session.save((err) => {
-            if (err) {
-              console.error("Failed to save session after deleting guestCart userId:", err);
-            } else {
-              console.log("guestCart userId deleted from session successfully.");
-            }
-          });
-
-
+        const guestCart = await cartModel.findOne({ userId: request.session?.guestCart?.userId });
+        const userCart = await cartModel.findOne({ userId: user._id });
+        
+        if (userCart && guestCart) {
+            // Merge items (you might need to define your own merging logic based on your schema)
+            guestCart.items.forEach((item : CartItem ) => {
+                const existingItem = userCart.items.find((cartItem : CartItem)  => cartItem.productId.equals(item?.productId));
+                if (existingItem) {
+                    existingItem.quantity += item.quantity;  // Update quantity
+                } else {
+                    userCart.items.push(item);  // Add new item
+                }
+            });
+            await userCart.save();  // Save updated user cart
+        } else if (guestCart) {
+            guestCart.userId = user._id;
+            await guestCart.save();
         }
+        
+        // Clean up guest cart session after merging
+        delete request.session?.guestCart?.userId;
     
 
          // Save session and return success
