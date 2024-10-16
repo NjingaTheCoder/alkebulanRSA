@@ -18,8 +18,11 @@ const DeleteCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const { customerId } = req.body;
     try {
         console.log(customerId);
-        const id = new mongoose_1.default.Types.ObjectId(customerId);
-        const deletedCustomer = yield user_schema_1.userModel.findByIdAndDelete({ customerId: id });
+        if (!mongoose_1.default.Types.ObjectId.isValid(customerId)) {
+            throw new Error("Invalid customerId format");
+        }
+        const id = new mongoose_1.default.Types.ObjectId(customerId); // Use `new` with a string
+        const deletedCustomer = yield user_schema_1.userModel.findByIdAndDelete(id);
         if (!deletedCustomer) {
             return res.status(404).json({ error: 'Customer not found' });
         }

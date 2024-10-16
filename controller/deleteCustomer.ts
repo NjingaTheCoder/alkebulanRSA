@@ -1,6 +1,6 @@
 import { Request , Response } from "express";
 import { userModel } from "../model/user_schema";
-import mongoose from "mongoose";
+import mongoose , {Types} from "mongoose";
 
 const DeleteCustomer = async (req : Request , res : Response) => {
 
@@ -9,8 +9,13 @@ const DeleteCustomer = async (req : Request , res : Response) => {
     try {
 
         console.log(customerId);
-        const id = new mongoose.Types.ObjectId(customerId);
-        const deletedCustomer = await userModel.findByIdAndDelete({customerId : id});
+
+        if (!mongoose.Types.ObjectId.isValid(customerId)) {
+            throw new Error("Invalid customerId format");
+          }
+          
+          const id = new mongoose.Types.ObjectId(customerId); // Use `new` with a string
+          const deletedCustomer = await userModel.findByIdAndDelete(id);
 
         if (!deletedCustomer) {
             return res.status(404).json({ error: 'Customer not found' });
