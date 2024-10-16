@@ -35,7 +35,7 @@ import UpdateCheckOutController from '../controller/updateCheckOutController';
 import GetOrderController from '../controller/getOrderController';
 import yocoWebhookHandler from './../controller/getAllWebHooks';
 import GetCustomers from '../controller/getCustomers';
-
+import DeleteCustomer from '../controller/deleteCustomer';
 
 const csurfProtection =  csurf({
     cookie: {
@@ -74,6 +74,7 @@ const routes = express.Router();
 // Routes for handling CSRF token
 routes.get(`${signUp}`, csurfProtection, GetCsurfTokenController);
 routes.get(`${customer}`, csurfProtection, GetCustomers);
+routes.post(`${customer}/delete`, csurfProtection, DeleteCustomer);
 
 // Routes for Sign Up and Sign In
 routes.post(`${signUp}`, csurfProtection, SignUpController);
