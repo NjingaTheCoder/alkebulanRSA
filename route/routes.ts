@@ -34,6 +34,7 @@ import YocoCreateWebHook from '../controller/yocoCreateWebHook';
 import UpdateCheckOutController from '../controller/updateCheckOutController';
 import GetOrderController from '../controller/getOrderController';
 import yocoWebhookHandler from './../controller/getAllWebHooks';
+import GetCustomers from '../controller/getCustomers';
 
 
 const csurfProtection =  csurf({
@@ -66,11 +67,13 @@ const subscribe = process.env.SUBSCRIBE;
 const yocoPayment = process.env.YOCO_PAYMENT;
 const yocoPaymentWebHook  = process.env.YOCO_PAYMENT_WEBHOOK;
 const order = process.env.ORDER;
+const customer = process.env.CUSTOMER;
 
 const routes = express.Router();
 
 // Routes for handling CSRF token
 routes.get(`${signUp}`, csurfProtection, GetCsurfTokenController);
+routes.get(`${customer}`, csurfProtection, GetCustomers);
 
 // Routes for Sign Up and Sign In
 routes.post(`${signUp}`, csurfProtection, SignUpController);
