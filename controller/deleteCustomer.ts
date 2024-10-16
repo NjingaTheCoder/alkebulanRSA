@@ -8,6 +8,7 @@ const DeleteCustomer = async (req : Request , res : Response) => {
     
     try {
 
+        console.log(customerId);
         const id = new mongoose.Types.ObjectId(customerId);
         const deletedCustomer = await userModel.findByIdAndDelete({customerId : id});
 
