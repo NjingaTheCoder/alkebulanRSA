@@ -27,6 +27,7 @@ const user_schema_1 = require("../model/user_schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const customersArray = request.body; // Expecting an array of customer objects in the request body
+    console.log(customersArray);
     // Validate that we actually received an array
     if (!Array.isArray(customersArray)) {
         return response.status(400).json({ message: "Invalid input. Expected an array of customers." });
