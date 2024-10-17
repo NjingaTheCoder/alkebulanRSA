@@ -40,6 +40,7 @@ const updateCheckOutController_1 = __importDefault(require("../controller/update
 const getOrderController_1 = __importDefault(require("../controller/getOrderController"));
 const getCustomers_1 = __importDefault(require("../controller/getCustomers"));
 const deleteCustomer_1 = __importDefault(require("../controller/deleteCustomer"));
+const updateCustomers_1 = __importDefault(require("../controller/updateCustomers"));
 const csurfProtection = (0, csurf_1.default)({
     cookie: {
         httpOnly: true,
@@ -74,6 +75,7 @@ const routes = express_1.default.Router();
 routes.get(`${signUp}`, csurfProtection, getCsurfTokenController_1.GetCsurfTokenController);
 routes.get(`${customer}`, csurfProtection, getCustomers_1.default);
 routes.post(`${customer}/delete`, csurfProtection, deleteCustomer_1.default);
+routes.post(`${customer}/update`, csurfProtection, updateCustomers_1.default);
 // Routes for Sign Up and Sign In
 routes.post(`${signUp}`, csurfProtection, signUpController_1.default);
 routes.post(`${signIn}`, csurfProtection, signInController_1.default);
