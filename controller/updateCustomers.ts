@@ -16,9 +16,12 @@ interface ICustomer {
 }
 
 const UpdateCustomers = async (request: Request, response: Response) => {
-  const customersArray: ICustomer[] = request.body; // Expecting an array of customer objects in the request body
+  const {customersArray} = request.body; // Expecting an array of customer objects in the request body
 
-
+  // Validate that we actually received an array
+  if (!Array.isArray(customersArray)) {
+    return response.status(400).json({ message: "Invalid input. Expected an array of customers." });
+  }
 
   try {
     const updatePromises = customersArray.map(async (customer: ICustomer) => {
