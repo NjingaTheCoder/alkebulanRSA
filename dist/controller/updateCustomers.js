@@ -8,31 +8,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_schema_1 = require("../model/user_schema");
+const mongoose_1 = __importDefault(require("mongoose"));
 const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const customersArray = request.body; // Expecting an array of customer objects in the request body
+    console.log(customersArray);
     // Validate that we actually received an array
     if (!Array.isArray(customersArray)) {
         return response.status(400).json({ message: "Invalid input. Expected an array of customers." });
     }
     try {
         const updatePromises = customersArray.map((customer) => __awaiter(void 0, void 0, void 0, function* () {
-            // Ensure each object contains the _id field
-            if (!customer._id) {
-                throw new Error(`Customer with missing _id: ${JSON.stringify(customer)}`);
+            try {
+                if (!mongoose_1.default.Types.ObjectId.isValid(customer._id)) {
+                    throw new Error(`Invalid _id: ${customer._id}`);
+                }
+                const id = new mongoose_1.default.Types.ObjectId(customer._id);
+                return yield user_schema_1.userModel.findByIdAndUpdate(id, customer, {
+                    new: true, // Returns the updated document
+                    runValidators: true, // Ensures model validation runs
+                });
             }
-            // Update each customer based on _id
-            return user_schema_1.userModel.findByIdAndUpdate(customer._id, customer, {
-                new: true, // Returns the updated document
-                runValidators: true, // Ensures model validation runs
-            });
+            catch (error) {
+                console.error(`Failed to update customer with _id ${customer._id}:`, error);
+                return null; // Handle failure for individual customers
+            }
         }));
-        // Wait for all updates to complete
         const updatedCustomers = yield Promise.all(updatePromises);
         response.status(200).json({
             message: "Customers updated successfully",
-            data: updatedCustomers,
+            data: updatedCustomers.filter(Boolean), // Remove any null results from failed updates
         });
     }
     catch (error) {
