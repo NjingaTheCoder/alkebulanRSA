@@ -37,7 +37,7 @@ const UpdateCustomers = async (request: Request, response: Response) => {
           runValidators: true, // Ensures model validation runs
         });
       } catch (error) {
-        console.error(`Failed to update customer with _id ${customer._id}:`, error.message);
+        console.error(`Failed to update customer with _id ${customer._id}:`, error);
         return null; // Handle failure for individual customers
       }
     });

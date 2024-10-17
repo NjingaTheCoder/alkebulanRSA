@@ -44,7 +44,7 @@ const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0,
                 });
             }
             catch (error) {
-                console.error(`Failed to update customer with _id ${customer._id}:`, error.message);
+                console.error(`Failed to update customer with _id ${customer._id}:`, error);
                 return null; // Handle failure for individual customers
             }
         }));
