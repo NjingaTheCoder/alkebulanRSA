@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { userModel } from "../model/user_schema";
+import mongoose from "mongoose";
 
 interface ICustomer {
-    _id: string;
+    _id: mongoose.Schema.Types.ObjectId,
     name: string;
     surname: string;
     gender: string;
