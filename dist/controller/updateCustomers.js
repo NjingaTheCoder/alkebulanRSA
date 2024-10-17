@@ -55,10 +55,10 @@ const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0,
         });
     }
     catch (error) {
-        console.error("Error updating customers:", error.message || error);
+        console.error("Error updating customers:", error || error);
         response.status(500).json({
             message: "Failed to update customers",
-            error: error.message || error,
+            error: error || error,
         });
     }
 });
