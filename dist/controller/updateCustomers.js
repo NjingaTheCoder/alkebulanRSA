@@ -27,7 +27,6 @@ const user_schema_1 = require("../model/user_schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const customersArray = request.body; // Expecting an array of customer objects in the request body
-    console.log(customersArray);
     // Validate that we actually received an array
     if (!Array.isArray(customersArray)) {
         return response.status(400).json({ message: "Invalid input. Expected an array of customers." });
@@ -35,21 +34,17 @@ const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0,
     try {
         const updatePromises = customersArray.map((customer) => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                // Ensure the _id is valid
-                if (!mongoose_1.default.Types.ObjectId.isValid(customer._id)) {
-                    throw new Error(`Invalid _id: ${customer._id}`);
-                }
+                // Ensure the _id is converted to ObjectId
                 const id = new mongoose_1.default.Types.ObjectId(customer._id);
-                // Destructure to omit the fields we don't want to update
+                // Destructure to exclude _id, account_creation_date, and last_logged_in
                 const { account_creation_date, last_logged_in, _id } = customer, updateData = __rest(customer, ["account_creation_date", "last_logged_in", "_id"]);
-                // Perform the update excluding the fields
-                return yield user_schema_1.userModel.findByIdAndUpdate(id, updateData, {
+                return user_schema_1.userModel.findByIdAndUpdate(id, updateData, {
                     new: true, // Returns the updated document
                     runValidators: true, // Ensures model validation runs
                 });
             }
             catch (error) {
-                console.error(`Failed to update customer with _id ${customer._id}:`, error);
+                console.error(`Failed to update customer with _id ${customer._id}:`, error.message);
                 return null; // Handle failure for individual customers
             }
         }));
@@ -60,10 +55,10 @@ const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0,
         });
     }
     catch (error) {
-        console.error("Error updating customers:", error);
+        console.error("Error updating customers:", error.message || error);
         response.status(500).json({
             message: "Failed to update customers",
-            error: error,
+            error: error.message || error,
         });
     }
 });
