@@ -37,6 +37,7 @@ import yocoWebhookHandler from './../controller/getAllWebHooks';
 import GetCustomers from '../controller/getCustomers';
 import DeleteCustomer from '../controller/deleteCustomer';
 import UpdateCustomers from '../controller/updateCustomers';
+import GetAllOrder from '../controller/getAllOrders';
 
 const csurfProtection =  csurf({
     cookie: {
@@ -137,7 +138,7 @@ routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, YocoCreateWebHook);
 
 // Order Management Route
 routes.post(`${order}`, GetOrderController);
-
+routes.post(`${order}/all`, csurfProtection , GetAllOrder);
 
 export default routes;
 
