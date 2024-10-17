@@ -3,7 +3,7 @@ import { userModel } from "../model/user_schema";
 import mongoose from "mongoose";
 
 interface ICustomer {
-  _id: mongoose.Types.ObjectId;
+  _id: mongoose.Types.ObjectId | string;
   name: string;
   surname: string;
   gender: string;
@@ -18,7 +18,6 @@ interface ICustomer {
 const UpdateCustomers = async (request: Request, response: Response) => {
   const customersArray: ICustomer[] = request.body; // Expecting an array of customer objects in the request body
 
-  console.log(customersArray)
   // Validate that we actually received an array
   if (!Array.isArray(customersArray)) {
     return response.status(400).json({ message: "Invalid input. Expected an array of customers." });
@@ -27,11 +26,23 @@ const UpdateCustomers = async (request: Request, response: Response) => {
   try {
     const updatePromises = customersArray.map(async (customer: ICustomer) => {
       try {
+        // Ensure the _id is valid
         if (!mongoose.Types.ObjectId.isValid(customer._id)) {
           throw new Error(`Invalid _id: ${customer._id}`);
         }
+
         const id = new mongoose.Types.ObjectId(customer._id);
-        return await userModel.findByIdAndUpdate(id, customer, {
+
+        // Destructure to omit the fields we don't want to update
+        const {
+          account_creation_date,
+          last_logged_in,
+          _id,
+          ...updateData
+        } = customer;
+
+        // Perform the update excluding the fields
+        return await userModel.findByIdAndUpdate(id, updateData, {
           new: true, // Returns the updated document
           runValidators: true, // Ensures model validation runs
         });

@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,7 +27,6 @@ const user_schema_1 = require("../model/user_schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const customersArray = request.body; // Expecting an array of customer objects in the request body
-    console.log(customersArray);
     // Validate that we actually received an array
     if (!Array.isArray(customersArray)) {
         return response.status(400).json({ message: "Invalid input. Expected an array of customers." });
@@ -24,11 +34,15 @@ const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0,
     try {
         const updatePromises = customersArray.map((customer) => __awaiter(void 0, void 0, void 0, function* () {
             try {
+                // Ensure the _id is valid
                 if (!mongoose_1.default.Types.ObjectId.isValid(customer._id)) {
                     throw new Error(`Invalid _id: ${customer._id}`);
                 }
                 const id = new mongoose_1.default.Types.ObjectId(customer._id);
-                return yield user_schema_1.userModel.findByIdAndUpdate(id, customer, {
+                // Destructure to omit the fields we don't want to update
+                const { account_creation_date, last_logged_in, _id } = customer, updateData = __rest(customer, ["account_creation_date", "last_logged_in", "_id"]);
+                // Perform the update excluding the fields
+                return yield user_schema_1.userModel.findByIdAndUpdate(id, updateData, {
                     new: true, // Returns the updated document
                     runValidators: true, // Ensures model validation runs
                 });
