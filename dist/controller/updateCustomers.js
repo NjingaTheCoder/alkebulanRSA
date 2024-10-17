@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_schema_1 = require("../model/user_schema");
 const UpdateCustomers = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const customersArray = request.body; // Expecting an array of customer objects in the request body
+    console.log(customersArray);
     try {
         const updatePromises = customersArray.map((customer) => __awaiter(void 0, void 0, void 0, function* () {
             // Update each customer based on _id

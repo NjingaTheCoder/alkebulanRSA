@@ -18,6 +18,7 @@ const UpdateCustomers = async (request : Request , response : Response) => {
 
     const customersArray = request.body; // Expecting an array of customer objects in the request body
 
+    console.log(customersArray);
     try {
       const updatePromises = customersArray.map(async (customer : ICustomer) => {
         // Update each customer based on _id
