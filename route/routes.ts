@@ -139,7 +139,7 @@ routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, YocoCreateWebHook);
 
 // Order Management Route
 routes.post(`${order}`, GetOrderController);
-routes.post(`${order}/all`, csurfProtection , GetAllOrder);
+routes.get(`${order}/all`, csurfProtection , GetAllOrder);
 routes.post(`${order}/update`, csurfProtection , UpdateOrders);
 
 export default routes;
