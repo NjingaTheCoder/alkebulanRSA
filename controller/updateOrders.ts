@@ -4,6 +4,7 @@ import nodemailer, { TransportOptions } from 'nodemailer';
 import crypto from 'crypto';
 import { URL } from 'url';
 import { SentMessageInfo } from 'nodemailer';
+import { IOrder } from "../interface&Objects/IOrder";
 
 const emailHost: string | undefined = process.env.EMAIL_HOST;
 const emailPort = process.env.EMAIL_PORT;
@@ -77,10 +78,10 @@ const UpdateOrderStatusAndTrackingCode = async (request: Request, response: Resp
   }
 
   try {
-    const updatePromises = ordersArray.map(async (order: any) => {
+    const updatePromises = ordersArray.map(async (order: IOrder) => {
       try {
         // Destructure the relevant fields from the request body
-        const { id, checkOutObject: { orderStatus }, trackingCode, billingAddress } = order;
+        const { id, checkOutObject: { orderStatus }, trackingCode} = order;
 
         // Find the current order in the database
         const existingOrder = await orderModel.findOne({ id });
@@ -104,7 +105,7 @@ const UpdateOrderStatusAndTrackingCode = async (request: Request, response: Resp
 
             // If the update is successful, send an email notification
             if (updatedOrder) {
-                console.log(billingAddress.addressDetails[0].name, billingAddress.email, orderStatus, trackingCode, id)
+                console.log( order.checkOutObject.billingAddress.addressDetails[0].name , order.checkOutObject.billingAddress.email, orderStatus, trackingCode, id)
               //sendOrderUpdateEmail(billingAddress.addressDetails[0].name, billingAddress.email, orderStatus, trackingCode, id);
             }
 
