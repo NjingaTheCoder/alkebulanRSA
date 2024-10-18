@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const order_schema_1 = require("../model/order_schema");
 const DeleteOrderIdByValue = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { orderId } = req.body; // The value of the ID you're targeting
+    console.log(orderId);
     try {
         // Find the document where `id` matches the provided value and unset `id`
         const updatedOrder = yield order_schema_1.orderModel.findOneAndUpdate({ id: orderId }, // Search for the document where `id` matches `idValue`

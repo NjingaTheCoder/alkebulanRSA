@@ -4,6 +4,7 @@ import { orderModel } from "../model/order_schema";
 const DeleteOrderIdByValue = async (req: Request, res: Response) => {
   const { orderId } = req.body; // The value of the ID you're targeting
 
+  console.log(orderId);
   try {
     // Find the document where `id` matches the provided value and unset `id`
     const updatedOrder = await orderModel.findOneAndUpdate(
