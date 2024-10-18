@@ -129,7 +129,7 @@ const sendRecieptEmail = (checkOutObject, checkoutId) => {
         ${orderItems === null || orderItems === void 0 ? void 0 : orderItems.map(item => `
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">
-              <img src="${item.image}" alt="product" style="width: 70px; height: auto;" />
+              <img src="${item.image}" alt="product" style="width: 50px; height: auto;" />
             </td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
