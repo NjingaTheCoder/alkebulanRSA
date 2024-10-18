@@ -76,7 +76,7 @@ const UpdateOrderStatusAndTrackingCode = (request, response) => __awaiter(void 0
         const updatePromises = ordersArray.map((order) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 // Destructure the relevant fields from the request body
-                const { id, checkOutObject: { orderStatus }, trackingCode, userEmail, userName } = order;
+                const { id, checkOutObject: { orderStatus }, trackingCode, billingAddress } = order;
                 // Find the current order in the database
                 const existingOrder = yield order_schema_1.orderModel.findOne({ id });
                 // Proceed only if there's a change in orderStatus or trackingCode
@@ -93,8 +93,8 @@ const UpdateOrderStatusAndTrackingCode = (request, response) => __awaiter(void 0
                         }, { new: true, runValidators: true });
                         // If the update is successful, send an email notification
                         if (updatedOrder) {
-                            console.log(userName, userEmail, orderStatus, trackingCode, id);
-                            sendOrderUpdateEmail(userName, userEmail, orderStatus, trackingCode, id);
+                            console.log(billingAddress.addressDetails[0].name, billingAddress.email, orderStatus, trackingCode, id);
+                            sendOrderUpdateEmail(billingAddress.addressDetails[0].name, billingAddress.email, orderStatus, trackingCode, id);
                         }
                         return updatedOrder;
                     }

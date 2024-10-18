@@ -80,7 +80,7 @@ const UpdateOrderStatusAndTrackingCode = async (request: Request, response: Resp
     const updatePromises = ordersArray.map(async (order: any) => {
       try {
         // Destructure the relevant fields from the request body
-        const { id, checkOutObject: { orderStatus }, trackingCode, userEmail, userName } = order;
+        const { id, checkOutObject: { orderStatus }, trackingCode, billingAddress } = order;
 
         // Find the current order in the database
         const existingOrder = await orderModel.findOne({ id });
@@ -104,8 +104,8 @@ const UpdateOrderStatusAndTrackingCode = async (request: Request, response: Resp
 
             // If the update is successful, send an email notification
             if (updatedOrder) {
-                console.log(userName, userEmail, orderStatus, trackingCode, id)
-              sendOrderUpdateEmail(userName, userEmail, orderStatus, trackingCode, id);
+                console.log(billingAddress.addressDetails[0].name, billingAddress.email, orderStatus, trackingCode, id)
+              sendOrderUpdateEmail(billingAddress.addressDetails[0].name, billingAddress.email, orderStatus, trackingCode, id);
             }
 
             return updatedOrder;
