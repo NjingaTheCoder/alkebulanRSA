@@ -27,6 +27,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const order_schema_1 = require("./../model/order_schema");
 const UpdateOrders = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { ordersArray } = request.body; // Expecting an array of order objects in the request body
+    console.log(ordersArray);
     // Validate that we actually received an array
     if (!Array.isArray(ordersArray)) {
         return response.status(400).json({ message: "Invalid input. Expected an array of orders." });
