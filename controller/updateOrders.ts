@@ -105,8 +105,7 @@ const UpdateOrderStatusAndTrackingCode = async (request: Request, response: Resp
 
             // If the update is successful, send an email notification
             if (updatedOrder) {
-                console.log( order.checkOutObject.billingAddress.addressDetails[0].name , order.checkOutObject.billingAddress.email, orderStatus, trackingCode, id)
-              //sendOrderUpdateEmail(billingAddress.addressDetails[0].name, billingAddress.email, orderStatus, trackingCode, id);
+                sendOrderUpdateEmail( order.checkOutObject.billingAddress.addressDetails[0].name , order.checkOutObject.billingAddress.email, orderStatus, trackingCode, id)
             }
 
             return updatedOrder;
