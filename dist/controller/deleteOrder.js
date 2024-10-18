@@ -12,10 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const order_schema_1 = require("../model/order_schema");
 const DeleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { orderId } = req.body;
-    console.log(orderId);
     try {
         const id = orderId; // Use `new` with a string
-        const deletedOrder = yield order_schema_1.orderModel.findOne({ id: id });
+        const deletedOrder = yield order_schema_1.orderModel.findOneAndDelete({ id: id });
         if (!deletedOrder) {
             return res.status(404).json({ error: 'Order not found' });
         }

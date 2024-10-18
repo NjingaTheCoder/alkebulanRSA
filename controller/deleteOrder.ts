@@ -6,11 +6,10 @@ const DeleteOrder = async (req : Request , res : Response) => {
 
     const {orderId} = req.body;
     
-    console.log(orderId);
     try {
           
           const id = orderId; // Use `new` with a string
-          const deletedOrder = await orderModel.findOne({id:id});
+          const deletedOrder = await orderModel.findOneAndDelete({id:id});
 
         if (!deletedOrder) {
             return res.status(404).json({ error: 'Order not found' });
