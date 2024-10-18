@@ -106,21 +106,20 @@ const sendRecieptEmail = (checkOutObject, checkoutId) => {
     const totalCost = checkOutObject.totalAmount;
     const deliveryCost = checkOutObject.delivery.cost;
     const receiptHtml = `
-  
   <div style="font-family: Arial, sans-serif; color: #333;">
-   <div style="text-align: center;">
+    <div style="text-align: center;">
       <img src="https://i.imgur.com/PA5VTwK.png" alt="Scentor Logo" style="width: 100px; height: auto;" />
-  </div>
+    </div>
     <h2>Thank you for your purchase, ${userName}!</h2>
     <p>
-      We are pleased to inform you that we have received your order,  Your Order ID is: ${checkoutId}.
+      We are pleased to inform you that we have received your order. Your Order ID is: ${checkoutId}.
       Below are the details of your purchase:
     </p>
     <h3>Order Summary</h3>
     <table style="border-collapse: collapse; width: 100%;">
       <thead>
         <tr style="background-color: #f2f2f2;">
-         <th style="padding: 8px; text-align: left;">Image</th>
+          <th style="padding: 8px; text-align: left;">Image</th>
           <th style="padding: 8px; text-align: left;">Item</th>
           <th style="padding: 8px; text-align: left;">Quantity</th>
           <th style="padding: 8px; text-align: left;">Price</th>
@@ -129,15 +128,18 @@ const sendRecieptEmail = (checkOutObject, checkoutId) => {
       <tbody>
         ${orderItems === null || orderItems === void 0 ? void 0 : orderItems.map(item => `
           <tr>
-           <tdstyle="padding: 8px; border-bottom: 1px solid #ddd;><img src={${item.image}} alt="Scentor Logo" style="width: 70px; height: auto;" /></td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+              <img src="${item.image}" alt="product" style="width: 70px; height: auto;" />
+            </td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">R${item.price.toFixed(2)}</td>
-          </tr>`).join('')}
+          </tr>
+        `).join('')}
       </tbody>
     </table>
-     <p><strong> SubTotal : R${totalCost === null || totalCost === void 0 ? void 0 : totalCost.toFixed(2)}</strong></p>
-      <p><strong>Delivery Cost: R${deliveryCost === null || deliveryCost === void 0 ? void 0 : deliveryCost.toFixed(2)}</strong></p>
+    <p><strong> SubTotal : R${totalCost === null || totalCost === void 0 ? void 0 : totalCost.toFixed(2)}</strong></p>
+    <p><strong>Delivery Cost: R${deliveryCost === null || deliveryCost === void 0 ? void 0 : deliveryCost.toFixed(2)}</strong></p>
     <p><strong>Total Amount: R${(_a = ((totalCost || 0) + (deliveryCost || 0))) === null || _a === void 0 ? void 0 : _a.toFixed(2)}</strong></p>
     <p>
       Your order will be delivered to the following address:<br/>

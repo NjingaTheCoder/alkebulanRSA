@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { orderModel } from './../model/order_schema';
 import nodemailer, { TransportOptions } from 'nodemailer';
-import findOrderDifferences from "../helper/findOrderDifferences";
 import crypto from 'crypto';
 import { URL } from 'url';
 import { SentMessageInfo } from 'nodemailer';
