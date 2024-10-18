@@ -61,7 +61,6 @@ const UpdateOrderStatusAndTrackingCode = async (request: Request, response: Resp
     const updatedOrders = await Promise.all(updatePromises);
 
     response.status(200).json({
-      sendOrderUpdateEmail()
       message: "Orders updated successfully",
       data: updatedOrders.filter(Boolean), // Filter out any null results from failed updates
     });
