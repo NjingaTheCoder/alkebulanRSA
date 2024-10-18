@@ -93,6 +93,7 @@ const UpdateOrderStatusAndTrackingCode = (request, response) => __awaiter(void 0
                         }, { new: true, runValidators: true });
                         // If the update is successful, send an email notification
                         if (updatedOrder) {
+                            console.log(userName, userEmail, orderStatus, trackingCode, id);
                             sendOrderUpdateEmail(userName, userEmail, orderStatus, trackingCode, id);
                         }
                         return updatedOrder;
