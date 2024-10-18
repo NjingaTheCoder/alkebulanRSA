@@ -7,13 +7,8 @@ const DeleteOrder = async (req : Request , res : Response) => {
     const {orderId} = req.body;
     
     try {
-
-
-        if (!mongoose.Types.ObjectId.isValid(orderId)) {
-            throw new Error("Invalid customerId format");
-          }
           
-          const id = new mongoose.Types.ObjectId(orderId); // Use `new` with a string
+          const id = orderId; // Use `new` with a string
           const deletedOrder = await orderModel.findByIdAndDelete(id);
 
         if (!deletedOrder) {
