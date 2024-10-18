@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
 
 
 const UpdateOrderStatusAndTrackingCode = async (request: Request, response: Response) => {
-  const { ordersArray , unchangeArray } = request.body; // Expecting an array of orders with status and tracking code
+  const { ordersArray  } = request.body; // Expecting an array of orders with status and tracking code
 
   // Validate that we actually received an array
   if (!Array.isArray(ordersArray)) {

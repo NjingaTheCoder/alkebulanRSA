@@ -30,7 +30,7 @@ const transporter = nodemailer_1.default.createTransport({
     },
 });
 const UpdateOrderStatusAndTrackingCode = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { ordersArray, unchangeArray } = request.body; // Expecting an array of orders with status and tracking code
+    const { ordersArray } = request.body; // Expecting an array of orders with status and tracking code
     // Validate that we actually received an array
     if (!Array.isArray(ordersArray)) {
         return response.status(400).json({ message: "Invalid input. Expected an array of orders." });
