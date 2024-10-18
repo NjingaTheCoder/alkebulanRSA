@@ -120,6 +120,7 @@ const sendRecieptEmail = (checkOutObject, checkoutId) => {
     <table style="border-collapse: collapse; width: 100%;">
       <thead>
         <tr style="background-color: #f2f2f2;">
+         <th style="padding: 8px; text-align: left;">Image</th>
           <th style="padding: 8px; text-align: left;">Item</th>
           <th style="padding: 8px; text-align: left;">Quantity</th>
           <th style="padding: 8px; text-align: left;">Price</th>
