@@ -10,18 +10,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const order_schema_1 = require("../model/order_schema");
-const DeleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { orderId } = req.body;
+const DeleteOrderIdByValue = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { orderId } = req.body; // The value of the ID you're targeting
     try {
-        const id = orderId; // Use `new` with a string
-        const deletedOrder = yield order_schema_1.orderModel.findByIdAndDelete(id);
-        if (!deletedOrder) {
-            return res.status(404).json({ error: 'Order not found' });
+        // Find the document where `id` matches the provided value and unset `id`
+        const updatedOrder = yield order_schema_1.orderModel.findOneAndUpdate({ id: orderId }, // Search for the document where `id` matches `idValue`
+        {
+            $unset: { id: 1 } // Remove the `id` field
+        }, { new: true } // Return the updated document after the field has been removed
+        );
+        if (!updatedOrder) {
+            return res.status(404).json({ error: 'Order not found with the provided id' });
         }
-        res.status(200).json({ message: 'Order deleted successfully', deletedOrder });
+        res.status(200).json({ message: 'id field deleted successfully', updatedOrder });
     }
     catch (err) {
-        res.status(500).json({ error: 'Failed to delete order' });
+        console.error('Error deleting id:', err);
+        res.status(500).json({ error: 'Failed to delete id' });
     }
 });
-exports.default = DeleteOrder;
+exports.default = DeleteOrderIdByValue;
