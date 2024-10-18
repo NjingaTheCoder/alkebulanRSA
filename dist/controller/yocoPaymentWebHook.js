@@ -128,6 +128,7 @@ const sendRecieptEmail = (checkOutObject, checkoutId) => {
       <tbody>
         ${orderItems === null || orderItems === void 0 ? void 0 : orderItems.map(item => `
           <tr>
+           <tdstyle="padding: 8px; border-bottom: 1px solid #ddd;><img src={${item.image}} alt="Scentor Logo" style="width: 70px; height: auto;" /></td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">R${item.price.toFixed(2)}</td>

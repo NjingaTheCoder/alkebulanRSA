@@ -8,10 +8,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const order_schema_1 = require("./../model/order_schema");
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const findOrderDifferences_1 = __importDefault(require("../helper/findOrderDifferences "));
+const emailHost = process.env.EMAIL_HOST;
+const emailPort = process.env.EMAIL_PORT;
+const emailHostUser = process.env.EMAIL_HOST_USER;
+const emailHostPassword = process.env.EMAIL_HOST_PASSWORD;
+const secretKey = process.env.SECRET || 'koffieking';
+//set up email transporter
+const transporter = nodemailer_1.default.createTransport({
+    host: emailHost,
+    port: emailPort,
+    secure: false,
+    auth: {
+        user: emailHostUser,
+        pass: emailHostPassword,
+    },
+});
 const UpdateOrderStatusAndTrackingCode = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { ordersArray } = request.body; // Expecting an array of orders with status and tracking code
+    const { ordersArray, unchangeArray } = request.body; // Expecting an array of orders with status and tracking code
+    const { changedArray } = (0, findOrderDifferences_1.default)(ordersArray, unchangeArray);
+    console.log(changedArray);
     // Validate that we actually received an array
     if (!Array.isArray(ordersArray)) {
         return response.status(400).json({ message: "Invalid input. Expected an array of orders." });
@@ -49,4 +71,40 @@ const UpdateOrderStatusAndTrackingCode = (request, response) => __awaiter(void 0
         });
     }
 });
+const sendOrderUpdateEmail = (userName, email, orderStatus, trackingCode, orderId) => {
+    const orderUpdateHtml = `
+  <div style="font-family: Arial, sans-serif; color: #333;">
+    <div style="text-align: center;">
+      <img src="https://i.imgur.com/PA5VTwK.png" alt="Scentor Logo" style="width: 100px; height: auto;" />
+    </div>
+    <h2>Hello ${userName},</h2>
+    <p>Your order <strong>${orderId}</strong> has been updated!</p>
+    
+    <h3>Order Status: <span style="color: #007bff;">${orderStatus}</span></h3>
+    
+    <p>We're happy to let you know that your order is progressing. ${orderStatus === 'Shipped' ? 'Your package is on its way!' : ''}</p>
+
+    <p>For tracking your order, you can use the following link:</p>
+    <a href="${trackingCode}" target="_blank" style="color: #007bff;">Track Your Order</a>
+
+    <p>If you have any questions or need assistance, feel free to contact us.</p>
+
+    <p>Thank you for shopping with us!<br/>
+    The Alkebulan Ya Batho Team 😊</p>
+  </div>
+  `;
+    transporter.sendMail({
+        from: 'Alkebulan <alkebulanyabatho@gmail.com>',
+        to: `${email}`,
+        subject: `Order Update for ${orderId} – Status: ${orderStatus}`,
+        html: orderUpdateHtml,
+    }, (error, info) => {
+        if (error) {
+            console.error(`Error sending email: ${error.message}`);
+        }
+        else {
+            console.log(`Order update email sent: ${info.response}`);
+        }
+    });
+};
 exports.default = UpdateOrderStatusAndTrackingCode;

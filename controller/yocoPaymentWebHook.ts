@@ -181,6 +181,7 @@ const sendRecieptEmail = (checkOutObject: Checkout , checkoutId : string): void 
     return;
   }
 
+
   const addressDetails = checkOutObject.shippingAddress.addressDetails[0];
   if (!addressDetails) {
     console.error('Address details missing.');
@@ -222,6 +223,7 @@ const sendRecieptEmail = (checkOutObject: Checkout , checkoutId : string): void 
       <tbody>
         ${orderItems?.map(item => `
           <tr>
+           <tdstyle="padding: 8px; border-bottom: 1px solid #ddd;><img src={${item.image}} alt="Scentor Logo" style="width: 70px; height: auto;" /></td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">R${item.price.toFixed(2)}</td>
