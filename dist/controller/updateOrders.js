@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const order_schema_1 = require("./../model/order_schema");
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const findOrderDifferences_1 = __importDefault(require("../helper/findOrderDifferences "));
 const emailHost = process.env.EMAIL_HOST;
 const emailPort = process.env.EMAIL_PORT;
 const emailHostUser = process.env.EMAIL_HOST_USER;
@@ -32,8 +31,6 @@ const transporter = nodemailer_1.default.createTransport({
 });
 const UpdateOrderStatusAndTrackingCode = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { ordersArray, unchangeArray } = request.body; // Expecting an array of orders with status and tracking code
-    const { changedArray } = (0, findOrderDifferences_1.default)(ordersArray, unchangeArray);
-    console.log(changedArray);
     // Validate that we actually received an array
     if (!Array.isArray(ordersArray)) {
         return response.status(400).json({ message: "Invalid input. Expected an array of orders." });
