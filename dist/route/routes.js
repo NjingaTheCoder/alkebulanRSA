@@ -43,6 +43,7 @@ const deleteCustomer_1 = __importDefault(require("../controller/deleteCustomer")
 const updateCustomers_1 = __importDefault(require("../controller/updateCustomers"));
 const getAllOrders_1 = __importDefault(require("../controller/getAllOrders"));
 const updateOrders_1 = __importDefault(require("../controller/updateOrders"));
+const deleteOrder_1 = __importDefault(require("../controller/deleteOrder"));
 const csurfProtection = (0, csurf_1.default)({
     cookie: {
         httpOnly: true,
@@ -128,4 +129,5 @@ routes.post(`${yocoPaymentWebHook}/create`, csurfProtection, yocoCreateWebHook_1
 routes.post(`${order}`, getOrderController_1.default);
 routes.get(`${order}/all`, csurfProtection, getAllOrders_1.default);
 routes.post(`${order}/update`, csurfProtection, updateOrders_1.default);
+routes.post(`${order}/delete`, csurfProtection, deleteOrder_1.default);
 exports.default = routes;
