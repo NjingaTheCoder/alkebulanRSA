@@ -7,6 +7,7 @@ import session from 'express-session';
 import mongoSession from 'connect-mongodb-session';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 import rateLimit from 'express-rate-limit';
 import router from './route/routes';
 
@@ -59,7 +60,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
-
+// Increase the limit to, for example, 10MB
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 
 // Rate limiting for Yoco payment webhook

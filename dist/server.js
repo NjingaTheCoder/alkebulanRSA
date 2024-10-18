@@ -43,6 +43,7 @@ const express_session_1 = __importDefault(require("express-session"));
 const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
+const body_parser_1 = __importDefault(require("body-parser"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const routes_1 = __importDefault(require("./route/routes"));
 const PORT = process.env.PORT || 10000; // Default to port 3000 if not set
@@ -86,6 +87,9 @@ const corsOptions = {
 app.use((0, cors_1.default)(corsOptions));
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use(express_1.default.json());
+// Increase the limit to, for example, 10MB
+app.use(body_parser_1.default.json({ limit: '10mb' }));
+app.use(body_parser_1.default.urlencoded({ limit: '10mb', extended: true }));
 // Rate limiting for Yoco payment webhook
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
