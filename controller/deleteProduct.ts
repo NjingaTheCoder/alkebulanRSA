@@ -9,6 +9,7 @@ const DeleteProducts = async (req : Request , res : Response) => {
     try {
        
           const id = new mongoose.Types.ObjectId(productId); // Use `new` with a string
+          console.log(id);
           const deletedProducts = await productModel.findOneAndDelete({_id: id});
 
         if (!deletedProducts) {

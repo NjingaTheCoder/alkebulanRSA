@@ -18,6 +18,7 @@ const DeleteProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const { productId } = req.body;
     try {
         const id = new mongoose_1.default.Types.ObjectId(productId); // Use `new` with a string
+        console.log(id);
         const deletedProducts = yield product_schema_1.productModel.findOneAndDelete({ _id: id });
         if (!deletedProducts) {
             return res.status(404).json({ error: 'Product not found' });
