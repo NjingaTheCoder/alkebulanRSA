@@ -108,7 +108,7 @@ routes.get(`${addressDetail}`, GetAddressFromDatabaseController);
 // Product Management Routes
 routes.post(`${product}`, AddProductToDatabaseController);
 routes.post(`${product}/update`,csurfProtection , UpdateProductDetails);
-routes.post(`${product}/delete`,csurfProtection , UpdateProductDetails);
+routes.post(`${product}/delete`,csurfProtection , DeleteProducts);
 
 routes.get(`${product}`, GetProductsFromDatabaseController);
 routes.post(`${singleProduct}`, GetOneProductFromDatabaseController);
