@@ -46,6 +46,7 @@ const updateOrders_1 = __importDefault(require("../controller/updateOrders"));
 const deleteOrder_1 = __importDefault(require("../controller/deleteOrder"));
 const updateProduts_1 = __importDefault(require("../controller/updateProduts"));
 const deleteProduct_1 = __importDefault(require("../controller/deleteProduct"));
+const getSubscribers_1 = __importDefault(require("../controller/getSubscribers"));
 const csurfProtection = (0, csurf_1.default)({
     cookie: {
         httpOnly: true,
@@ -125,6 +126,7 @@ routes.post(`${checkOut}/update-payment-details`, csurfProtection, updateCheckOu
 // Newsletter Subscription Routes
 routes.post(`${subscribe}`, addSubsriberTodatabaseController_1.subscribeEmail);
 routes.post(`${subscribe}/un`, addSubsriberTodatabaseController_1.unsubscribeEmail);
+routes.post(`${subscribe}/get`, getSubscribers_1.default);
 // Yoco Payment Routes
 routes.post(`${yocoPayment}`, csurfProtection, yocoPayment_1.default);
 routes.post(`${yocoPaymentWebHook}`, yocoPaymentWebHook_1.default);

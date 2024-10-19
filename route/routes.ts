@@ -42,6 +42,7 @@ import UpdateOrderStatusAndTrackingCode from '../controller/updateOrders';
 import DeleteOrder from '../controller/deleteOrder';
 import UpdateProductDetails from '../controller/updateProduts';
 import DeleteProducts from '../controller/deleteProduct';
+import GetSubscribers from '../controller/getSubscribers';
 
 const csurfProtection =  csurf({
     cookie: {
@@ -137,6 +138,7 @@ routes.post(`${checkOut}/update-payment-details`, csurfProtection, UpdateCheckOu
 // Newsletter Subscription Routes
 routes.post(`${subscribe}`, subscribeEmail);
 routes.post(`${subscribe}/un`, unsubscribeEmail);
+routes.post(`${subscribe}/get`, GetSubscribers);
 
 // Yoco Payment Routes
 routes.post(`${yocoPayment}`, csurfProtection, YocoPayment);
