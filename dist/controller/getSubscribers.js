@@ -16,7 +16,7 @@ const subscriber_schema_1 = __importDefault(require("../interface&Objects/subscr
 const GetSubscribers = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const subscribers = yield subscriber_schema_1.default.find();
-        response.status(200).json({ Subscription: subscriber_schema_1.default });
+        response.status(200).json({ Subscription: subscribers });
     }
     catch (err) {
         response.status(500).json({ error: 'Failed to fetch customers' });
