@@ -47,6 +47,7 @@ const deleteOrder_1 = __importDefault(require("../controller/deleteOrder"));
 const updateProduts_1 = __importDefault(require("../controller/updateProduts"));
 const deleteProduct_1 = __importDefault(require("../controller/deleteProduct"));
 const getSubscribers_1 = __importDefault(require("../controller/getSubscribers"));
+const deleteReview_1 = __importDefault(require("../controller/deleteReview"));
 const csurfProtection = (0, csurf_1.default)({
     cookie: {
         httpOnly: true,
@@ -117,7 +118,7 @@ routes.post(`${review}`, csurfProtection, addReviewToDatabaseController_1.defaul
 routes.post(`${review}/rating-update`, csurfProtection, addRatingToProductController_1.default);
 routes.post(`${review}/question`, csurfProtection, sendProductQuestionEmailController_1.default);
 routes.get(`${review}`, getReviewFromDatabaseController_1.default);
-routes.get(`${review}/delete`, csurfProtection, getReviewFromDatabaseController_1.default);
+routes.post(`${review}/delete`, csurfProtection, deleteReview_1.default);
 // Checkout and Order Management Routes
 routes.post(`${checkOut}`, csurfProtection, checkOutController_1.createCheckout);
 routes.post(`${checkOut}/get-check-out`, csurfProtection, getCheckOutFromDatabaseController_1.default);

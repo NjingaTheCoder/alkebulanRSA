@@ -43,6 +43,7 @@ import DeleteOrder from '../controller/deleteOrder';
 import UpdateProductDetails from '../controller/updateProduts';
 import DeleteProducts from '../controller/deleteProduct';
 import GetSubscribers from '../controller/getSubscribers';
+import DeleteReview from '../controller/deleteReview';
 
 const csurfProtection =  csurf({
     cookie: {
@@ -127,7 +128,7 @@ routes.post(`${review}`, csurfProtection, addReviewToDatabaseController);
 routes.post(`${review}/rating-update`, csurfProtection, addRatingToProductController);
 routes.post(`${review}/question`, csurfProtection, sendProductQuestionEmailController);
 routes.get(`${review}`, GetReviewFromDatabaseController);
-routes.get(`${review}/delete`, csurfProtection ,GetReviewFromDatabaseController);
+routes.post(`${review}/delete`, csurfProtection ,DeleteReview);
 
 // Checkout and Order Management Routes
 routes.post(`${checkOut}`, csurfProtection, createCheckout);
