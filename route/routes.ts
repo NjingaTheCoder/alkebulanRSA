@@ -137,7 +137,7 @@ routes.post(`${checkOut}/update-payment-details`, csurfProtection, UpdateCheckOu
 
 // Newsletter Subscription Routes
 routes.post(`${subscribe}`, subscribeEmail);
-routes.post(`${subscribe}/un`, unsubscribeEmail);
+routes.post(`${subscribe}/delete`, csurfProtection, unsubscribeEmail);
 routes.post(`${subscribe}/get`, GetSubscribers);
 
 // Yoco Payment Routes

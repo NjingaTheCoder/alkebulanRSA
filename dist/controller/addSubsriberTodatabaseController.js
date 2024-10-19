@@ -45,13 +45,10 @@ exports.subscribeEmail = subscribeEmail;
 const unsubscribeEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.body;
     try {
-        const subscription = yield subscriber_schema_1.default.findOne({ email });
+        const subscription = yield subscriber_schema_1.default.findOneAndDelete({ email });
         if (!subscription || !subscription.isSubscribed) {
             return res.status(404).json({ message: "Email not found or already unsubscribed." });
         }
-        subscription.isSubscribed = false;
-        subscription.unsubscribedAt = new Date();
-        yield subscription.save();
         return res.status(200).json({ message: "Successfully unsubscribed." });
     }
     catch (error) {

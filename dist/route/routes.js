@@ -125,7 +125,7 @@ routes.get(`${checkOut}/orders`, checkOutController_1.getOrdersByUser);
 routes.post(`${checkOut}/update-payment-details`, csurfProtection, updateCheckOutController_1.default);
 // Newsletter Subscription Routes
 routes.post(`${subscribe}`, addSubsriberTodatabaseController_1.subscribeEmail);
-routes.post(`${subscribe}/un`, addSubsriberTodatabaseController_1.unsubscribeEmail);
+routes.post(`${subscribe}/delete`, csurfProtection, addSubsriberTodatabaseController_1.unsubscribeEmail);
 routes.post(`${subscribe}/get`, getSubscribers_1.default);
 // Yoco Payment Routes
 routes.post(`${yocoPayment}`, csurfProtection, yocoPayment_1.default);

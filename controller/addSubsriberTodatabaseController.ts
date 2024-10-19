@@ -35,15 +35,11 @@ export const unsubscribeEmail = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   try {
-    const subscription = await Subscription.findOne({ email });
+    const subscription = await Subscription.findOneAndDelete({ email });
 
     if (!subscription || !subscription.isSubscribed) {
       return res.status(404).json({ message: "Email not found or already unsubscribed." });
     }
-
-    subscription.isSubscribed = false;
-    subscription.unsubscribedAt = new Date();
-    await subscription.save();
 
     return res.status(200).json({ message: "Successfully unsubscribed." });
   } catch (error) {
