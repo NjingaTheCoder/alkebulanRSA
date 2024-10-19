@@ -40,6 +40,7 @@ import UpdateCustomers from '../controller/updateCustomers';
 import GetAllOrder from '../controller/getAllOrders';
 import UpdateOrderStatusAndTrackingCode from '../controller/updateOrders';
 import DeleteOrder from '../controller/deleteOrder';
+import UpdateProductDetails from '../controller/updateProduts';
 
 const csurfProtection =  csurf({
     cookie: {
@@ -105,6 +106,7 @@ routes.get(`${addressDetail}`, GetAddressFromDatabaseController);
 
 // Product Management Routes
 routes.post(`${product}`, AddProductToDatabaseController);
+routes.post(`${product}/update`,csurfProtection , UpdateProductDetails);
 routes.get(`${product}`, GetProductsFromDatabaseController);
 routes.post(`${singleProduct}`, GetOneProductFromDatabaseController);
 routes.post(`${bestSellerProduct}`, addBestSellerProductToDatabaseController);
