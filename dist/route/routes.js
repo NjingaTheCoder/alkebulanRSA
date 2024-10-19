@@ -100,6 +100,7 @@ routes.get(`${addressDetail}`, getAddressFromDatabaseController_1.default);
 // Product Management Routes
 routes.post(`${product}`, addProductToDatabaseController_1.default);
 routes.post(`${product}/update`, csurfProtection, updateProduts_1.default);
+routes.post(`${product}/delete`, csurfProtection, updateProduts_1.default);
 routes.get(`${product}`, getProductsFromDatabaseController_1.default);
 routes.post(`${singleProduct}`, getOneProductFromDatabaseController_1.default);
 routes.post(`${bestSellerProduct}`, addBestSellerProductToDatabaseController_1.default);
