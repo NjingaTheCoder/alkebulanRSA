@@ -127,6 +127,7 @@ routes.post(`${review}`, csurfProtection, addReviewToDatabaseController);
 routes.post(`${review}/rating-update`, csurfProtection, addRatingToProductController);
 routes.post(`${review}/question`, csurfProtection, sendProductQuestionEmailController);
 routes.get(`${review}`, GetReviewFromDatabaseController);
+routes.get(`${review}/delete`, csurfProtection ,GetReviewFromDatabaseController);
 
 // Checkout and Order Management Routes
 routes.post(`${checkOut}`, csurfProtection, createCheckout);
