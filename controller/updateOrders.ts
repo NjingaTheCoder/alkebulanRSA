@@ -51,7 +51,7 @@ const sendOrderUpdateEmail = (
       <p>If you have any questions or need assistance, feel free to contact us.</p>
 
       <p>Thank you for shopping with us!<br/>
-      The Alkebulan Ya Batho Team 😊</p>
+      Alkebulan Ya Batho Team 😊</p>
     </div>
   `;
 
